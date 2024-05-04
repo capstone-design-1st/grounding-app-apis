@@ -1,7 +1,6 @@
 package org.example.first.groundingappapis.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +12,12 @@ import lombok.NoArgsConstructor;
 public class ThumbnailUrl {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_img_url_id", nullable = false)
-    private ProfileImgUrl profileImgUrl;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "thumbnail_url_id")
+    private Long thumbnailUrlId;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
@@ -29,10 +28,13 @@ public class ThumbnailUrl {
     private String cloudfrontUrl;
 
     @Builder
-    public ThumbnailUrl(ProfileImgUrl profileImgUrl, Property property, String s3Url, String cloudfrontUrl) {
-        this.profileImgUrl = profileImgUrl;
-        this.property = property;
+    public ThumbnailUrl(Property property, String s3Url, String cloudfrontUrl) {
         this.s3Url = s3Url;
         this.cloudfrontUrl = cloudfrontUrl;
+    }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+        property.setThumbnailUrl(this);
     }
 }

@@ -38,12 +38,11 @@ CREATE TABLE IF NOT EXISTS `properties` (
 
 -- 'thumbnail_urls' 테이블 생성
 CREATE TABLE IF NOT EXISTS `thumbnail_urls` (
-    `profile_img_url_id` BIGINT NOT NULL,
+    `thumbnail_url_id` BIGINT NOT NULL AUTO_INCREMENT,
     `property_id` BIGINT NOT NULL,
     `s3_url` VARCHAR(100) NOT NULL,
     `cloudfront_url` VARCHAR(100) NOT NULL,
-    PRIMARY KEY (`profile_img_url_id`, `property_id`),
-    FOREIGN KEY (`profile_img_url_id`) REFERENCES `profile_img_urls`(`profile_img_url_id`),
+    PRIMARY KEY (`thumbnail_url_id`),
     FOREIGN KEY (`property_id`) REFERENCES `properties`(`property_id`)
     );
 
@@ -51,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `thumbnail_urls` (
 CREATE TABLE IF NOT EXISTS `buildings` (
    `building_id` BIGINT NOT NULL AUTO_INCREMENT,
    `property_id` BIGINT NOT NULL,
-   `land_uuid` BINARY(16) NOT NULL,
+   `building_uuid` BINARY(16) NOT NULL,
     `use_area` VARCHAR(20) NOT NULL,
     `main_use` VARCHAR(20) NOT NULL,
     `total_floor_area` DOUBLE,
@@ -79,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
 
 -- 'lands' 테이블 생성
 CREATE TABLE IF NOT EXISTS `lands` (
-   `building_id` BIGINT NOT NULL,
+   `land_id` BIGINT NOT NULL AUTO_INCREMENT,
    `property_id` BIGINT NOT NULL,
    `land_uuid` BINARY(16) NOT NULL,
     `use_area` VARCHAR(20) NOT NULL,
@@ -92,8 +91,7 @@ CREATE TABLE IF NOT EXISTS `lands` (
     `leaser` VARCHAR(20),
     `lease_start_date` DATE,
     `lease_end_date` DATE,
-    PRIMARY KEY (`building_id`, `property_id`),
-    FOREIGN KEY (`building_id`) REFERENCES `buildings`(`building_id`),
+    PRIMARY KEY (`property_id`),
     FOREIGN KEY (`property_id`) REFERENCES `properties`(`property_id`)
     );
 

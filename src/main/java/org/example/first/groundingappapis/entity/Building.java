@@ -24,12 +24,12 @@ public class Building {
     @Column(name = "building_id")
     private Long buildingId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
-    private Property property;
+    @Column(name = "building_uuid", columnDefinition = "BINARY(16)")
+    private UUID buildingUuid;
 
-    @Column(name = "land_uuid", columnDefinition = "BINARY(16)")
-    private UUID landUuid;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_buildings_property"))
+    private Property property;
 
     @Column(name = "use_area", length = 20)
     private String useArea;
@@ -71,13 +71,12 @@ public class Building {
 
     @PrePersist
     public void prePersist() {
-        this.landUuid = (this.landUuid == null) ? UUID.randomUUID() : this.landUuid;
+        this.buildingUuid = (this.buildingUuid == null) ? UUID.randomUUID() : this.buildingUuid;
     }
 
     @Builder
-    public Building(Property property, UUID landUuid, String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.property = property;
-        this.landUuid = landUuid;
+    public Building(UUID buildingUuid, String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.buildingUuid = buildingUuid;
         this.useArea = useArea;
         this.mainUse = mainUse;
         this.totalFloorArea = totalFloorArea;
@@ -90,5 +89,10 @@ public class Building {
         this.leaseEndDate = leaseEndDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+        property.setBuilding(this);
     }
 }

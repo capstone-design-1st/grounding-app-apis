@@ -17,6 +17,7 @@ import java.util.UUID;
 public class Property {
 
     @Id
+    //AUto increment
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "property_id")
     private Long propertyId;
@@ -50,6 +51,15 @@ public class Property {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ThumbnailUrl thumbnailUrl;
+
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Land land;
+
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Building building;
+
     @PrePersist
     public void prePersist() {
         this.propertyUuid = (this.propertyUuid == null) ? UUID.randomUUID() : this.propertyUuid;
@@ -64,5 +74,13 @@ public class Property {
         this.nickname = nickname;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public void setLand(Land land) {
+        this.land = land;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
     }
 }

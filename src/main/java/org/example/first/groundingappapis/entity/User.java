@@ -46,6 +46,13 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ProfileImgUrl profileImgUrl;
+
+    public void setProfileImgUrl(ProfileImgUrl profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
     @PrePersist
     public void prePersist() {
         this.userUuid = (this.userUuid == null) ? UUID.randomUUID() : this.userUuid;

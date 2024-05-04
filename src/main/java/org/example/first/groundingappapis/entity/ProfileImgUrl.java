@@ -18,8 +18,8 @@ public class ProfileImgUrl {
     @Column(name = "profile_img_url_id")
     private Long profileImgUrlId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_profile_img_urls_user"))
     private User user;
 
     @Column(name = "s3_url", length = 100)
@@ -33,5 +33,10 @@ public class ProfileImgUrl {
         this.user = user;
         this.s3Url = s3Url;
         this.cloudfrontUrl = cloudfrontUrl;
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+        user.setProfileImgUrl(this);
     }
 }

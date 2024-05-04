@@ -17,13 +17,12 @@ import java.util.UUID;
 public class Land {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "building_id", nullable = false)
-    private Building building;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JoinColumn(name = "land_id", nullable = false)
+    private Long landId;
 
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_lands_property"))
     private Property property;
 
     @Column(name = "land_uuid", columnDefinition = "BINARY(16)")
@@ -65,9 +64,7 @@ public class Land {
     }
 
     @Builder
-    public Land(Building building, Property property, UUID landUuid, String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate) {
-        this.building = building;
-        this.property = property;
+    public Land(UUID landUuid, String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate) {
         this.landUuid = landUuid;
         this.useArea = useArea;
         this.mainUse = mainUse;
@@ -80,4 +77,10 @@ public class Land {
         this.leaseStartDate = leaseStartDate;
         this.leaseEndDate = leaseEndDate;
     }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+        property.setLand(this);
+    }
+
 }
