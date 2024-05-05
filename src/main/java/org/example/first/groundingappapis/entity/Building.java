@@ -22,10 +22,7 @@ public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "building_id")
-    private Long buildingId;
-
-    @Column(name = "building_uuid", columnDefinition = "BINARY(16)")
-    private UUID buildingUuid;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_buildings_property"))
@@ -69,14 +66,8 @@ public class Building {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    public void prePersist() {
-        this.buildingUuid = (this.buildingUuid == null) ? UUID.randomUUID() : this.buildingUuid;
-    }
-
     @Builder
-    public Building(UUID buildingUuid, String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.buildingUuid = buildingUuid;
+    public Building(String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.useArea = useArea;
         this.mainUse = mainUse;
         this.totalFloorArea = totalFloorArea;

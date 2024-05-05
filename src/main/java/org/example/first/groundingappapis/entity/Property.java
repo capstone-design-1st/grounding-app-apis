@@ -17,25 +17,24 @@ import java.util.UUID;
 public class Property {
 
     @Id
-    //AUto increment
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "property_id")
-    private Long propertyId;
+    private Long id;
 
-    @Column(name = "property_uuid", columnDefinition = "BINARY(16)")
-    private UUID propertyUuid;
+    @Column(name = "property_uuid", columnDefinition = "BINARY(16)", unique = true)
+    private UUID uuid;
 
-    @Column(name = "name", length = 10)
+    @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "password", length = 100)
-    private String password;
+    @Column(name = "price", nullable = false, length = 30)
+    private Integer price;
 
-    @Column(name = "phone_number", length = 20)
-    private String phoneNumber;
+    @Column(name = "piece_count")
+    private Integer pieceCount;
 
-    @Column(name = "nickname", length = 10)
-    private String nickname;
+    @Column(name = "piece_price")
+    private Integer piecePrice;
 
     @Column(name = "view_count")
     private Long viewCount;
@@ -62,16 +61,18 @@ public class Property {
 
     @PrePersist
     public void prePersist() {
-        this.propertyUuid = (this.propertyUuid == null) ? UUID.randomUUID() : this.propertyUuid;
+        this.uuid = (this.uuid == null) ? UUID.randomUUID() : this.uuid;
     }
 
     @Builder
-    public Property(UUID propertyUuid, String name, String password, String phoneNumber, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.propertyUuid = propertyUuid;
+    public Property(UUID uuid, String name, Integer pieceCount, Integer piecePrice, Integer price, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.uuid = uuid;
         this.name = name;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.nickname = nickname;
+        this.pieceCount = pieceCount;
+        this.piecePrice = piecePrice;
+        this.price = price;
+        this.viewCount = 0L;
+        this.likeCount = 0L;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

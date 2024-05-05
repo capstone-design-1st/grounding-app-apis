@@ -25,9 +25,6 @@ public class Land {
     @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_lands_property"))
     private Property property;
 
-    @Column(name = "land_uuid", columnDefinition = "BINARY(16)")
-    private UUID landUuid;
-
     @Column(name = "use_area", length = 20)
     private String useArea;
 
@@ -58,14 +55,8 @@ public class Land {
     @Column(name = "lease_end_date")
     private LocalDate leaseEndDate;
 
-    @PrePersist
-    public void prePersist() {
-        this.landUuid = (this.landUuid == null) ? UUID.randomUUID() : this.landUuid;
-    }
-
     @Builder
-    public Land(UUID landUuid, String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate) {
-        this.landUuid = landUuid;
+    public Land(String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate) {
         this.useArea = useArea;
         this.mainUse = mainUse;
         this.totalFloorArea = totalFloorArea;

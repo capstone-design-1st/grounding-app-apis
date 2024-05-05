@@ -14,7 +14,7 @@ public class ThumbnailUrl {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "thumbnail_url_id")
-    private Long thumbnailUrlId;
+    private Long id;
 
     @Id
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -28,7 +28,7 @@ public class ThumbnailUrl {
     private String cloudfrontUrl;
 
     @Builder
-    public ThumbnailUrl(Property property, String s3Url, String cloudfrontUrl) {
+    public ThumbnailUrl(String s3Url, String cloudfrontUrl) {
         this.s3Url = s3Url;
         this.cloudfrontUrl = cloudfrontUrl;
     }
