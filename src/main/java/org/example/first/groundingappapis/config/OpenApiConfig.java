@@ -25,7 +25,7 @@ public class OpenApiConfig {
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
                 .security(Arrays.asList(securityRequirement))
                 .servers(Arrays.asList(
-                        //new io.swagger.v3.oas.models.servers.Server().url("https://user-api.esthete.com").description("Production server"),
+                        new io.swagger.v3.oas.models.servers.Server().url("http://3.39.108.39:8033").description("Production server"),
                         new io.swagger.v3.oas.models.servers.Server().url("http://localhost:8033").description("Local development server")
                 ));
     }
