@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,11 +62,15 @@ public class Property {
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Building building;
 
+    //조각모집
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Fundraise fundraise;
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RepresentationPhotoUrl> representationPhotoUrls = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
@@ -80,9 +85,6 @@ public class Property {
                     Integer piecePrice, Integer price, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.uuid = uuid;
         this.name = name;
-        this.pieceCount = pieceCount;
-        this.piecePrice = piecePrice;
-        this.price = price;
         this.viewCount = 0L;
         this.likeCount = 0L;
         this.createdAt = createdAt;
@@ -97,4 +99,5 @@ public class Property {
     public void setBuilding(Building building) {
         this.building = building;
     }
+
 }

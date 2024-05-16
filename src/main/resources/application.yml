@@ -27,7 +27,6 @@ spring:
           show_sql: true
           format_sql: true
         hbm2ddl.auto: ${SPRING_DATASOURCE_DDL_AUTO}
-        #ddl-auto: create-drop
     repositories:
       enabled: true
 
@@ -39,3 +38,8 @@ logging:
       hibernate:
         SQL: DEBUG
         type: trace
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET}
+    expiration: ${APP_JWT_EXPIRATION}

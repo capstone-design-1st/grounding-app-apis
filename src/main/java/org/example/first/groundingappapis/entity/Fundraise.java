@@ -35,6 +35,34 @@ public class Fundraise {
     @Column(name = "investor_count")
     private Integer investorCount;
 
+    //증권 종류
+    @Column(name = "security_type", length = 20)
+    private String securityType;
+
+    //발행인
+    @Column(name = "issuer", length = 20)
+    private String issuer;
+
+    //발행 증권 수
+    @Column(name = "security_count")
+    private Integer securityCount;
+
+    //발행 가액
+    @Column(name = "issue_price")
+    private Long issuePrice;
+
+    //총 모집액
+    @Column(name = "total_fund")
+    private Integer totalFund;
+
+    //청약 시작일
+    @Column(name = "subscription_start_date")
+    private LocalDate subscriptionStartDate;
+
+    //청약 마감일
+    @Column(name = "subscription_end_date")
+    private LocalDate subscriptionEndDate;
+
     @Builder
     public Fundraise(Property property, Double progressRate, LocalDate deadline, Integer investorCount) {
         this.property = property;

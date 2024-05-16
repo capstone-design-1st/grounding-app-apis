@@ -28,46 +28,48 @@ public class Building {
     @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_buildings_property"))
     private Property property;
 
+    //사용면적
     @Column(name = "use_area", length = 20)
     private String useArea;
 
+    //주용도
     @Column(name = "main_use", length = 20)
     private String mainUse;
 
+    //연면적
     @Column(name = "total_floor_area")
     private Double totalFloorArea;
 
+    //대지면적
     @Column(name = "land_area")
     private Double landArea;
 
+    //건물규모
     @Column(name = "scale", length = 20)
     private String scale;
 
+    //준공일
     @Column(name = "completion_date")
     private LocalDate completionDate;
 
+    //공시지가
     @Column(name = "official_land_price", length = 20)
     private String officialLandPrice;
 
+    //임차인
     @Column(name = "leaser", length = 20)
     private String leaser;
 
+    //임대시작일
     @Column(name = "lease_start_date")
     private LocalDate leaseStartDate;
 
+    //임대종료일
     @Column(name = "lease_end_date")
     private LocalDate leaseEndDate;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @Builder
-    public Building(String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Building(String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate) {
         this.useArea = useArea;
         this.mainUse = mainUse;
         this.totalFloorArea = totalFloorArea;
@@ -78,8 +80,6 @@ public class Building {
         this.leaser = leaser;
         this.leaseStartDate = leaseStartDate;
         this.leaseEndDate = leaseEndDate;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public void updateProperty(Property property) {

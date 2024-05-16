@@ -26,6 +26,7 @@ public class DepositLog {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    //매수, 매도
     @Column(name = "type", length = 10)
     private String type;
 

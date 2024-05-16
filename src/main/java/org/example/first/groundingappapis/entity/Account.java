@@ -27,8 +27,11 @@ public class Account {
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_accounts_user"))
     private User user;
 
-    @Column(name = "deposit")
+    @Column(name = "deposit", columnDefinition = "BIGINT DEFAULT 0")
     private Long deposit;
+
+    @Column(name = "total_earning_rate", columnDefinition = "DOUBLE DEFAULT 0.0")
+    private Double totalEarningRate;
 
     @PrePersist
     public void prePersist() {
@@ -38,9 +41,10 @@ public class Account {
     }
 
     @Builder
-    public Account(User user, UUID uuid, Long deposit) {
+    public Account(User user, UUID uuid, Long deposit, Double totalEarningRate) {
         this.user = user;
         this.uuid = uuid;
         this.deposit = deposit;
+        this.totalEarningRate = totalEarningRate;
     }
 }

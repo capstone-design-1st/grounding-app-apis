@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "likes")
 @Getter
@@ -26,10 +28,17 @@ public class Like {
     @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     @Builder
     public Like(User user, Property property) {
         this.user = user;
         this.property = property;
+    }
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
     }
 
     public void updateUser(User user) {

@@ -48,13 +48,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private ProfileImgUrl profileImgUrl;
-
-    public void setProfileImgUrl(ProfileImgUrl profileImgUrl) {
-        this.profileImgUrl = profileImgUrl;
-    }
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
