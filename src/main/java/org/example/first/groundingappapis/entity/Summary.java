@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "summaries")
@@ -19,7 +20,7 @@ public class Summary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "summary_id")
-    private Long summaryId;
+    private Long id;
 
     @Lob
     @Column(name = "content")
@@ -29,6 +30,10 @@ public class Summary {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
+    }
     @Builder
     public Summary(String content, LocalDateTime createdAt) {
         this.content = content;

@@ -16,7 +16,7 @@ public class InvestmentPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "investment_point_id")
-    private Long investmentPointId;
+    private Long id;
 
     @Column(name = "s3_url", length = 100)
     private String s3Url;

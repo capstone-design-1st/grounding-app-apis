@@ -16,7 +16,7 @@ public class ProfileImgUrl {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_img_url_id")
-    private Long profileImgUrlId;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_profile_img_urls_user"))

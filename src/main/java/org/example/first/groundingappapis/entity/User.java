@@ -9,6 +9,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,10 +23,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long userId;
+    private Long id;
 
     @Column(name = "user_uuid", columnDefinition = "BINARY(16)")
-    private UUID userUuid;
+    private UUID uuid;
 
     @Column(name = "email", nullable = false, length = 30)
     private String email;
@@ -46,26 +48,38 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImgUrl profileImgUrl;
 
     public void setProfileImgUrl(ProfileImgUrl profileImgUrl) {
         this.profileImgUrl = profileImgUrl;
     }
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
-        this.userUuid = (this.userUuid == null) ? UUID.randomUUID() : this.userUuid;
+        this.uuid = (this.uuid == null) ? UUID.randomUUID() : this.uuid;
+        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
     }
 
     @Builder
-    public User(UUID userUuid, String email, String password, String phoneNumber, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.userUuid = userUuid;
+    public User(UUID uuid,
+                String email,
+                String password,
+                String phoneNumber,
+                String nickname,
+                LocalDateTime createdAt,
+                LocalDateTime updatedAt,
+                List<Like> likes) {
+        this.uuid = uuid;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.nickname = nickname;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.likes = likes;
     }
 }

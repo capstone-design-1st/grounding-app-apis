@@ -16,10 +16,10 @@ public class DepositLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "deposit_log_id")
-    private Long depositLogId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false, foreignKey = @ForeignKey(name = "fk_deposit_logs_account"))
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,6 +28,11 @@ public class DepositLog {
 
     @Column(name = "type", length = 10)
     private String type;
+
+    private void updateAccount(Account account) {
+        this.account = account;
+        //account.getDepositLogs().add(this);
+    }
 
     @Builder
     public DepositLog(Account account, User user, String type) {

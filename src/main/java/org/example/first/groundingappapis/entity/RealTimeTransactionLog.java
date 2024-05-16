@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -18,10 +19,10 @@ public class RealTimeTransactionLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "real_time_transaction_log_id")
-    private Long realTimeTransactionLogId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_real_time_transaction_logs_property"))
     private Property property;
 
     @Column(name = "executed_at", nullable = false)
@@ -39,6 +40,15 @@ public class RealTimeTransactionLog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
+    }
 
     @Builder
     public RealTimeTransactionLog(Property property, LocalDateTime executedAt, Integer amount, Integer executedPrice, Double fluctuationRate, User user) {

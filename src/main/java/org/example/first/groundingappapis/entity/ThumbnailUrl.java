@@ -16,9 +16,8 @@ public class ThumbnailUrl {
     @Column(name = "thumbnail_url_id")
     private Long id;
 
-    @Id
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "property_id", nullable = false)
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_thumbnail_urls_property"))
     private Property property;
 
     @Column(name = "s3_url", length = 100)

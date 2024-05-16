@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
+//호가
 @Entity
 @Table(name = "quotes")
 @Getter
@@ -18,11 +19,11 @@ public class Quote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transaction_id")
-    private Long transactionId;
+    @Column(name = "quote_id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_quotes_property"))
     private Property property;
 
     @CreatedDate

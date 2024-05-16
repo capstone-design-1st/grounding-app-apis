@@ -19,9 +19,9 @@ public class Land {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JoinColumn(name = "land_id", nullable = false)
-    private Long landId;
+    private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_lands_property"))
     private Property property;
 

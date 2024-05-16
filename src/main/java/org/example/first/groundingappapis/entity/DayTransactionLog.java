@@ -18,7 +18,7 @@ public class DayTransactionLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "day_transaction_log_id")
-    private Long dayTransactionLogId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", nullable = false)

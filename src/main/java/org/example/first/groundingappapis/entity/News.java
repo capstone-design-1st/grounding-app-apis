@@ -18,7 +18,7 @@ public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "news_id")
-    private Long newsId;
+    private Long id;
 
     @Column(name = "s3_url", length = 100)
     private String s3Url;

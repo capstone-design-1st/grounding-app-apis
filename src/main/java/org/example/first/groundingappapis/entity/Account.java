@@ -18,22 +18,29 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
-    private Long accountId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Long id;
 
     @Column(name = "account_uuid", columnDefinition = "BINARY(16)")
-    private UUID accountUuid;
+    private UUID uuid;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_accounts_user"))
+    private User user;
 
     @Column(name = "deposit")
     private Long deposit;
 
+    @PrePersist
+    public void prePersist() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+    }
+
     @Builder
-    public Account(User user, UUID accountUuid, Long deposit) {
+    public Account(User user, UUID uuid, Long deposit) {
         this.user = user;
-        this.accountUuid = accountUuid;
+        this.uuid = uuid;
         this.deposit = deposit;
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -50,22 +52,32 @@ public class Property {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ThumbnailUrl thumbnailUrl;
 
-    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Land land;
 
-    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Building building;
+
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Fundraise fundraise;
+
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
         this.uuid = (this.uuid == null) ? UUID.randomUUID() : this.uuid;
+        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
     }
 
     @Builder
-    public Property(UUID uuid, String name, Integer pieceCount, Integer piecePrice, Integer price, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Property(UUID uuid,
+                    String name,
+                    Integer pieceCount,
+                    Integer piecePrice, Integer price, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.uuid = uuid;
         this.name = name;
         this.pieceCount = pieceCount;
@@ -75,6 +87,7 @@ public class Property {
         this.likeCount = 0L;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+
     }
 
     public void setLand(Land land) {

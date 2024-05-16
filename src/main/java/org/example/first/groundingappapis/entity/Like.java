@@ -16,10 +16,10 @@ public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
-    private Long likeId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_likes_user"))
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,5 +30,15 @@ public class Like {
     public Like(User user, Property property) {
         this.user = user;
         this.property = property;
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+        user.getLikes().add(this);
+    }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+        property.getLikes().add(this);
     }
 }
