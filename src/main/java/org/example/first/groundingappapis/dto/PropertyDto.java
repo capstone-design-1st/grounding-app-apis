@@ -33,7 +33,6 @@ public class PropertyDto {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private ThumbnailUrlDto thumbnailUrlDto;
-        private ListingInformation listingInformation;
 
         public ReadResponse(UUID uuid, String name, Integer price, Integer pieceCount, Integer piecePrice, Long viewCount, Long likeCount, LocalDateTime createdAt, LocalDateTime updatedAt) {
             this.uuid = uuid;
@@ -47,4 +46,11 @@ public class PropertyDto {
             this.updatedAt = updatedAt;
         }
     }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GetResponse{}
 }

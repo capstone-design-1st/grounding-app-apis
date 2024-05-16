@@ -30,15 +30,6 @@ public class Property {
     @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "price", nullable = false, length = 30)
-    private Integer price;
-
-    @Column(name = "piece_count")
-    private Integer pieceCount;
-
-    @Column(name = "piece_price")
-    private Integer piecePrice;
-
     @Column(name = "view_count")
     private Long viewCount;
 
@@ -78,18 +69,30 @@ public class Property {
         this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
     }
 
+    public String getType(){
+        if(this.land != null){
+            return "land";
+        }else if(this.building != null){
+            return "building";
+        }else{
+            return null;
+        }
+    }
+
     @Builder
-    public Property(UUID uuid,
-                    String name,
-                    Integer pieceCount,
-                    Integer piecePrice, Integer price, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Property(UUID uuid, String name, Long viewCount, Long likeCount, LocalDateTime createdAt, LocalDateTime updatedAt, ThumbnailUrl thumbnailUrl, Land land, Building building, Fundraise fundraise, List<Like> likes, List<RepresentationPhotoUrl> representationPhotoUrls) {
         this.uuid = uuid;
         this.name = name;
-        this.viewCount = 0L;
-        this.likeCount = 0L;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-
+        this.thumbnailUrl = thumbnailUrl;
+        this.land = land;
+        this.building = building;
+        this.fundraise = fundraise;
+        this.likes = likes;
+        this.representationPhotoUrls = representationPhotoUrls;
     }
 
     public void setLand(Land land) {

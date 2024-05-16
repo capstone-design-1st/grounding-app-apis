@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder(builderClassName = "BuildingBuilder", builderMethodName = "buildingBuilder")
-public class BuildingDto implements ListingInformation {
+public class BuildingDto {
     private String useArea;
     private String mainUse;
     private Double totalFloorArea;
@@ -27,4 +27,18 @@ public class BuildingDto implements ListingInformation {
     private String leaser;
     private LocalDate leaseStartDate;
     private LocalDate leaseEndDate;
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GetResponse{}
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ReadResponse{}
 }
