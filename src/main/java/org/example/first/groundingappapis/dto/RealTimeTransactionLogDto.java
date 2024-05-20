@@ -8,11 +8,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RealTimeTransactionLogDto {
 
-    @Data
+    private LocalDateTime executedAt;
+    private Integer amount;
+    private Integer executedPrice;
+    private Double fluctuationRate;
     @Builder
-    @NoArgsConstructor
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public RealTimeTransactionLogDto(LocalDateTime executedAt, Integer amount, Integer executedPrice, Double fluctuationRate) {
+        this.executedAt = executedAt != null ? executedAt : LocalDateTime.now();
+        this.amount = amount != null ? amount : 0;
+        this.executedPrice = executedPrice != null ? executedPrice : 0;
+        this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
+    }
+
     public static class ReadResponse{}
 }

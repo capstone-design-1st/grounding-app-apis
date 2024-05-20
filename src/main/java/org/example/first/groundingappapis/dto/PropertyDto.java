@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PropertyDto {
-    private UUID uuid;
+    private UUID id;
     private String name;
     private String oneline;
     private Long presentPrice;
@@ -30,7 +30,7 @@ public class PropertyDto {
     private Double priceDifferenceRate;
 
     @Builder
-    public PropertyDto(UUID uuid,
+    public PropertyDto(UUID id,
                        String name,
                        String oneline,
                        Long presentPrice,
@@ -40,7 +40,7 @@ public class PropertyDto {
                        String type,
                        Long priceDifference,
                        Double priceDifferenceRate) {
-        this.uuid = uuid;
+        this.id = id;
         this.name = name != null ? name : "";
         this.oneline = oneline != null ? oneline : "";
         this.presentPrice = presentPrice != null ? presentPrice : 0L;
@@ -119,7 +119,7 @@ public class PropertyDto {
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ReadBasicInfoResponse{
-        private UUID uuid;
+        private UUID id;
         private String name;
         private Long presentPrice;
         //시가 - 현재가
@@ -132,7 +132,7 @@ public class PropertyDto {
         private String type;
 
         @Builder
-        public ReadBasicInfoResponse(UUID uuid,
+        public ReadBasicInfoResponse(UUID id,
                                      String name,
                                      Long presentPrice,
                                      Long priceDifference,
@@ -141,7 +141,7 @@ public class PropertyDto {
                                      Long likeCount,
                                      Long volumeCount,
                                      String type) {
-            this.uuid = uuid;
+            this.id = id;
             this.name = name;
             this.presentPrice = presentPrice;
             this.priceDifference = priceDifference;

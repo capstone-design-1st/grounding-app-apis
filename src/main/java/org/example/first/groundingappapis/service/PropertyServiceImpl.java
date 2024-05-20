@@ -1,5 +1,6 @@
 package org.example.first.groundingappapis.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.*;
@@ -34,9 +35,10 @@ public class PropertyServiceImpl implements PropertyService {
         return null;
     }
 
+    @Transactional
     @Override
     public PropertyDto.GetResponse getProperty(String propertyId) {
-        Property property = propertyRepository.getDetailPropertyByUuid(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.NOT_FOUND_PROPERTY, PropertyErrorResult.NOT_FOUND_PROPERTY.getMessage()));
+        Property property = propertyRepository.getDetailPropertyById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.NOT_FOUND_PROPERTY, PropertyErrorResult.NOT_FOUND_PROPERTY.getMessage()));
         PropertyDto propertyDto = property.toDto();
         FundraiseDto fundraiseDto = property.getFundraise().toDto();
         PropertyDetailDto propertyDetailDto = null;
@@ -78,40 +80,6 @@ public class PropertyServiceImpl implements PropertyService {
                 .representationPhotoUrlDto(representationPhotoUrlDto)
                 .investmentPointDto(investmentPointDto)
                 .documentDto(documentDto)
-                .build();
-
-        return response;
-    }
-
-    @Override
-    public PropertyDto.GetFundraisingResponse getFundraisingProperty(String propertyId) {
-        Property property = propertyRepository.getFundraisingPropertyByUuid(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.NOT_FOUND_PROPERTY, PropertyErrorResult.NOT_FOUND_PROPERTY.getMessage()));
-        PropertyDto propertyDto = property.toDto();
-        FundraiseDto fundraiseDto = property.getFundraise().toDto();
-        PropertyDetailDto propertyDetailDto = null;
-
-        if(property.getType().equals("land")) {
-            Land land = property.getLand();
-            propertyDetailDto = buildLandInformation(land);
-        } else {
-            Building building = property.getBuilding();
-            propertyDetailDto = buildBuildingInformation(building);
-        }
-
-        LocationDto locationDto = property.getLocation().toDto();
-        ThumbnailUrlDto thumbnailUrlDto = property.getThumbnailUrl().toDto();
-
-        List<RepresentationPhotoUrlDto> representationPhotoUrlDto = property.getRepresentationPhotoUrls().stream()
-                .map(representationPhotoUrl -> representationPhotoUrl.toDto())
-                .collect(Collectors.toList());
-
-        PropertyDto.GetFundraisingResponse response = PropertyDto.GetFundraisingResponse.builder()
-                .propertyDto(propertyDto)
-                .fundraiseDto(fundraiseDto)
-                .propertyDetailDto(propertyDetailDto)
-                .locationDto(locationDto)
-                .thumbnailUrlDto(thumbnailUrlDto)
-                .representationPhotoUrlDto(representationPhotoUrlDto)
                 .build();
 
         return response;

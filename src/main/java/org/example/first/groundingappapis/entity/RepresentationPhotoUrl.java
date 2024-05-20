@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.RepresentationPhotoUrlDto;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "representation_photo_urls")
 @Getter
@@ -14,12 +16,12 @@ import org.example.first.groundingappapis.dto.RepresentationPhotoUrlDto;
 @AllArgsConstructor
 public class RepresentationPhotoUrl {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "representation_photo_url_id")
-    private Long id;
+    @Column(name = "representation_photo_url_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_representation_photo_urls_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_representation_photo_urls_property"))
     private Property property;
 
     @Column(name = "s3Url", length = 255)
@@ -37,6 +39,12 @@ public class RepresentationPhotoUrl {
     public void updateProperty(Property property) {
         this.property = property;
         property.getRepresentationPhotoUrls().add(this);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
     }
 
     public RepresentationPhotoUrlDto toDto() {

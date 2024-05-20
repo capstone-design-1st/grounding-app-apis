@@ -1,32 +1,31 @@
 package org.example.first.groundingappapis.dto;
 
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class DocumentDto {
+public class DisclosureDto {
+
     private UUID id;
     private String title;
-    private String s3Url;
-    private String cloudfrontUrl;
+    private String content;
+    private LocalDate reportedAt;
 
     @Builder
-    public DocumentDto(
-            UUID id,
-            String title,
-            String s3Url,
-            String cloudfrontUrl) {
+    public DisclosureDto(UUID id, String title, String content, LocalDate reportedAt) {
         this.id = id;
-        this.title = title != null ? title : "";
-        this.s3Url = s3Url != null ? s3Url : "";
-        this.cloudfrontUrl = cloudfrontUrl != null ? cloudfrontUrl : "";
+        this.title = title;
+        this.content = content;
+        this.reportedAt = reportedAt;
     }
+
 }

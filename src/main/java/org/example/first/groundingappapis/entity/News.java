@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.NewsDto;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "news")
@@ -17,9 +18,14 @@ import java.time.LocalDate;
 public class News {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "news_id")
-    private Long id;
+    @Column(name = "news_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @Column(name = "s3_url", length = 200)
     private String s3Url;
@@ -44,11 +50,11 @@ public class News {
     private LocalDate reportedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_news_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_news_property"))
     private Property property;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "summary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_news_summary"))
+    @JoinColumn(name = "summary_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_news_summary"))
     private Summary summary;
 
     @Builder

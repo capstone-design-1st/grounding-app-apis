@@ -11,7 +11,6 @@ public interface PropertyService {
     Page<PropertyDto.ReadBasicInfoResponse> readPropertiesOrderedByVolume(Pageable pageable);
     Page<PropertyDto.ReadBasicInfoResponse> readPropertiesByUserLike(UUID userId, Pageable pageable);
     PropertyDto.GetResponse getProperty(String propertyId);
-    PropertyDto.GetFundraisingResponse getFundraisingProperty(String propertyId);
 
     void validateProperty(String propertyId);
 }

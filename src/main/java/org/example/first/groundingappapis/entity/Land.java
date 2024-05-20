@@ -16,14 +16,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Land {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "land_id", nullable = false)
-    private Long id;
+    @Column(name = "land_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_lands_property"))
+    @JoinColumn(name = "property_id", nullable = false,columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_lands_property"))
     private Property property;
 
     @Column(name = "use_area", length = 20)

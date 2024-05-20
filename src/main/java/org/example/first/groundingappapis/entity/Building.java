@@ -20,12 +20,17 @@ import java.util.UUID;
 public class Building {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "building_id")
-    private Long id;
+    @Column(name = "building_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_buildings_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_buildings_property"))
     private Property property;
 
     //사용면적

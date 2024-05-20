@@ -21,12 +21,8 @@ import java.util.*;
 public class Property {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "property_id")
-    private Long id;
-
-    @Column(name = "property_uuid", columnDefinition = "BINARY(16)", unique = true)
-    private UUID uuid;
+    @Column(name = "property_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
 
     @Column(name = "property_name", length = 50)
     private String name;
@@ -74,35 +70,39 @@ public class Property {
     private Location location;
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 100)
     private Set<Like> likes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 100)
     private Set<RepresentationPhotoUrl> representationPhotoUrls = new LinkedHashSet<>();
-    //private List<RepresentationPhotoUrl> representationPhotoUrls = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<News> news = new ArrayList<>();
+    @BatchSize(size = 100)
+    private Set<News> news = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InvestmentPoint> investmentPoints = new ArrayList<>();
+    @BatchSize(size = 100)
+    private Set<InvestmentPoint> investmentPoints = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Document> documents = new ArrayList<>();
+    @BatchSize(size = 100)
+    private Set<Document> documents = new LinkedHashSet<>();
 
     //공시
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Disclosure> disclosures = new ArrayList<>();
+    @BatchSize(size = 100)
+    private Set<Disclosure> disclosures = new LinkedHashSet<>();
 
     @PrePersist
     public void prePersist() {
-        this.uuid = (this.uuid == null) ? UUID.randomUUID() : this.uuid;
+        if (this.id == null)
+            this.id = UUID.randomUUID();
         this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
     }
 
     @Builder
-    public Property(UUID uuid,
-                    String name,
+    public Property(String name,
                     String oneline,
                     Long presentPrice,
                     Long viewCount,
@@ -114,10 +114,9 @@ public class Property {
                     Land land,
                     Building building,
                     Fundraise fundraise,
-                    List<Like> likes,
-                    List<RepresentationPhotoUrl> representationPhotoUrls,
-                    List<News> news) {
-        this.uuid = uuid;
+                    Set<Like> likes,
+                    Set<RepresentationPhotoUrl> representationPhotoUrls,
+                    Set<News> news) {
         this.name = name;
         this.oneline = oneline;
         this.presentPrice = presentPrice;
@@ -173,7 +172,7 @@ public class Property {
 
     public PropertyDto toDto() {
         return PropertyDto.builder()
-                .uuid(this.uuid)
+                .id(this.id)
                 .name(this.name)
                 .oneline(this.oneline)
                 .presentPrice(this.presentPrice)
@@ -219,44 +218,44 @@ public class Property {
         return fundraise;
     }
 
-    public List<Like> getLikes() {
+    public Set<Like> getLikes() {
         if(likes == null) {
-            return new ArrayList<>();
+            return new LinkedHashSet<>();
         }
         return likes;
     }
 
-    public List<RepresentationPhotoUrl> getRepresentationPhotoUrls() {
+    public Set<RepresentationPhotoUrl> getRepresentationPhotoUrls() {
         if(representationPhotoUrls == null) {
-            return new ArrayList<>();
+            return new LinkedHashSet<>();
         }
         return representationPhotoUrls;
     }
 
-    public List<News> getNews() {
+    public Set<News> getNews() {
         if(news == null) {
-            return new ArrayList<>();
+            return new LinkedHashSet<>();
         }
         return news;
     }
 
-    public List<InvestmentPoint> getInvestmentPoints() {
+    public Set<InvestmentPoint> getInvestmentPoints() {
         if(investmentPoints == null) {
-            return new ArrayList<>();
+            return new LinkedHashSet<>();
         }
         return investmentPoints;
     }
 
-    public List<Document> getDocuments() {
+    public Set<Document> getDocuments() {
         if(documents == null) {
-            return new ArrayList<>();
+            return new LinkedHashSet<>();
         }
         return documents;
     }
 
-    public List<Disclosure> getDisclosures() {
+    public Set<Disclosure> getDisclosures() {
         if(disclosures == null) {
-            return new ArrayList<>();
+            return new LinkedHashSet<>();
         }
         return disclosures;
     }

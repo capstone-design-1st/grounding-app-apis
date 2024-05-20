@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "day_transaction_logs")
@@ -16,12 +17,18 @@ import java.time.LocalDate;
 public class DayTransactionLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "day_transaction_log_id")
-    private Long id;
+    @Column(name = "day_transaction_log_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        this.date = (this.date == null) ? LocalDate.now() : this.date;
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_day_transaction_logs_property"))
     private Property property;
 
     @Column(name = "date", nullable = false)
@@ -41,11 +48,6 @@ public class DayTransactionLog {
 
     @Column(name = "closing_price")
     private Integer closingPrice;
-
-    @PrePersist
-    public void prePersist() {
-        this.date = (this.date == null) ? LocalDate.now() : this.date;
-    }
 
     @Builder
     public DayTransactionLog(Property property, LocalDate date, Integer amount, Integer executedPrice, Double fluctuationRate, Integer openingPrice, Integer closingPrice) {

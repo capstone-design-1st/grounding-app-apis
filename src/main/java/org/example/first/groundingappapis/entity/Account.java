@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.AccountDto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -17,12 +18,17 @@ import java.util.UUID;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_id")
-    private Long id;
+    @Column(name = "account_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_accounts_user"))
+    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_accounts_user"))
     private User user;
 
     @Column(name = "deposit", columnDefinition = "BIGINT DEFAULT 0")

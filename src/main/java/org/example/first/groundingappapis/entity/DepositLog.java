@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.DepositLogDto;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "deposit_logs")
 @Getter
@@ -15,16 +17,21 @@ import org.example.first.groundingappapis.dto.DepositLogDto;
 public class DepositLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "deposit_log_id")
-    private Long id;
+    @Column(name = "deposit_log_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false, foreignKey = @ForeignKey(name = "fk_deposit_logs_account"))
+    @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_deposit_logs_account"))
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_deposit_logs_user"))
+    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_deposit_logs_user"))
     private User user;
 
     //매수, 매도

@@ -9,6 +9,7 @@ import org.example.first.groundingappapis.dto.QuoteDto;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 //호가
 @Entity
@@ -19,12 +20,11 @@ import java.time.LocalDateTime;
 public class Quote {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "quote_id")
-    private Long id;
+    @Column(name = "quote_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_quotes_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_quotes_property"))
     private Property property;
 
     @CreatedDate
@@ -43,6 +43,8 @@ public class Quote {
     @PrePersist
     public void prePersist() {
         this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
+        if (this.id == null)
+            this.id = UUID.randomUUID();
     }
 
     @Builder

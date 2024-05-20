@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.FundraiseDto;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "fundraises")
@@ -16,12 +17,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Fundraise {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "fundraise_id")
-    private Long id;
+    @Column(name = "fundraise_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_fundraise_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)",foreignKey = @ForeignKey(name = "fk_fundraise_property"))
     private Property property;
 
     //진행률

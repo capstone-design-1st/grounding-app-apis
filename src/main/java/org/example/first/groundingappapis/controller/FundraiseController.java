@@ -17,17 +17,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class FundraiseController {
 
-    private final PropertyService propertyService;
-    // 조각 모집 상세 페이지
-    @GetMapping("/{propertyId}")
-    public ResponseEntity<PropertyDto.GetFundraisingResponse> getFundraisingProperty(@PathVariable("propertyId") String propertyId) {
-        log.info("getFundraisingProperty called with propertyId: {}", propertyId);
-
-        propertyService.validateProperty(propertyId);
-
-        PropertyDto.GetFundraisingResponse response = propertyService.getFundraisingProperty(propertyId);
-
-        return ResponseEntity.ok().body(response);
-    }
 
 }

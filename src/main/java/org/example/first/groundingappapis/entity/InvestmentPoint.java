@@ -7,17 +7,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.InvestmentPointDto;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "investment_points")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvestmentPoint {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "investment_point_id")
-    private Long id;
+    @Column(name = "investment_point_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @Column(name = "title", length = 50)
     private String title;
@@ -27,11 +33,11 @@ public class InvestmentPoint {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_investment_points_property"))
     private Property property;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "summary_id", nullable = false)
+    @JoinColumn(name = "summary_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_investment_points_summary"))
     private Summary summary;
 
     @Builder

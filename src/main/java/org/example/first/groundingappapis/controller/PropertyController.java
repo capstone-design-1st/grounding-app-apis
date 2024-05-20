@@ -20,18 +20,7 @@ public class PropertyController {
 
     private final PropertyService propertyService;
 
-//    @GetMapping("/all")
-//    public ResponseEntity<Page<PropertyDto.ReadResponse>> getProperties(
-//            @RequestParam(value = "page", defaultValue = "0") Integer page,
-//            @RequestParam(value = "size", defaultValue = "10") Integer size) {
-//        log.info("getProperties called with page: {} and size: {}", page, size);
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        return ResponseEntity.ok(propertyService.getProperties(pageable));
-//    }
-
-    // 거래 중인 매물 상세
+    //매물 상세
     @GetMapping("/{propertyId}")
     public ResponseEntity<PropertyDto.GetResponse> getProperty(@PathVariable String propertyId) {
         log.info("getProperty called with propertyId: {}", propertyId);

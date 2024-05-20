@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.ThumbnailUrlDto;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "thumbnail_urls")
 @Getter
@@ -13,12 +15,12 @@ import org.example.first.groundingappapis.dto.ThumbnailUrlDto;
 public class ThumbnailUrl {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "thumbnail_url_id")
-    private Long id;
+    @Column(name = "thumbnail_url_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_thumbnail_urls_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_thumbnail_urls_property"))
     private Property property;
 
     @Column(name = "s3_url", length = 100)
@@ -36,6 +38,12 @@ public class ThumbnailUrl {
     public void updateProperty(Property property) {
         this.property = property;
         property.setThumbnailUrl(this);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
     }
 
     public ThumbnailUrlDto toDto() {

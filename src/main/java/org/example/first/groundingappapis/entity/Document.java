@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.DocumentDto;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "documents")
 @Getter
@@ -14,9 +16,14 @@ import org.example.first.groundingappapis.dto.DocumentDto;
 @AllArgsConstructor
 public class Document {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "document_id")
-    private Long id;
+    @Column(name = "document_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @Column(name = "title")
     private String title;
@@ -28,7 +35,7 @@ public class Document {
     private String cloudfrontUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_documents_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_documents_property"))
     private Property property;
 
     @Builder
@@ -44,6 +51,7 @@ public class Document {
 
     public DocumentDto toDto() {
         return DocumentDto.builder()
+                .id(id)
                 .title(title)
                 .s3Url(s3Url)
                 .cloudfrontUrl(cloudfrontUrl)

@@ -9,12 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class NewsDto {
 
+    private UUID id;
     private String s3Url;
     private String cloudfrontUrl;
     private String title;
@@ -25,14 +27,15 @@ public class NewsDto {
 
 
     @Builder
-    public NewsDto(String s3Url, String cloudfrontUrl, String title, String content, LocalDate reportedAt, String publisher, String url) {
-        this.s3Url = s3Url;
-        this.cloudfrontUrl = cloudfrontUrl;
-        this.title = title;
-        this.content = content;
-        this.reportedAt = reportedAt;
-        this.publisher = publisher;
-        this.url = url;
+    public NewsDto(UUID id, String s3Url, String cloudfrontUrl, String title, String content, LocalDate reportedAt, String publisher, String url) {
+        this.id = id;
+        this.s3Url = s3Url != null ? s3Url : "";
+        this.cloudfrontUrl = cloudfrontUrl != null ? cloudfrontUrl : "";
+        this.title = title != null ? title : "";
+        this.content = content != null ? content : "";
+        this.reportedAt = reportedAt != null ? reportedAt : LocalDate.now();
+        this.publisher = publisher != null ? publisher : "";
+        this.url = url != null ? url : "";
     }
 
 }
