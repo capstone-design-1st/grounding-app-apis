@@ -18,11 +18,12 @@ spring:
     open-in-view: false
     generate-ddl: true
     show-sql: true
-
     properties:
       hibernate:
+        default_batch_fetch_size: 1000
         dialect: org.hibernate.dialect.MySQL8Dialect
         jdbc:
+          batch_size: 1000
           time_zone: Asia/Seoul
           show_sql: true
           format_sql: true

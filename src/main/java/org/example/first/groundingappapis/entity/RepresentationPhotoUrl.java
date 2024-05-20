@@ -19,7 +19,7 @@ public class RepresentationPhotoUrl {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_buildings_property"))
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_representation_photo_urls_property"))
     private Property property;
 
     @Column(name = "s3Url", length = 255)

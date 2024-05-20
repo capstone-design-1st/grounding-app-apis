@@ -59,9 +59,9 @@ public class PropertyDto {
         private PropertyDto propertyDto;
         private FundraiseDto fundraiseDto;
         private PropertyDetailDto propertyDetailDto;
-        private NewsDto newsDto;
         private LocationDto locationDto;
         private ThumbnailUrlDto thumbnailUrlDto;
+        private List<NewsDto> newsDto;
         private List<RepresentationPhotoUrlDto> representationPhotoUrlDto;
         private List<InvestmentPointDto> investmentPointDto;
         private List<DocumentDto> documentDto;
@@ -70,9 +70,9 @@ public class PropertyDto {
         public GetResponse(PropertyDto propertyDto,
                           FundraiseDto fundraiseDto,
                           PropertyDetailDto propertyDetailDto,
-                          NewsDto newsDto,
                           LocationDto locationDto,
                           ThumbnailUrlDto thumbnailUrlDto,
+                           List<NewsDto> newsDto,
                           List<RepresentationPhotoUrlDto> representationPhotoUrlDto,
                           List<InvestmentPointDto> investmentPointDto,
                           List<DocumentDto> documentDto) {

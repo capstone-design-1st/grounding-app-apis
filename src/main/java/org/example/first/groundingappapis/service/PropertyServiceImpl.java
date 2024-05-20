@@ -36,7 +36,51 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public PropertyDto.GetResponse getProperty(String propertyId) {
-        return null;
+        Property property = propertyRepository.getDetailPropertyByUuid(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.NOT_FOUND_PROPERTY, PropertyErrorResult.NOT_FOUND_PROPERTY.getMessage()));
+        PropertyDto propertyDto = property.toDto();
+        FundraiseDto fundraiseDto = property.getFundraise().toDto();
+        PropertyDetailDto propertyDetailDto = null;
+
+        if(property.getType().equals("land")) {
+            Land land = property.getLand();
+            propertyDetailDto = buildLandInformation(land);
+        } else {
+            Building building = property.getBuilding();
+            propertyDetailDto = buildBuildingInformation(building);
+        }
+
+        LocationDto locationDto = property.getLocation().toDto();
+        ThumbnailUrlDto thumbnailUrlDto = property.getThumbnailUrl().toDto();
+
+        List<NewsDto> newsDto = property.getNews().stream()
+                .map(news -> news.toDto())
+                .collect(Collectors.toList());
+
+        List<RepresentationPhotoUrlDto> representationPhotoUrlDto = property.getRepresentationPhotoUrls().stream()
+                .map(representationPhotoUrl -> representationPhotoUrl.toDto())
+                .collect(Collectors.toList());
+
+        List<InvestmentPointDto> investmentPointDto = property.getInvestmentPoints().stream()
+                .map(investmentPoint -> investmentPoint.toDto())
+                .collect(Collectors.toList());
+
+        List<DocumentDto> documentDto = property.getDocuments().stream()
+                .map(document -> document.toDto())
+                .collect(Collectors.toList());
+
+        PropertyDto.GetResponse response = PropertyDto.GetResponse.builder()
+                .propertyDto(propertyDto)
+                .fundraiseDto(fundraiseDto)
+                .propertyDetailDto(propertyDetailDto)
+                .locationDto(locationDto)
+                .thumbnailUrlDto(thumbnailUrlDto)
+                .newsDto(newsDto)
+                .representationPhotoUrlDto(representationPhotoUrlDto)
+                .investmentPointDto(investmentPointDto)
+                .documentDto(documentDto)
+                .build();
+
+        return response;
     }
 
     @Override
@@ -72,6 +116,8 @@ public class PropertyServiceImpl implements PropertyService {
 
         return response;
     }
+
+
 
     @Override
     public void validateProperty(String propertyId) {

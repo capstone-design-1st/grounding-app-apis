@@ -11,44 +11,28 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-@Builder
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class NewsDto {
+
+    private String s3Url;
+    private String cloudfrontUrl;
     private String title;
-    private String thumbnailUrl;
+    private String content;
     private LocalDate reportedAt;
     private String publisher;
-    private String issuer;
+    private String url;
+
 
     @Builder
-    public NewsDto(String title, String thumbnailUrl, LocalDate reportedAt, String publisher, String issuer) {
+    public NewsDto(String s3Url, String cloudfrontUrl, String title, String content, LocalDate reportedAt, String publisher, String url) {
+        this.s3Url = s3Url;
+        this.cloudfrontUrl = cloudfrontUrl;
         this.title = title;
-        this.thumbnailUrl = thumbnailUrl;
+        this.content = content;
         this.reportedAt = reportedAt;
         this.publisher = publisher;
-        this.issuer = issuer;
+        this.url = url;
     }
 
-    @Data
-    @NoArgsConstructor
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class GetDetailResponse{
-        private String title;
-        private String content;
-        private String thumbnailUrl;
-        private LocalDate reportedAt;
-        private String publisher;
-        private String issuer;
-
-        @Builder
-        public GetDetailResponse(String title, String content, String thumbnailUrl, LocalDate reportedAt, String publisher, String issuer) {
-            this.title = title;
-            this.content = content;
-            this.thumbnailUrl = thumbnailUrl;
-            this.reportedAt = reportedAt;
-            this.publisher = publisher;
-            this.issuer = issuer;
-        }
-    }
 }

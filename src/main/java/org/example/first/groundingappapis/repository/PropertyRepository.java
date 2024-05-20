@@ -47,6 +47,10 @@ public interface PropertyRepository extends JpaRepository<Property, Long>{
             "LEFT JOIN FETCH p.location " +
             "LEFT JOIN FETCH p.thumbnailUrl " +
             "LEFT JOIN FETCH p.representationPhotoUrls " +
-            ""
+            "LEFT JOIN FETCH p.news " +
+            "LEFT JOIN FETCH p.investmentPoints " +
+            "LEFT JOIN FETCH p.documents " +
             "WHERE p.uuid = :uuid")
+    Optional<Property> getDetailPropertyByUuid(UUID uuid);
 }
+

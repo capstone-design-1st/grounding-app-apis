@@ -3,14 +3,14 @@ package org.example.first.groundingappapis.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.first.groundingappapis.dto.PropertyDto;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "properties")
@@ -57,6 +57,10 @@ public class Property {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    //조각모집
+    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Fundraise fundraise;
+
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ThumbnailUrl thumbnailUrl;
 
@@ -69,15 +73,13 @@ public class Property {
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Location location;
 
-    //조각모집
-    @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Fundraise fundraise;
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
+    private Set<RepresentationPhotoUrl> representationPhotoUrls = new LinkedHashSet<>();
+    //private List<RepresentationPhotoUrl> representationPhotoUrls = new ArrayList<>();
 
-    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RepresentationPhotoUrl> representationPhotoUrls = new ArrayList<>();
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<News> news = new ArrayList<>();

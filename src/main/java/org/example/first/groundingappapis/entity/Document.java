@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.DocumentDto;
 
 @Entity
 @Table(name = "documents")
@@ -39,5 +40,13 @@ public class Document {
     public void updateProperty(Property property) {
         this.property = property;
         property.getDocuments().add(this);
+    }
+
+    public DocumentDto toDto() {
+        return DocumentDto.builder()
+                .title(title)
+                .s3Url(s3Url)
+                .cloudfrontUrl(cloudfrontUrl)
+                .build();
     }
 }

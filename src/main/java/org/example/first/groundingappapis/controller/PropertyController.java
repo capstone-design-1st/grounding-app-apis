@@ -32,6 +32,12 @@ public class PropertyController {
 //    }
 
     // 거래 중인 매물 상세
+    @GetMapping("/{propertyId}")
+    public ResponseEntity<PropertyDto.GetResponse> getProperty(@PathVariable String propertyId) {
+        log.info("getProperty called with propertyId: {}", propertyId);
+
+        return ResponseEntity.ok(propertyService.getProperty(propertyId));
+    }
 
     // 최근 찜한 매물 5개
 

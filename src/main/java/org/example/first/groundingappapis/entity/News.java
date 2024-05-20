@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.NewsDto;
 
 import java.time.LocalDate;
 
@@ -80,5 +81,16 @@ public class News {
         this.summary = summary;
     }
 
+    public NewsDto toDto() {
+        return NewsDto.builder()
+                .s3Url(s3Url)
+                .cloudfrontUrl(cloudfrontUrl)
+                .title(title)
+                .content(content)
+                .reportedAt(reportedAt)
+                .publisher(publisher)
+                .url(url)
+                .build();
+    }
 }
 
