@@ -68,8 +68,12 @@ public class Building {
     @Column(name = "lease_end_date")
     private LocalDate leaseEndDate;
 
+    //층수
+    @Column(name = "floor_count")
+    private String floorCount;
+
     @Builder
-    public Building(String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate) {
+    public Building(String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate, String floorCount) {
         this.useArea = useArea;
         this.mainUse = mainUse;
         this.totalFloorArea = totalFloorArea;
@@ -80,6 +84,7 @@ public class Building {
         this.leaser = leaser;
         this.leaseStartDate = leaseStartDate;
         this.leaseEndDate = leaseEndDate;
+        this.floorCount = floorCount;
     }
 
     public void updateProperty(Property property) {

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.QuoteDto;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -39,12 +40,25 @@ public class Quote {
     @Column(name = "present_price")
     private Integer presentPrice;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
+    }
+
     @Builder
-    public Quote(Property property, LocalDateTime createdAt, Integer dayMaxPrice, Integer dayMinPrice, Integer presentPrice) {
+    public Quote(Property property, LocalDateTime createdAt, Integer dayMaxPrice, Integer dayMinPrice, Integer presentPrice, Integer openingPrice) {
         this.property = property;
         this.createdAt = createdAt;
         this.dayMaxPrice = dayMaxPrice;
         this.dayMinPrice = dayMinPrice;
         this.presentPrice = presentPrice;
+    }
+
+    public QuoteDto toDto() {
+        return QuoteDto.builder()
+                .dayMaxPrice(this.dayMaxPrice)
+                .dayMinPrice(this.dayMinPrice)
+                .presentPrice(this.presentPrice)
+                .build();
     }
 }

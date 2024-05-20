@@ -4,6 +4,7 @@ import org.example.first.groundingappapis.dto.PropertyDto;
 import org.example.first.groundingappapis.entity.Property;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,16 +16,37 @@ import java.util.UUID;
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long>{
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.PropertyDto$ReadResponse " +
-            "(p.uuid, p.name, p.price, p.pieceCount, p.piecePrice, p.viewCount, p.likeCount, p.createdAt, p.updatedAt) " +
-            "FROM Property p ORDER BY p.createdAt DESC")
-    Page<PropertyDto.ReadResponse> readAllByOrderByCreatedAtDesc(Pageable pageable);
+//    @Query("SELECT new org.example.first.groundingappapis.dto.PropertyDto$ReadResponse " +
+//            "(p.uuid, p.name, p.price, p.pieceCount, p.piecePrice, p.viewCount, p.likeCount, p.createdAt, p.updatedAt) " +
+//            "FROM Property p ORDER BY p.createdAt DESC")
+//    Page<PropertyDto.ReadResponse> readAllByOrderByCreatedAtDesc(Pageable pageable);
+//
+//    @Query("SELECT new org.example.first.groundingappapis.dto.PropertyDto$ReadResponse " +
+//            "(p.uuid, p.name, p.price, p.pieceCount, p.piecePrice, p.viewCount, p.likeCount, p.createdAt, p.updatedAt) " +
+//            "FROM Property p WHERE p.uuid = :propertyId")
+//    PropertyDto.ReadResponse readByUuid(@Param(value = "propertyId")UUID propertyId);
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.PropertyDto$ReadResponse " +
-            "(p.uuid, p.name, p.price, p.pieceCount, p.piecePrice, p.viewCount, p.likeCount, p.createdAt, p.updatedAt) " +
-            "FROM Property p WHERE p.uuid = :propertyId")
-    PropertyDto.ReadResponse readByUuid(@Param(value = "propertyId")UUID propertyId);
 
     @Query("SELECT p FROM Property p WHERE p.uuid = :uuid")
-    Optional<Property> findByUuid(UUID uuid);
+    Optional<Property> findByUuid(@Param("uuid") UUID uuid);
+
+    @Query("SELECT p FROM Property p " +
+            "LEFT JOIN FETCH p.fundraise " +
+            "LEFT JOIN FETCH p.land " +
+            "LEFT JOIN FETCH p.building " +
+            "LEFT JOIN FETCH p.location " +
+            "LEFT JOIN FETCH p.thumbnailUrl " +
+            "LEFT JOIN FETCH p.representationPhotoUrls " +
+            "WHERE p.uuid = :uuid")
+    Optional<Property> getFundraisingPropertyByUuid(UUID uuid);
+
+    @Query("SELECT p FROM Property p " +
+            "LEFT JOIN FETCH p.fundraise " +
+            "LEFT JOIN FETCH p.land " +
+            "LEFT JOIN FETCH p.building " +
+            "LEFT JOIN FETCH p.location " +
+            "LEFT JOIN FETCH p.thumbnailUrl " +
+            "LEFT JOIN FETCH p.representationPhotoUrls " +
+            ""
+            "WHERE p.uuid = :uuid")
 }

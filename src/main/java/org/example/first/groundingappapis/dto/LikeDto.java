@@ -12,15 +12,11 @@ public class LikeDto {
     @Data
     @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class GetResponse{}
     @Data
     @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ReadResponse{}
 }

@@ -36,12 +36,25 @@ public class DayTransactionLog {
     @Column(name = "fluctuation_rate")
     private Double fluctuationRate;
 
+    @Column(name = "opening_price")
+    private Integer openingPrice;
+
+    @Column(name = "closing_price")
+    private Integer closingPrice;
+
+    @PrePersist
+    public void prePersist() {
+        this.date = (this.date == null) ? LocalDate.now() : this.date;
+    }
+
     @Builder
-    public DayTransactionLog(Property property, LocalDate date, Integer amount, Integer executedPrice, Double fluctuationRate) {
+    public DayTransactionLog(Property property, LocalDate date, Integer amount, Integer executedPrice, Double fluctuationRate, Integer openingPrice, Integer closingPrice) {
         this.property = property;
         this.date = date;
         this.amount = amount;
         this.executedPrice = executedPrice;
         this.fluctuationRate = fluctuationRate;
+        this.openingPrice = openingPrice;
+        this.closingPrice = closingPrice;
     }
 }

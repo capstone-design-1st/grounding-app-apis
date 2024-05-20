@@ -51,6 +51,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Account account;
+
     @PrePersist
     public void prePersist() {
         this.uuid = (this.uuid == null) ? UUID.randomUUID() : this.uuid;

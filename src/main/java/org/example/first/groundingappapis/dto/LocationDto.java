@@ -8,12 +8,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class LocationDto {
-    @Data
+    private String city;
+    private String gu;
+    private String dong;
+    private String detail;
+
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class GetResponse{}
+    public LocationDto(String city,
+                       String gu,
+                       String dong,
+                       String detail) {
+        this.city = city != null ? city : "";
+        this.gu = gu != null ? gu : "";
+        this.dong = dong != null ? dong : "";
+        this.detail = detail != null ? detail : "";
+    }
 }

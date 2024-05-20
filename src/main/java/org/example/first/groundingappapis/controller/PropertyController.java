@@ -20,22 +20,24 @@ public class PropertyController {
 
     private final PropertyService propertyService;
 
-    @GetMapping("/all")
-    public ResponseEntity<Page<PropertyDto.ReadResponse>> getProperties(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        log.info("getProperties called with page: {} and size: {}", page, size);
+//    @GetMapping("/all")
+//    public ResponseEntity<Page<PropertyDto.ReadResponse>> getProperties(
+//            @RequestParam(value = "page", defaultValue = "0") Integer page,
+//            @RequestParam(value = "size", defaultValue = "10") Integer size) {
+//        log.info("getProperties called with page: {} and size: {}", page, size);
+//
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        return ResponseEntity.ok(propertyService.getProperties(pageable));
+//    }
 
-        Pageable pageable = PageRequest.of(page, size);
+    // 거래 중인 매물 상세
 
-        return ResponseEntity.ok(propertyService.getProperties(pageable));
-    }
+    // 최근 찜한 매물 5개
 
-    @GetMapping("/{propertyId}")
-    public ResponseEntity<PropertyDto.ReadResponse> getProperty(@PathVariable("propertyId") String propertyId) {
-        log.info("getProperty called with propertyId: {}", propertyId);
+    //거래량이 많은 매물 페이지
 
-        return ResponseEntity.ok(propertyService.getProperty(propertyId));
-    }
+    //거래 중인 건물 및 토지 검색 페이지
+
 
 }

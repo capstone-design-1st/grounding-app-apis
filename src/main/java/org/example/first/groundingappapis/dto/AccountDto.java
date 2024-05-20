@@ -8,13 +8,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@JsonNaming
 public class AccountDto {
+
+    private Long deposit;
+    private Double totalEarningRate;
+    @Builder
+    public AccountDto(Long deposit, Double totalEarningRate) {
+        this.deposit = deposit != null ? deposit : 0L;
+        this.totalEarningRate = totalEarningRate != null ? totalEarningRate : 0.0;
+    }
 
     @Data
     @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class GetResponse{}
 }

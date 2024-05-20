@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.AccountDto;
 
 import java.util.UUID;
 
@@ -20,10 +21,7 @@ public class Account {
     @Column(name = "account_id")
     private Long id;
 
-    @Column(name = "account_uuid", columnDefinition = "BINARY(16)")
-    private UUID uuid;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_accounts_user"))
     private User user;
 
@@ -33,18 +31,17 @@ public class Account {
     @Column(name = "total_earning_rate", columnDefinition = "DOUBLE DEFAULT 0.0")
     private Double totalEarningRate;
 
-    @PrePersist
-    public void prePersist() {
-        if (uuid == null) {
-            uuid = UUID.randomUUID();
-        }
-    }
-
     @Builder
-    public Account(User user, UUID uuid, Long deposit, Double totalEarningRate) {
+    public Account(User user, Long deposit, Double totalEarningRate) {
         this.user = user;
-        this.uuid = uuid;
         this.deposit = deposit;
         this.totalEarningRate = totalEarningRate;
+    }
+
+    public AccountDto toDto() {
+        return AccountDto.builder()
+                .deposit(deposit)
+                .totalEarningRate(totalEarningRate)
+                .build();
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.ThumbnailUrlDto;
 
 @Entity
 @Table(name = "thumbnail_urls")
@@ -35,5 +36,12 @@ public class ThumbnailUrl {
     public void updateProperty(Property property) {
         this.property = property;
         property.setThumbnailUrl(this);
+    }
+
+    public ThumbnailUrlDto toDto() {
+        return ThumbnailUrlDto.builder()
+                .s3Url(s3Url)
+                .cloudfrontUrl(cloudfrontUrl)
+                .build();
     }
 }

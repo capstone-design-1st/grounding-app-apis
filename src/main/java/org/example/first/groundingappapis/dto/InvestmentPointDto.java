@@ -8,12 +8,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class InvestmentPointDto {
-    @Data
+    private String title;
+    private String content;
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class ReadResponse{}
+    public InvestmentPointDto(String title,
+                              String content) {
+        this.title = title != null ? title : "";
+        this.content = content != null ? content : "";
+    }
 }

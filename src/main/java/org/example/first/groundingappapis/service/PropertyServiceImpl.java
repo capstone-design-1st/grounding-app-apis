@@ -6,94 +6,88 @@ import org.example.first.groundingappapis.dto.*;
 import org.example.first.groundingappapis.entity.Building;
 import org.example.first.groundingappapis.entity.Land;
 import org.example.first.groundingappapis.entity.Property;
-import org.example.first.groundingappapis.entity.ThumbnailUrl;
+import org.example.first.groundingappapis.exception.PropertyErrorResult;
+import org.example.first.groundingappapis.exception.PropertyException;
 import org.example.first.groundingappapis.repository.PropertyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class PropertyServiceImpl implements PropertyService {
     private final PropertyRepository propertyRepository;
+
     @Override
-    public Page<PropertyDto.ReadResponse> getProperties(Pageable pageable) {
-
-        Page<PropertyDto.ReadResponse> responses = propertyRepository.readAllByOrderByCreatedAtDesc(pageable);
-
-        //map, if property의 land가 Null이면 readresponse의 listingInformation을 BuildingDto로 변환, 반대의 경우 LandDto로 변환
-        responses.forEach(response -> {
-            Property property = propertyRepository.findByUuid(response.getUuid()).orElseThrow(() -> new RuntimeException("Property not found"));
-
-            ListingInformation listingInformation = null;
-
-            if(property.getBuilding() == null) {
-                Land land = property.getLand();
-
-                listingInformation = buildLandInformation(land);
-
-            }else if(property.getLand() == null) {
-                Building building = property.getBuilding();
-
-                listingInformation = buildBuildingInformation(building);
-
-            }
-
-            if(property.getThumbnailUrl() != null) {
-                ThumbnailUrlDto thumbnailUrlDto = ThumbnailUrlDto.builder()
-                        .s3Url(property.getThumbnailUrl().getS3Url())
-                        .cloudfrontUrl(property.getThumbnailUrl().getCloudfrontUrl())
-                        .build();
-
-                response.setThumbnailUrlDto(thumbnailUrlDto);
-            }
-
-            response.setListingInformation(listingInformation);
-        });
-
-        return responses;
+    public Page<PropertyDto.ReadBasicInfoResponse> readPropertiesOrderedByVolume(Pageable pageable) {
+        return null;
     }
 
     @Override
-    public PropertyDto.ReadResponse getProperty(String propertyId) {
-        UUID uuid = UUID.fromString(propertyId);
+    public Page<PropertyDto.ReadBasicInfoResponse> readPropertiesByUserLike(UUID userId, Pageable pageable) {
+        return null;
+    }
 
-        Property property = propertyRepository.findByUuid(uuid).orElseThrow(() -> new RuntimeException("Property not found"));
+    @Override
+    public PropertyDto.GetResponse getProperty(String propertyId) {
+        return null;
+    }
 
-        ListingInformation listingInformation = null;
+    @Override
+    public PropertyDto.GetFundraisingResponse getFundraisingProperty(String propertyId) {
+        Property property = propertyRepository.getFundraisingPropertyByUuid(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.NOT_FOUND_PROPERTY, PropertyErrorResult.NOT_FOUND_PROPERTY.getMessage()));
+        PropertyDto propertyDto = property.toDto();
+        FundraiseDto fundraiseDto = property.getFundraise().toDto();
+        PropertyDetailDto propertyDetailDto = null;
 
-        if(property.getBuilding() == null) {
+        if(property.getType().equals("land")) {
             Land land = property.getLand();
-
-            listingInformation = buildLandInformation(land);
-
-        }else if(property.getLand() == null) {
+            propertyDetailDto = buildLandInformation(land);
+        } else {
             Building building = property.getBuilding();
-
-            listingInformation = buildBuildingInformation(building);
-
-        }
-        PropertyDto.ReadResponse response = propertyRepository.readByUuid(uuid);
-
-        if(property.getThumbnailUrl() != null) {
-            ThumbnailUrlDto thumbnailUrlDto = ThumbnailUrlDto.builder()
-                    .s3Url(property.getThumbnailUrl().getS3Url())
-                    .cloudfrontUrl(property.getThumbnailUrl().getCloudfrontUrl())
-                    .build();
-
-            response.setThumbnailUrlDto(thumbnailUrlDto);
+            propertyDetailDto = buildBuildingInformation(building);
         }
 
-        response.setListingInformation(listingInformation);
+        LocationDto locationDto = property.getLocation().toDto();
+        ThumbnailUrlDto thumbnailUrlDto = property.getThumbnailUrl().toDto();
+
+        List<RepresentationPhotoUrlDto> representationPhotoUrlDto = property.getRepresentationPhotoUrls().stream()
+                .map(representationPhotoUrl -> representationPhotoUrl.toDto())
+                .collect(Collectors.toList());
+
+        PropertyDto.GetFundraisingResponse response = PropertyDto.GetFundraisingResponse.builder()
+                .propertyDto(propertyDto)
+                .fundraiseDto(fundraiseDto)
+                .propertyDetailDto(propertyDetailDto)
+                .locationDto(locationDto)
+                .thumbnailUrlDto(thumbnailUrlDto)
+                .representationPhotoUrlDto(representationPhotoUrlDto)
+                .build();
 
         return response;
     }
 
-    private ListingInformation buildLandInformation(Land land) {
+    @Override
+    public void validateProperty(String propertyId) {
+
+        UUID uuid = UUID.fromString(propertyId);
+        Optional<Property> property = propertyRepository.findByUuid(uuid);
+
+        PropertyErrorResult propertyErrorResult;
+        if(property.isEmpty()) {
+            propertyErrorResult = PropertyErrorResult.NOT_FOUND_PROPERTY;
+            throw new PropertyException(propertyErrorResult, propertyErrorResult.getMessage());
+        }
+
+    }
+
+    private PropertyDetailDto buildLandInformation(Land land) {
         return LandDto.landBuilder()
                 .useArea(land.getUseArea())
                 .mainUse(land.getMainUse())
@@ -108,7 +102,7 @@ public class PropertyServiceImpl implements PropertyService {
                 .build();
     }
 
-    private ListingInformation buildBuildingInformation(Building building) {
+    private PropertyDetailDto buildBuildingInformation(Building building) {
         return BuildingDto.buildingBuilder()
                 .useArea(building.getUseArea())
                 .mainUse(building.getMainUse())
@@ -120,6 +114,8 @@ public class PropertyServiceImpl implements PropertyService {
                 .leaser(building.getLeaser())
                 .leaseStartDate(building.getLeaseStartDate())
                 .leaseEndDate(building.getLeaseEndDate())
+                .floorCount(building.getFloorCount())
                 .build();
     }
+
 }

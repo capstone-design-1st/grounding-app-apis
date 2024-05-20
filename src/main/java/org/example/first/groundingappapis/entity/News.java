@@ -20,14 +20,20 @@ public class News {
     @Column(name = "news_id")
     private Long id;
 
-    @Column(name = "s3_url", length = 100)
+    @Column(name = "s3_url", length = 200)
     private String s3Url;
 
-    @Column(name = "cloudfront_url", length = 100)
+    @Column(name = "cloudfront_url", length = 200)
     private String cloudfrontUrl;
 
     @Column(name = "title", length = 50)
     private String title;
+
+    @Column(name = "publisher")
+    private String publisher;
+
+    @Column(name = "url", length = 200)
+    private String url;
 
     @Lob
     @Column(name = "content")
@@ -37,15 +43,23 @@ public class News {
     private LocalDate reportedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_news_property"))
     private Property property;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "summary_id", nullable = false)
+    @JoinColumn(name = "summary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_news_summary"))
     private Summary summary;
 
     @Builder
-    public News(String s3Url, String cloudfrontUrl, String title, String content, LocalDate reportedAt, Property property, Summary summary) {
+    public News(String s3Url,
+                String cloudfrontUrl,
+                String title,
+                String content,
+                LocalDate reportedAt,
+                String publisher,
+                String url,
+                Property property,
+                Summary summary) {
         this.s3Url = s3Url;
         this.cloudfrontUrl = cloudfrontUrl;
         this.title = title;
@@ -53,6 +67,18 @@ public class News {
         this.reportedAt = reportedAt;
         this.property = property;
         this.summary = summary;
+        this.publisher = publisher;
+        this.url = url;
     }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+        property.getNews().add(this);
+    }
+
+    public void updateSummary(Summary summary) {
+        this.summary = summary;
+    }
+
 }
 

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.InvestmentPointDto;
 
 @Entity
 @Table(name = "investment_points")
@@ -17,12 +18,6 @@ public class InvestmentPoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "investment_point_id")
     private Long id;
-
-    @Column(name = "s3_url", length = 100)
-    private String s3Url;
-
-    @Column(name = "cloudfront_url", length = 100)
-    private String cloudfrontUrl;
 
     @Column(name = "title", length = 50)
     private String title;
@@ -40,12 +35,17 @@ public class InvestmentPoint {
     private Summary summary;
 
     @Builder
-    public InvestmentPoint(String s3Url, String cloudfrontUrl, String title, String content, Property property, Summary summary) {
-        this.s3Url = s3Url;
-        this.cloudfrontUrl = cloudfrontUrl;
+    public InvestmentPoint(String title, String content, Property property, Summary summary) {
         this.title = title;
         this.content = content;
         this.property = property;
         this.summary = summary;
+    }
+
+    public InvestmentPointDto toDto() {
+        return InvestmentPointDto.builder()
+                .title(this.title)
+                .content(this.content)
+                .build();
     }
 }

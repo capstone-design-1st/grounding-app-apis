@@ -9,12 +9,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ThumbnailUrlDto {
     private String s3Url;
     private String cloudfrontUrl;
+
+    @Builder
+    public ThumbnailUrlDto(String s3Url,
+                           String cloudfrontUrl) {
+        this.s3Url = s3Url != null ? s3Url : "";
+        this.cloudfrontUrl = cloudfrontUrl != null ? cloudfrontUrl : "";
+    }
 }

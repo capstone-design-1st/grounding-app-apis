@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.LocationDto;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -22,8 +23,8 @@ public class Location {
     @Column(name = "location_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "property_id", nullable = false, foreignKey = @ForeignKey(name = "fk_location_property"))
     private Property property;
 
     @Column(name = "city", length = 10)
@@ -35,21 +36,29 @@ public class Location {
     @Column(name = "dong", length = 10)
     private String dong;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "detail", length = 10)
+    private String detail;
 
     @Builder
-    public Location(Property property, String city, String gu, String dong, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Location(Property property, String city, String gu, String dong, String detail) {
         this.property = property;
         this.city = city;
         this.gu = gu;
         this.dong = dong;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.detail = detail;
+    }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+        property.setLocation(this);
+    }
+
+    public LocationDto toDto() {
+        return LocationDto.builder()
+                .city(city)
+                .gu(gu)
+                .dong(dong)
+                .detail(detail)
+                .build();
     }
 }

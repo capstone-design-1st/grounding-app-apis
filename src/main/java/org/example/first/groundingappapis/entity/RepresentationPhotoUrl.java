@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.RepresentationPhotoUrlDto;
 
 @Entity
 @Table(name = "representation_photo_urls")
@@ -24,7 +25,7 @@ public class RepresentationPhotoUrl {
     @Column(name = "s3Url", length = 255)
     private String s3Url;
 
-    @Column(name = "cloudfrontUrl", length = 255)
+    @Column(name = "cloudfront_url", length = 255)
     private String cloudfrontUrl;
 
     @Builder
@@ -36,5 +37,12 @@ public class RepresentationPhotoUrl {
     public void updateProperty(Property property) {
         this.property = property;
         property.getRepresentationPhotoUrls().add(this);
+    }
+
+    public RepresentationPhotoUrlDto toDto() {
+        return RepresentationPhotoUrlDto.builder()
+                .s3Url(this.s3Url)
+                .cloudfrontUrl(this.cloudfrontUrl)
+                .build();
     }
 }
