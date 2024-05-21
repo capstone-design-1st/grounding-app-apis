@@ -26,6 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import static org.example.first.groundingappapis.service.PropertyServiceImpl.getPriceDifference;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -104,7 +106,7 @@ public class LikeServiceImpl implements LikeService{
 
         //매물에 대한 가장 최근 일일 거래 로그 조회
         List<DayTransactionLogDto> dayTransactionLogs = dayTransactionLogRepository
-                .findRecentDayTransactionLogsByUserAndProperties(userLikedProperties.getContent());
+                .findRecentDayTransactionLogsByProperties(userLikedProperties.getContent());
 
         // 매물과 거래 로그를 매핑하여 DTO 생성
         Map<UUID, DayTransactionLogDto> dayTransactionLogMap = dayTransactionLogs.stream()
@@ -133,7 +135,5 @@ public class LikeServiceImpl implements LikeService{
 
     }
     //.priceDifference(Long.valueOf(transactionLog != null ? transactionLog.getExecutedPrice() - dayTransactionLog.getOpeningPrice() : null))
-    public Long getPriceDifference(int executedPrice, int openingPrice) {
-        return Long.valueOf(executedPrice - openingPrice);
-    }
+
 }

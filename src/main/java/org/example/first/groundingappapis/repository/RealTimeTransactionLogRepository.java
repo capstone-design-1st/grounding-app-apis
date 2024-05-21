@@ -22,4 +22,10 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "ORDER BY r.executedAt DESC")
     List<RealTimeTransactionLogDto> findRecentTransactionLogsByUserAndProperties(@Param("user") User user, @Param("properties") List<Property> properties);
 
+    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
+            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
+            "FROM RealTimeTransactionLog r " +
+            "WHERE r.property IN :properties " +
+            "ORDER BY r.executedAt DESC")
+    List<RealTimeTransactionLogDto> findRecentTransactionLogsByProperties(List<Property> properties);
 }

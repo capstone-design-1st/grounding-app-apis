@@ -19,5 +19,6 @@ public interface DayTransactionLogRepository extends JpaRepository<DayTransactio
             "FROM DayTransactionLog d " +
             "WHERE d.property IN :properties " +
             "ORDER BY d.date DESC")
-    List< DayTransactionLogDto> findRecentDayTransactionLogsByUserAndProperties(List<Property> properties);
+    List< DayTransactionLogDto> findRecentDayTransactionLogsByProperties(List<Property> properties);
+
 }

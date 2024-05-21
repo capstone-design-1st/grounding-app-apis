@@ -34,7 +34,7 @@ public class Fundraise {
     @Column(name = "progress_rate")
     private Double progressRate;
 
-    //마감일
+    //마감일(사용자)
     @Column(name = "deadline")
     private LocalDate deadline;
 
@@ -94,18 +94,18 @@ public class Fundraise {
                      String operatorIntroduction) {
 
         this.property = property;
-        this.progressRate = progressRate != null ? progressRate : 0.0;
-        this.deadline = deadline != null ? deadline : LocalDate.now();
-        this.investorCount = investorCount != null ? investorCount : 0;
-        this.securityType = securityType != null ? securityType : "";
-        this.issuer = issuer != null ? issuer : "";
-        this.securityCount = securityCount != null ? securityCount : 0;
-        this.issuePrice = issuePrice != null ? issuePrice : 0;
-        this.totalFund = totalFund != null ? totalFund : 0;
-        this.subscriptionStartDate = subscriptionStartDate != null ? subscriptionStartDate : LocalDate.now();
-        this.subscriptionEndDate = subscriptionEndDate != null ? subscriptionEndDate : LocalDate.now();
-        this.operatorName = operatorName != null ? operatorName : "";
-        this.operatorIntroduction = operatorIntroduction != null ? operatorIntroduction : "";
+        this.progressRate = progressRate;
+        this.deadline = deadline;
+        this.investorCount = investorCount;
+        this.securityType = securityType;
+        this.issuer = issuer;
+        this.securityCount = securityCount;
+        this.issuePrice = issuePrice;
+        this.totalFund = totalFund;
+        this.subscriptionStartDate = subscriptionStartDate;
+        this.subscriptionEndDate = subscriptionEndDate;
+        this.operatorName = operatorName;
+        this.operatorIntroduction = operatorIntroduction;
     }
 
     public FundraiseDto toDto() {

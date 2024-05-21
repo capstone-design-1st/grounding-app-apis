@@ -13,4 +13,6 @@ public interface PropertyService {
     PropertyDto.GetResponse getProperty(String propertyId);
 
     void validateProperty(String propertyId);
+
+    Page<PropertyDto.ReadBasicInfoResponse> getPopularProperties(Pageable pageable);
 }

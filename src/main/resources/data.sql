@@ -1,7 +1,7 @@
 -- properties 테이블에 샘플 데이터 삽입
 INSERT INTO properties (property_id, property_name, oneline, present_price, view_count, like_count, volume_count, created_at, updated_at, type)
 VALUES
-    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '샘플 빌딩', '이 빌딩은 샘플 빌딩입니다.', 1000000000, 0, 0, 0, NOW(), NOW(), 'building')
+    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '샘플 빌딩', '이 빌딩은 샘플 빌딩입니다.', 1000000, 0, 0, 0, NOW(), NOW(), 'building')
 ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조

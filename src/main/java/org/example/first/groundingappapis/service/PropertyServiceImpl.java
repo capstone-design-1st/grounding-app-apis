@@ -4,27 +4,31 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.*;
-import org.example.first.groundingappapis.entity.Building;
-import org.example.first.groundingappapis.entity.Land;
-import org.example.first.groundingappapis.entity.Property;
+import org.example.first.groundingappapis.entity.*;
 import org.example.first.groundingappapis.exception.PropertyErrorResult;
 import org.example.first.groundingappapis.exception.PropertyException;
+import org.example.first.groundingappapis.exception.UserErrorResult;
+import org.example.first.groundingappapis.exception.UserException;
+import org.example.first.groundingappapis.repository.DayTransactionLogRepository;
 import org.example.first.groundingappapis.repository.PropertyRepository;
+import org.example.first.groundingappapis.repository.RealTimeTransactionLogRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class PropertyServiceImpl implements PropertyService {
     private final PropertyRepository propertyRepository;
-
+    private final RealTimeTransactionLogRepository realTimeTransactionLogRepository;
+    private final DayTransactionLogRepository dayTransactionLogRepository;
     @Override
     public Page<PropertyDto.ReadBasicInfoResponse> readPropertiesOrderedByVolume(Pageable pageable) {
         return null;
@@ -85,8 +89,6 @@ public class PropertyServiceImpl implements PropertyService {
         return response;
     }
 
-
-
     @Override
     public void validateProperty(String propertyId) {
 
@@ -99,6 +101,44 @@ public class PropertyServiceImpl implements PropertyService {
             throw new PropertyException(propertyErrorResult, propertyErrorResult.getMessage());
         }
 
+    }
+
+    @Override
+    public Page<PropertyDto.ReadBasicInfoResponse> getPopularProperties(Pageable pageable) {
+
+        Page<Property> popularProperties = propertyRepository.findAll(pageable);
+
+        List<RealTimeTransactionLogDto> transactionLogs = realTimeTransactionLogRepository
+                .findRecentTransactionLogsByProperties(popularProperties.getContent());
+
+        Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogs.stream()
+                .collect(Collectors.toMap(RealTimeTransactionLogDto::getPropertyId, log -> log));
+
+        List<DayTransactionLogDto> dayTransactionLogs = dayTransactionLogRepository
+                .findRecentDayTransactionLogsByProperties(popularProperties.getContent());
+
+        Map<UUID, DayTransactionLogDto> dayTransactionLogMap = dayTransactionLogs.stream()
+                .collect(Collectors.toMap(DayTransactionLogDto::getPropertyId, log -> log));
+
+        return popularProperties.map(property -> {
+            RealTimeTransactionLogDto transactionLog = transactionLogMap.get(property.getId());
+            DayTransactionLogDto dayTransactionLog = dayTransactionLogMap.get(property.getId());
+            Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : 0;
+            Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : 0;
+            Double fluctuationRate = transactionLog != null ? transactionLog.getFluctuationRate() : 0.0;
+
+            return PropertyDto.ReadBasicInfoResponse.builder()
+                    .id(property.getId())
+                    .name(property.getName())
+                    .presentPrice(property.getPresentPrice())
+                    .priceDifference(getPriceDifference(executedPrice, openingPrice))
+                    .fluctuationRate(fluctuationRate)
+                    .viewCount(property.getViewCount())
+                    .likeCount(property.getLikeCount())
+                    .volumeCount(property.getVolumeCount())
+                    .type(property.getType())
+                    .build();
+        });
     }
 
     private PropertyDetailDto buildLandInformation(Land land) {
@@ -132,4 +172,7 @@ public class PropertyServiceImpl implements PropertyService {
                 .build();
     }
 
+    public static Long getPriceDifference(int executedPrice, int openingPrice) {
+        return Long.valueOf(executedPrice - openingPrice);
+    }
 }

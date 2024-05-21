@@ -57,6 +57,7 @@ public class Property {
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Fundraise fundraise;
 
+    //썸네일
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ThumbnailUrl thumbnailUrl;
 
@@ -66,6 +67,7 @@ public class Property {
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Building building;
 
+    //위치정보
     @OneToOne(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Location location;
 
@@ -73,18 +75,22 @@ public class Property {
     @BatchSize(size = 100)
     private Set<Like> likes = new LinkedHashSet<>();
 
+    //대표사진들
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @BatchSize(size = 100)
     private Set<RepresentationPhotoUrl> representationPhotoUrls = new LinkedHashSet<>();
 
+    //뉴스
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @BatchSize(size = 100)
     private Set<News> news = new LinkedHashSet<>();
 
+    //투자 포인트
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @BatchSize(size = 100)
     private Set<InvestmentPoint> investmentPoints = new LinkedHashSet<>();
 
+    //참고문서
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @BatchSize(size = 100)
     private Set<Document> documents = new LinkedHashSet<>();
