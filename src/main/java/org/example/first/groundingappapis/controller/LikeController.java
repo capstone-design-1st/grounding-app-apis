@@ -27,4 +27,24 @@ public class LikeController {
 
         return ResponseEntity.ok(userLikedPostList);
     }
+
+    @PostMapping("/users/{userId}/properties/{propertyId}")
+    public ResponseEntity<PropertyDto.LikePropertyDto> likeProperty(
+            @PathVariable String userId,
+            @PathVariable String propertyId) {
+        log.info("like property called with userId: {}, propertyId: {}", userId, propertyId);
+        PropertyDto.LikePropertyDto likePropertyResponse = likeService.likeProperty(UUID.fromString(propertyId), UUID.fromString(userId));
+
+        return ResponseEntity.ok(likePropertyResponse);
+    }
+
+    @DeleteMapping("/users/{userId}/properties/{propertyId}")
+    public ResponseEntity<PropertyDto.DislikePropertyDto> dislikeProperty(
+            @PathVariable String userId,
+            @PathVariable String propertyId) {
+        log.info("dislike property called with userId: {}, propertyId: {}", userId, propertyId);
+        PropertyDto.DislikePropertyDto dislikePropertyResponse = likeService.dislikeProperty(UUID.fromString(propertyId), UUID.fromString(userId));
+
+        return ResponseEntity.ok(dislikePropertyResponse);
+    }
 }

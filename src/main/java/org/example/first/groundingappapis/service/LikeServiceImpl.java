@@ -114,9 +114,9 @@ public class LikeServiceImpl implements LikeService{
         return userLikedProperties.map(property -> {
             RealTimeTransactionLogDto transactionLog = transactionLogMap.get(property.getId());
             DayTransactionLogDto dayTransactionLog = dayTransactionLogMap.get(property.getId());
-            Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : null;
-            Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : null;
-            Double fluctuationRate = transactionLog != null ? transactionLog.getFluctuationRate() : null;
+            Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : 0;
+            Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : 0;
+            Double fluctuationRate = transactionLog != null ? transactionLog.getFluctuationRate() : 0.0;
 
             return PropertyDto.ReadBasicInfoResponse.builder()
                     .id(property.getId())
