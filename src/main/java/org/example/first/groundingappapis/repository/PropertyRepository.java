@@ -26,10 +26,6 @@ public interface PropertyRepository extends JpaRepository<Property, Long>{
 //            "FROM Property p WHERE p.uuid = :propertyId")
 //    PropertyDto.ReadResponse readByUuid(@Param(value = "propertyId")UUID propertyId);
 
-
-    @Query("SELECT p FROM Property p WHERE p.id = :id")
-    Optional<Property> findByUuid(UUID id);
-
     @Query("SELECT p FROM Property p " +
             "LEFT JOIN FETCH p.fundraise " +
             "LEFT JOIN FETCH p.land " +
@@ -42,5 +38,8 @@ public interface PropertyRepository extends JpaRepository<Property, Long>{
             "LEFT JOIN FETCH p.documents " +
             "WHERE p.id = :id")
     Optional<Property> getDetailPropertyById(UUID id);
+
+    @Query("SELECT p FROM Property p WHERE p.id = :id")
+    Optional<Property> findById(UUID id);
 }
 

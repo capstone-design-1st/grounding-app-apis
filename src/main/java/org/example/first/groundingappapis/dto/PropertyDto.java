@@ -122,10 +122,10 @@ public class PropertyDto {
         private UUID id;
         private String name;
         private Long presentPrice;
-        //시가 - 현재가
+        //시가 - 현재가, 계산 필요
         private Long priceDifference;
-        //시가에서 몇 % 오르고 내렸는지
-        private Double priceDifferenceRate;
+        //시가에서 몇 % 오르고 내렸는지, 계산 필요, Quote에서 가져옴
+        private Double fluctuationRate;
         private Long viewCount;
         private Long likeCount;
         private Long volumeCount;
@@ -136,7 +136,7 @@ public class PropertyDto {
                                      String name,
                                      Long presentPrice,
                                      Long priceDifference,
-                                     Double priceDifferenceRate,
+                                     Double fluctuationRate,
                                      Long viewCount,
                                      Long likeCount,
                                      Long volumeCount,
@@ -145,11 +145,48 @@ public class PropertyDto {
             this.name = name;
             this.presentPrice = presentPrice;
             this.priceDifference = priceDifference;
-            this.priceDifferenceRate = priceDifferenceRate;
+            this.fluctuationRate = fluctuationRate;
             this.viewCount = viewCount;
             this.likeCount = likeCount;
             this.volumeCount = volumeCount;
             this.type = type;
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class LikePropertyDto {
+        private UUID propertyId;
+        private UUID userId;
+        private LocalDateTime likedAt;
+        private Long likeCount;
+
+        @Builder
+        public LikePropertyDto(UUID propertyId, UUID userId, LocalDateTime likedAt, Long likeCount) {
+            this.propertyId = propertyId;
+            this.userId = userId;
+            this.likedAt = likedAt;
+            this.likeCount = likeCount;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DislikePropertyDto {
+        private UUID propertyId;
+        private UUID userId;
+        private LocalDateTime dislikedAt;
+        private Long likeCount;
+
+        @Builder
+        public DislikePropertyDto(UUID propertyId, UUID userId, LocalDateTime dislikedAt, Long likeCount) {
+            this.propertyId = propertyId;
+            this.userId = userId;
+            this.dislikedAt = dislikedAt;
+            this.likeCount = likeCount;
+        }
+    }
+
 }

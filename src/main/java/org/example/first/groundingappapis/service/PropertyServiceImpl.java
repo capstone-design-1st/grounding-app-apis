@@ -38,7 +38,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Transactional
     @Override
     public PropertyDto.GetResponse getProperty(String propertyId) {
-        Property property = propertyRepository.getDetailPropertyById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.NOT_FOUND_PROPERTY, PropertyErrorResult.NOT_FOUND_PROPERTY.getMessage()));
+        Property property = propertyRepository.getDetailPropertyById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
         PropertyDto propertyDto = property.toDto();
         FundraiseDto fundraiseDto = property.getFundraise().toDto();
         PropertyDetailDto propertyDetailDto = null;
@@ -91,11 +91,11 @@ public class PropertyServiceImpl implements PropertyService {
     public void validateProperty(String propertyId) {
 
         UUID uuid = UUID.fromString(propertyId);
-        Optional<Property> property = propertyRepository.findByUuid(uuid);
+        Optional<Property> property = propertyRepository.findById(uuid);
 
         PropertyErrorResult propertyErrorResult;
         if(property.isEmpty()) {
-            propertyErrorResult = PropertyErrorResult.NOT_FOUND_PROPERTY;
+            propertyErrorResult = PropertyErrorResult.PROPERTY_NOT_FOUND;
             throw new PropertyException(propertyErrorResult, propertyErrorResult.getMessage());
         }
 

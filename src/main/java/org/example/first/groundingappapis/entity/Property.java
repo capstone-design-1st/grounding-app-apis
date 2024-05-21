@@ -94,6 +94,11 @@ public class Property {
     @BatchSize(size = 100)
     private Set<Disclosure> disclosures = new LinkedHashSet<>();
 
+    //호가
+//    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @BatchSize(size = 100)
+//    private Set<Quote> quotes = new LinkedHashSet<>();
+
     @PrePersist
     public void prePersist() {
         if (this.id == null)
@@ -116,7 +121,12 @@ public class Property {
                     Fundraise fundraise,
                     Set<Like> likes,
                     Set<RepresentationPhotoUrl> representationPhotoUrls,
-                    Set<News> news) {
+                    Set<News> news,
+                    Set<InvestmentPoint> investmentPoints,
+                    Set<Document> documents,
+                    Set<Disclosure> disclosures
+                    //Set<Quote> quotes
+    ) {
         this.name = name;
         this.oneline = oneline;
         this.presentPrice = presentPrice;
@@ -132,6 +142,10 @@ public class Property {
         this.likes = likes;
         this.representationPhotoUrls = representationPhotoUrls;
         this.news = news;
+        this.investmentPoints = investmentPoints;
+        this.documents = documents;
+        this.disclosures = disclosures;
+        //this.quotes = quotes;
     }
 
     public void setLand(Land land) {
@@ -260,4 +274,10 @@ public class Property {
         return disclosures;
     }
 
+//    public Set<Quote> getQuotes() {
+//        if(quotes == null) {
+//            return new LinkedHashSet<>();
+//        }
+//        return quotes;
+//    }
 }

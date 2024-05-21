@@ -29,8 +29,8 @@ public class RealTimeTransactionLog {
     @Column(name = "executed_at", nullable = false)
     private LocalDateTime executedAt;
 
-    @Column(name = "amount")
-    private Integer amount;
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @Column(name = "executed_price")
     private Integer executedPrice;
@@ -39,7 +39,7 @@ public class RealTimeTransactionLog {
     private Double fluctuationRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_real_time_transaction_logs_user"))
     private User user;
 
     @CreatedDate
@@ -54,10 +54,10 @@ public class RealTimeTransactionLog {
     }
 
     @Builder
-    public RealTimeTransactionLog(Property property, LocalDateTime executedAt, Integer amount, Integer executedPrice, Double fluctuationRate, User user) {
+    public RealTimeTransactionLog(Property property, LocalDateTime executedAt, Integer quantity, Integer executedPrice, Double fluctuationRate, User user) {
         this.property = property;
         this.executedAt = executedAt;
-        this.amount = amount;
+        this.quantity = quantity;
         this.executedPrice = executedPrice;
         this.fluctuationRate = fluctuationRate;
         this.user = user;
@@ -66,7 +66,7 @@ public class RealTimeTransactionLog {
     public RealTimeTransactionLogDto toDto() {
         return RealTimeTransactionLogDto.builder()
                 .executedAt(executedAt)
-                .amount(amount)
+                .quantity(quantity)
                 .executedPrice(executedPrice)
                 .fluctuationRate(fluctuationRate)
                 .build();

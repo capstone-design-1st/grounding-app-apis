@@ -25,12 +25,15 @@ public class Order {
         if (this.id == null)
             this.id = UUID.randomUUID();
     }
+    //매수/매도
     @Column(name = "type", length = 10)
     private String type;
 
+    //개별 가격
     @Column(name = "price")
     private Integer price;
 
+    //수량
     @Column(name = "quantity")
     private Integer quantity;
 

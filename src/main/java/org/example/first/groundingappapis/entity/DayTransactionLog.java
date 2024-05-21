@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.DayTransactionLogDto;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -37,9 +38,7 @@ public class DayTransactionLog {
     @Column(name = "amount")
     private Integer amount;
 
-    @Column(name = "executed_price")
-    private Integer executedPrice;
-
+    //변동률
     @Column(name = "fluctuation_rate")
     private Double fluctuationRate;
 
@@ -49,14 +48,32 @@ public class DayTransactionLog {
     @Column(name = "closing_price")
     private Integer closingPrice;
 
+    @Column(name = "max_price")
+    private Integer maxPrice;
+
+    @Column(name = "min_price")
+    private Integer minPrice;
+
     @Builder
-    public DayTransactionLog(Property property, LocalDate date, Integer amount, Integer executedPrice, Double fluctuationRate, Integer openingPrice, Integer closingPrice) {
+    public DayTransactionLog(Property property, LocalDate date, Double fluctuationRate, Integer openingPrice, Integer closingPrice, Integer maxPrice, Integer minPrice) {
         this.property = property;
         this.date = date;
-        this.amount = amount;
-        this.executedPrice = executedPrice;
         this.fluctuationRate = fluctuationRate;
         this.openingPrice = openingPrice;
         this.closingPrice = closingPrice;
+        this.maxPrice = maxPrice;
+        this.minPrice = minPrice;
+    }
+
+    public DayTransactionLogDto toDto() {
+        return DayTransactionLogDto.builder()
+                .propertyId(property.getId())
+                .date(this.date)
+                .fluctuationRate(this.fluctuationRate)
+                .openingPrice(this.openingPrice)
+                .closingPrice(this.closingPrice)
+                .maxPrice(this.maxPrice)
+                .minPrice(this.minPrice)
+                .build();
     }
 }
