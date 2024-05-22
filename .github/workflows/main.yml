@@ -85,10 +85,13 @@ jobs:
                 -e DB_USERNAME='${{ secrets.DB_USERNAME }}' \
                 -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
                 -e INITIAL_DB='${{ secrets.INITIAL_DB }}' \
-                -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+                -e APP_JWT_SECRET='${{ secrets.APP_JWT_SECRET }}' \
+                -e APP_JWT_EXPIRATION='${{ secrets.APP_JWT_EXPIRATION }}' \
                 -e SPRING_DATASOURCE_DDL_AUTO='${{ secrets.SPRING_DATASOURCE_DDL_AUTO }}' \
                 -e CLIENT_URL='${{ secrets.CLIENT_URL }}' \
                 -e HOST_URL='${{ secrets.HOST_URL }}' \
+                -e REDIS_HOST='${{ secrets.REDIS_HOST }}' \
+                -e REDIS_PORT='${{ secrets.REDIS_PORT }}' \
                 ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.NEXT_APP_VER }}
             sleep 15
             sudo docker image prune -af || true
