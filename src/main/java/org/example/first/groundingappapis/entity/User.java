@@ -9,10 +9,8 @@ import org.example.first.groundingappapis.dto.UserDto;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 import java.util.*;
-
 @Entity
 @Table(name = "users")
 @Getter
@@ -36,6 +34,7 @@ public class User {
     @Column(name = "nickname", length = 10)
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 10)
     private Role role;
 
@@ -61,17 +60,22 @@ public class User {
     }
 
     @Builder
-    public User(String email,
+    public User(
+                UUID id,
+                String email,
                 String password,
                 String phoneNumber,
                 String nickname,
+                Role role,
                 LocalDateTime createdAt,
                 LocalDateTime updatedAt,
                 Set<Like> likes) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.nickname = nickname;
+        this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.likes = likes;

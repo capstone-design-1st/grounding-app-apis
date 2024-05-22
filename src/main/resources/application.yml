@@ -2,6 +2,17 @@ server:
   port: 8033
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${INITIAL_DB}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -53,3 +64,16 @@ app:
     url: ${CLIENT_URL}
   host:
     url: ${HOST_URL}
+  aligo:
+#    나중에 변경할 것
+#    api-key: ${ALIGO_API_KEY}
+#    user-id: ${ALIGO_USER_ID}
+#    sender-key: ${ALIGO_SENDER_KEY}
+#    tpl-code: ${ALIGO_TPL_CODE}
+#    sender-phone-number: ${ALIGO_SENDER_PHONE_NUMBER}
+
+    api-key: change_later
+    user-id: change_later
+    sender-key: change_later
+    tpl-code: change_later
+    sender-phone-number: change_later
