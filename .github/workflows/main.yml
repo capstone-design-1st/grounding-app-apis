@@ -87,6 +87,8 @@ jobs:
                 -e INITIAL_DB='${{ secrets.INITIAL_DB }}' \
                 -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
                 -e SPRING_DATASOURCE_DDL_AUTO='${{ secrets.SPRING_DATASOURCE_DDL_AUTO }}' \
+                -e CLIENT_URL='${{ secrets.CLIENT_URL }}' \
+                -e HOST_URL='${{ secrets.HOST_URL }}' \
                 ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.NEXT_APP_VER }}
             sleep 15
             sudo docker image prune -af || true

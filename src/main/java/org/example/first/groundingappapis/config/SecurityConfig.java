@@ -31,6 +31,10 @@ import java.util.Collections;
 public class SecurityConfig{
     //private final JwtTokenFilter jwtTokenFilter;
     //private final UserDetailsService userDetailsService;
+
+    @Value("${app.client.url}")
+    private String clientUrl;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -67,7 +71,7 @@ public class SecurityConfig{
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
+            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", clientUrl));
             config.setAllowCredentials(true);
             return config;
         };
