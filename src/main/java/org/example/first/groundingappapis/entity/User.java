@@ -9,6 +9,7 @@ import org.example.first.groundingappapis.dto.UserDto;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.management.relation.Role;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -34,6 +35,9 @@ public class User {
 
     @Column(name = "nickname", length = 10)
     private String nickname;
+
+    @Column(name = "role", length = 10)
+    private Role role;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
