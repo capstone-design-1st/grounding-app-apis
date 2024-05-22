@@ -205,10 +205,9 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping //API-102
-    public ResponseEntity<ResponseDto> withdrawUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        final User user = userPrincipal.getUser();
+    public ResponseEntity<ResponseDto> withdrawUser(@AuthenticationPrincipal UserPrincipal user) {
 
-        UUID userId = user.getId();
+        UUID userId = user.getUser().getId();
 
         userService.deleteUser(userId);
 
@@ -289,7 +288,7 @@ public class UserController {
 //
 //    //현재 투자금액
 //    @GetMapping("/investment")
-//    public ResponseEntity<ResponseDto> getUserDeposit(@AuthenticationPrincipal User user) throws Exception{
+//    public ResponseEntity<ResponseDto> getUserDeposit(@AuthenticationPrincipal UserPrincipal user) throws Exception{
 //        /*
 //
 //         */
@@ -297,7 +296,7 @@ public class UserController {
 //    }
 //    //사용자 보유 자산
 //    @GetMapping("/properties")
-//    public ResponseEntity<ResponseDto> getUserProperties(@AuthenticationPrincipal User user) throws Exception {
+//    public ResponseEntity<ResponseDto> getUserProperties(@AuthenticationPrincipal UserPrincipal user) throws Exception {
 //        /*
 //
 //         */
@@ -306,7 +305,7 @@ public class UserController {
 //
 //    //사용자 보유 예수금 조회
 //    @GetMapping("/deposit")
-//    public ResponseEntity<ResponseDto> getUserDeposit(@AuthenticationPrincipal User user) throws Exception {
+//    public ResponseEntity<ResponseDto> getUserDeposit(@AuthenticationPrincipal UserPrincipal user) throws Exception {
 //        /*
 //
 //         */
@@ -315,7 +314,7 @@ public class UserController {
 //
 //    //POST: 입금
 //    @PostMapping("/deposit")
-//    public ResponseEntity<ResponseDto> deposit(@AuthenticationPrincipal User user, @RequestBody UserDto.DepositRequestDto depositRequestDto) throws Exception {
+//    public ResponseEntity<ResponseDto> deposit(@AuthenticationPrincipal UserPrincipal user, @RequestBody UserDto.DepositRequestDto depositRequestDto) throws Exception {
 //        /*
 //
 //         */
@@ -323,7 +322,7 @@ public class UserController {
 //    }
 //    //POST: 출금
 //    @PostMapping("/withdraw")
-//    public ResponseEntity<ResponseDto> withdraw(@AuthenticationPrincipal User user, @RequestBody UserDto.WithdrawRequestDto withdrawRequestDto) throws Exception {
+//    public ResponseEntity<ResponseDto> withdraw(@AuthenticationPrincipal UserPrincipal user, @RequestBody UserDto.WithdrawRequestDto withdrawRequestDto) throws Exception {
 //        /*
 //
 //         */
@@ -332,7 +331,7 @@ public class UserController {
 //
 //    //GET: 입출금 로그 조회
 //    @GetMapping("/{userId}/deposit-withdraw-logs")
-//    public ResponseEntity<ResponseDto> getDepositWithdrawLogs(@AuthenticationPrincipal User user) throws Exception {
+//    public ResponseEntity<ResponseDto> getDepositWithdrawLogs(@AuthenticationPrincipal UserPrincipal user) throws Exception {
 //        /*
 //
 //         */
@@ -341,7 +340,7 @@ public class UserController {
 //
 //    //GET: 거래 내역 조회, 기간, 매수/매도, 당일/1개월/3개월/6개월, 부동산/건물
 //    @GetMapping("/trade-logs")
-//    public ResponseEntity<ResponseDto> getTradeLogs(@AuthenticationPrincipal User user, @RequestBody UserDto.TradeLogRequestDto tradeLogRequestDto) throws Exception {
+//    public ResponseEntity<ResponseDto> getTradeLogs(@AuthenticationPrincipal UserPrincipal user, @RequestBody UserDto.TradeLogRequestDto tradeLogRequestDto) throws Exception {
 //        /*
 //
 //         */

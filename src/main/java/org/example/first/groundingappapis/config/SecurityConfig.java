@@ -2,6 +2,7 @@ package org.example.first.groundingappapis.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.first.groundingappapis.security.JwtTokenFilter;
+import org.example.first.groundingappapis.security.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +31,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig{
     private final JwtTokenFilter jwtTokenFilter;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailServiceImpl userDetailsService;
 
     @Value("${app.client.url}")
     private String clientUrl;

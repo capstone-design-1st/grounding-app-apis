@@ -74,8 +74,6 @@ public class UserDto {
         @NotBlank
         private String gender;
 
-        @NotBlank
-        private String country;
     }
 
     @Getter
