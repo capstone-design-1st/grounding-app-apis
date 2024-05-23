@@ -36,6 +36,9 @@ public class SecurityConfig{
     @Value("${app.client.url}")
     private String clientUrl;
 
+    @Value("${app.host.url}")
+    private String hostUrl;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -72,7 +75,7 @@ public class SecurityConfig{
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", clientUrl));
+            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", clientUrl, hostUrl));
             config.setAllowCredentials(true);
             return config;
         };
