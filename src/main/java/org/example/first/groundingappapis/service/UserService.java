@@ -1,6 +1,7 @@
 package org.example.first.groundingappapis.service;
 
 import org.example.first.groundingappapis.dto.UserDto;
+import org.example.first.groundingappapis.entity.User;
 
 import java.util.UUID;
 
@@ -22,4 +23,5 @@ public interface UserService {
     UserDto.GetEmailResponseDto getEmail(UUID userId);
 
     UserDto.GetPhoneNumberResponseDto getPhoneNumber(UUID userId);
+
 }

@@ -14,4 +14,6 @@ public interface LikeService {
     PropertyDto.DislikePropertyDto dislikeProperty(UUID propertyId, UUID userId);
 
     Page<PropertyDto.ReadBasicInfoResponse> getUserLikedPostList(UUID userId, int size, int page);
+
+    PropertyDto.GetLikesResponse isUserLikeProperty(UUID uuid, User user);
 }

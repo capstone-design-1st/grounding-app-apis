@@ -134,6 +134,19 @@ public class LikeServiceImpl implements LikeService{
         });
 
     }
-    //.priceDifference(Long.valueOf(transactionLog != null ? transactionLog.getExecutedPrice() - dayTransactionLog.getOpeningPrice() : null))
 
+    @Override
+    public PropertyDto.GetLikesResponse isUserLikeProperty(UUID uuid, User user) {
+        Property property = propertyRepository.findById(uuid)
+                .orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+
+        Like like = likeRepository.findByPropertyAndUser(property, user).orElse(null);
+
+        return PropertyDto.GetLikesResponse.builder()
+                .userId(user.getId())
+                .propertyId(property.getId())
+                .isLike(like != null)
+                .createdAt(like != null ? like.getCreatedAt() : null)
+                .build();
+    }
 }

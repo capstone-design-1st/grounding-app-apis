@@ -64,4 +64,5 @@ public class LikeController {
 
         return ResponseEntity.ok(dislikePropertyResponse);
     }
+
 }

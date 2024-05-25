@@ -285,6 +285,7 @@ public class UserController {
             return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
         }
     }
+
 //
 //    //현재 투자금액
 //    @GetMapping("/investment")

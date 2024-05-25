@@ -2,11 +2,9 @@ package org.example.first.groundingappapis.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -189,4 +187,21 @@ public class PropertyDto {
         }
     }
 
+    @Getter
+    @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class GetLikesResponse {
+        private UUID userId;
+        private UUID propertyId;
+        private Boolean isLike;
+        private LocalDateTime createdAt;
+
+        @Builder
+        public GetLikesResponse(UUID userId, UUID propertyId, Boolean isLike, LocalDateTime createdAt) {
+            this.userId = userId;
+            this.propertyId = propertyId;
+            this.isLike = isLike;
+            this.createdAt = createdAt;
+        }
+    }
 }

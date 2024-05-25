@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    
     @Override
     public boolean userExistsByEmail(String email) {
         return userRepository.existsByEmail(email);
