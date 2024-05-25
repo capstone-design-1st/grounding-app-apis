@@ -39,8 +39,9 @@ public class PropertyController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{proepertyId}/like")
-    public ResponseEntity<PropertyDto.GetLikesResponse> isUserlikeProperty(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable String propertyId) {
+    @GetMapping("/{propertyId}/users/like")
+    public ResponseEntity<PropertyDto.GetLikesResponse> isUserlikeProperty(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                                           @PathVariable String propertyId) {
         log.info("likeProperty called with propertyId: {}", propertyId);
 
         final User user = userPrincipal.getUser();
