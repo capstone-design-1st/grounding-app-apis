@@ -44,6 +44,10 @@ public class LikeServiceImpl implements LikeService{
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
         final User user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
+        if (likeRepository.existsByPropertyAndUser(property, user)) {
+            throw new PropertyException(PropertyErrorResult.ALREADY_LIKED);
+        }
+
         final Like like = Like.builder()
                 .property(property)
                 .user(user)
@@ -141,7 +145,7 @@ public class LikeServiceImpl implements LikeService{
                 .orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
 
         Like like = likeRepository.findByPropertyAndUser(property, user).orElse(null);
-        
+
         return PropertyDto.GetLikesResponse.builder()
                 .userId(user.getId())
                 .propertyId(property.getId())

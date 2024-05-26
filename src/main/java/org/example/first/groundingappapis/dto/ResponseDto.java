@@ -25,4 +25,25 @@ public class ResponseDto<T> {
         this.payload = payload;
         this.error = error;
     }
+
+    public static class ResponseDtoBuilder<T> {
+        private T payload;
+        private String error;
+
+        ResponseDtoBuilder() {}
+
+        public ResponseDtoBuilder<T> payload(T payload) {
+            this.payload = payload;
+            return this;
+        }
+
+        public ResponseDtoBuilder<T> error(String error) {
+            this.error = error;
+            return this;
+        }
+
+        public ResponseDto<T> build() {
+            return new ResponseDto<>(payload, error);
+        }
+    }
 }

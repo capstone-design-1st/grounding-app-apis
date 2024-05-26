@@ -70,6 +70,22 @@ public class ControllerExceptionAdvice {
 
         return ResponseEntity.status(errorResult.getHttpStatus()).body(responseDto);
     }
+    @ExceptionHandler(PropertyException.class)
+    public ResponseEntity<ResponseDto> handlePropertyException(PropertyException e) {
+
+        log.error("PropertyException", e);
+
+        final PropertyErrorResult errorResult = e.getPropertyErrorResult();
+
+        final ResponseDto responseDto = ResponseDto.error()
+                .error(errorResult.getMessage())
+                .build();
+
+        //return body, nothing. refator this
+        return ResponseEntity.status(errorResult.getHttpStatus()).body(responseDto);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDto> handleException(Exception e) {
 

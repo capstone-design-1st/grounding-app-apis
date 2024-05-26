@@ -47,4 +47,9 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     @Query("SELECT l.property FROM Like l WHERE l.user = :user")
     Page<Property> findAllLikedPropertyByUser(User user, Pageable pageable);
+
+    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Like l " +
+            "WHERE l.property = :property AND l.user = :user")
+    boolean existsByPropertyAndUser(Property property, User user);
 }
