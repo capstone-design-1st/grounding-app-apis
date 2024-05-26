@@ -71,9 +71,9 @@ public class LikeServiceImpl implements LikeService{
     @Transactional
     public PropertyDto.DislikePropertyDto dislikeProperty(UUID propertyId, UUID userId) {
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
-        final User user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        final Like like = likeRepository.findByPropertyAndUser(property, user).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+        final User user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        final Like like = likeRepository.findByPropertyAndUser(property, user).orElseThrow(() -> new PropertyException(PropertyErrorResult.NOT_LIKED));
 
         likeRepository.delete(like);
 
