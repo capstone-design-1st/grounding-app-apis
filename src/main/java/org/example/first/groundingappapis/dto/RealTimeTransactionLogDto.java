@@ -29,4 +29,10 @@ public class RealTimeTransactionLogDto {
         this.executedPrice = executedPrice != null ? executedPrice : 0;
         this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
     }
+
+    @Builder
+    public RealTimeTransactionLogDto(UUID propertyId, Integer executedPrice) {
+        this.propertyId = propertyId;
+        this.executedPrice = executedPrice != null ? executedPrice : 0;
+    }
 }

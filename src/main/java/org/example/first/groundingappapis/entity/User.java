@@ -52,6 +52,9 @@ public class User {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Account account;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RealTimeTransactionLog> realTimeTransactionLogs = new LinkedHashSet<>();
+
     @PrePersist
     public void prePersist() {
         if (this.id == null)
@@ -90,4 +93,12 @@ public class User {
                 .nickname(nickname)
                 .build();
     }
+
+    public void addLike(Like like) {
+        this.likes.add(like);
+    }
+    public void removeLike(Like like) {
+        this.likes.remove(like);
+    }
+
 }

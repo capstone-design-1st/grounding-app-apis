@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.AccountDto;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -37,6 +39,12 @@ public class Account {
     @Column(name = "total_earning_rate", columnDefinition = "DOUBLE DEFAULT 0.0")
     private Double totalEarningRate;
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Quote> quotes = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DepositLog> depositLogs = new LinkedHashSet<>();
+
     @Builder
     public Account(User user, Long deposit, Double totalEarningRate) {
         this.user = user;
@@ -49,5 +57,12 @@ public class Account {
                 .deposit(deposit)
                 .totalEarningRate(totalEarningRate)
                 .build();
+    }
+    public void plusDeposit(Long amount) {
+        this.deposit += amount;
+    }
+
+    public void minusDeposit(Long amount) {
+        this.deposit -= amount;
     }
 }

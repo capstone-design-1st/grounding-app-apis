@@ -14,10 +14,16 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${INITIAL_DB}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${INITIAL_DB}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 1800000
   data:
     redis:
       host: ${REDIS_HOST}

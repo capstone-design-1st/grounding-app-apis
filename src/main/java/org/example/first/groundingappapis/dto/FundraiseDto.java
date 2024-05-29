@@ -20,7 +20,7 @@ public class FundraiseDto {
     private String securityType;
     private String issuer;
     private Integer securityCount;
-    private Long issuePrice;
+    private Integer issuePrice;
     private Integer totalFund;
     private LocalDate subscriptionStartDate;
     private LocalDate subscriptionEndDate;
@@ -34,7 +34,7 @@ public class FundraiseDto {
                         String securityType,
                         String issuer,
                         Integer securityCount,
-                        Long issuePrice,
+                        Integer issuePrice,
                         Integer totalFund,
                         LocalDate subscriptionStartDate,
                         LocalDate subscriptionEndDate,

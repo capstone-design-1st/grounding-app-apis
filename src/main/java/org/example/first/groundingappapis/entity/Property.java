@@ -101,9 +101,13 @@ public class Property {
     private Set<Disclosure> disclosures = new LinkedHashSet<>();
 
     //호가
-//    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @BatchSize(size = 100)
-//    private Set<Quote> quotes = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 100)
+    private Set<Quote> quotes = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 100)
+    private Set<RealTimeTransactionLog> realTimeTransactionLogs = new LinkedHashSet<>();
 
     @PrePersist
     public void prePersist() {
@@ -280,10 +284,17 @@ public class Property {
         return disclosures;
     }
 
-//    public Set<Quote> getQuotes() {
-//        if(quotes == null) {
-//            return new LinkedHashSet<>();
-//        }
-//        return quotes;
-//    }
+    public Set<Quote> getQuotes() {
+        if(quotes == null) {
+            return new LinkedHashSet<>();
+        }
+        return quotes;
+    }
+
+    public Set<RealTimeTransactionLog> getRealTimeTransactionLogs() {
+        if(realTimeTransactionLogs == null) {
+            return new LinkedHashSet<>();
+        }
+        return realTimeTransactionLogs;
+    }
 }

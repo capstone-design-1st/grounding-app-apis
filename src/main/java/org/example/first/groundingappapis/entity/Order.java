@@ -37,6 +37,10 @@ public class Order {
     @Column(name = "quantity")
     private Integer quantity;
 
+    //상태, 대기중, 체결 완료, 취소
+    @Column(name = "status", length = 10)
+    private String status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_orders_user"))
     private User user;
@@ -46,12 +50,13 @@ public class Order {
     private Property property;
 
     @Builder
-    public Order(String type, Integer price, Integer quantity, User user, Property property) {
+    public Order(String type, Integer price, Integer quantity, User user, Property property, String status) {
         this.type = type;
         this.price = price;
         this.quantity = quantity;
         this.user = user;
         this.property = property;
+        this.status = status;
     }
 
     public OrderDto toDto() {
@@ -60,7 +65,24 @@ public class Order {
                 .type(type)
                 .price(price)
                 .quantity(quantity)
+                .status(status)
                 .build();
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }
 

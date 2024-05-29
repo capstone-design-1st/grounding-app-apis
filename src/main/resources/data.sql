@@ -31,7 +31,7 @@ ON DUPLICATE KEY UPDATE document_id = document_id;
 -- users 테이블에 샘플 데이터 삽입
 INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'test@user.com', '$2a$16$AQ6glwfKV7yEa1ngeyQXZejBrzaFdkjLo2GFI7mnh2/DdIlRIpJPW', '01012341234', 'test_user', 'USER', NOW(), NOW())
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'test@user.com', '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user', 'USER', NOW(), NOW())
 ON DUPLICATE KEY UPDATE user_id = user_id;
 
 -- accounts 테이블에 샘플 데이터 삽입, user_id는 방금 삽입된 users 테이블 데이터 참조

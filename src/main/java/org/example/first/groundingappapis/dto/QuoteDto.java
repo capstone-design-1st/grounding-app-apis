@@ -1,39 +1,61 @@
-//package org.example.first.groundingappapis.dto;
-//
-//import com.fasterxml.jackson.annotation.JsonInclude;
-//import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-//import com.fasterxml.jackson.databind.annotation.JsonNaming;
-//import lombok.AllArgsConstructor;
-//import lombok.Builder;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
-//
-//@Data
-//@NoArgsConstructor
-//@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-//public class QuoteDto {
-//
-//    private Integer dayMaxPrice;
-//    private Integer dayMinPrice;
-//    private Integer presentPrice;
-//
-//    @Builder
-//    public QuoteDto(Integer dayMaxPrice,
-//                    Integer dayMinPrice,
-//                    Integer presentPrice) {
-//        this.dayMaxPrice = dayMaxPrice != null ? dayMaxPrice : 0;
-//        this.dayMinPrice = dayMinPrice != null ? dayMinPrice : 0;
-//        this.presentPrice = presentPrice != null ? presentPrice : 0;
-//    }
-//
-//    @Data
-//    @Builder
-//    @NoArgsConstructor
-//    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-//    public static class GetResponse{}
-//    @Data
-//    @Builder
-//    @NoArgsConstructor
-//    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-//    public static class ReadResponse{}
-//}
+package org.example.first.groundingappapis.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class QuoteDto {
+
+    private Integer price;
+    private Integer quantity;
+    private String type;
+    private LocalDateTime createdAt;
+    @Builder
+    public QuoteDto(Integer price,
+                    Integer quantity,
+                    String type,
+                    LocalDateTime createdAt) {
+
+        this.price = price != null ? price : 0;
+        this.quantity = quantity != null ? quantity : 0;
+        this.type = type != null ? type : "";
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UploadOrderResponse{
+        private LocalDateTime createdAt;
+        private String userId;
+        private String propertyId;
+        @Builder
+        public UploadOrderResponse(LocalDateTime createdAt,
+                                    String userId,
+                                    String propertyId) {
+            this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+            this.userId = userId != null ? userId : "";
+            this.propertyId = propertyId != null ? propertyId : "";
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class GetResponse{}
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ReadResponse{}
+}

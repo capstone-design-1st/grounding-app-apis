@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -18,13 +19,15 @@ public class OrderDto {
     private String type;
     private Integer price;
     private Integer quantity;
+    private String status;
 
     @Builder
-    public OrderDto(UUID id, String type, Integer price, Integer quantity) {
+    public OrderDto(UUID id, String type, Integer price, Integer quantity, String status) {
         this.id = id;
         this.type = type;
         this.price = price;
         this.quantity = quantity;
+        this.status = status;
     }
 
     @Data
@@ -37,4 +40,36 @@ public class OrderDto {
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ReadResponse{}
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class GetTotalPriceResponse{
+        private String propertyId;
+        private Integer totalOrderPrice;
+        private LocalDateTime createdAt;
+        @Builder
+        public GetTotalPriceResponse(String propertyId, Integer totalOrderPrice, LocalDateTime createdAt) {
+            this.propertyId = propertyId;
+            this.totalOrderPrice = totalOrderPrice;
+            this.createdAt = createdAt;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class GetQuantityResponse {
+        private String propertyId;
+        private Integer quantity;
+        private LocalDateTime createdAt;
+
+        @Builder
+        public GetQuantityResponse(String propertyId, Integer quantity, LocalDateTime createdAt) {
+            this.propertyId = propertyId;
+            this.quantity = quantity;
+            this.createdAt = createdAt;
+        }
+    }
 }

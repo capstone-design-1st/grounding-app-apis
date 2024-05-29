@@ -10,9 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface LikeRepository extends JpaRepository<Like, Long> {
+public interface LikeRepository extends JpaRepository<Like, UUID> {
 
     @Query("SELECT l FROM Like l WHERE l.property = :property AND l.user = :user")
     Optional<Like> findByPropertyAndUser(Property property, User user);

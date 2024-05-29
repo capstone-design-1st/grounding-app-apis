@@ -12,9 +12,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface RealTimeTransactionLogRepository extends JpaRepository<RealTimeTransactionLog, Long> {
+public interface RealTimeTransactionLogRepository extends JpaRepository<RealTimeTransactionLog, UUID> {
     @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
             "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
             "FROM RealTimeTransactionLog r " +
@@ -28,4 +30,33 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "WHERE r.property IN :properties " +
             "ORDER BY r.executedAt DESC")
     List<RealTimeTransactionLogDto> findRecentTransactionLogsByProperties(List<Property> properties);
+
+
+//    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
+//            "r.property.id, r.executedPrice) " +
+//            "FROM RealTimeTransactionLog r " +
+//            "WHERE r.property = :property " +
+//            "ORDER BY r.executedAt DESC")
+
+//UUID propertyId, LocalDateTime executedAt, Integer quantity, Integer executedPrice, Double fluctuationRate) {
+    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
+            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
+            "FROM RealTimeTransactionLog r " +
+            "WHERE r.property = :property " +
+            "ORDER BY r.executedAt DESC")
+    Optional<RealTimeTransactionLogDto> findFirstByPropertyOrderByExecutedAtDesc(@Param("property") Property property);
+
+    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
+            "r.property.id, r.executedPrice) " +
+            "FROM RealTimeTransactionLog r " +
+            "WHERE r.property = :propertyId " +
+            "ORDER BY r.executedAt DESC")
+    boolean existsByPropertyId(UUID propertyId);
+
+    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
+            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
+            "FROM RealTimeTransactionLog r " +
+            "WHERE r.property = :propertyId " +
+            "ORDER BY r.executedAt DESC")
+    Optional<RealTimeTransactionLog> findFirstByPropertyIdOrderByExecutedAtDesc(UUID propertyId);
 }

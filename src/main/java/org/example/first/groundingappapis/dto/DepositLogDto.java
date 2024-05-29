@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 public class DepositLogDto {
 
     private String type;
-    private Long amount;
+    private Integer amount;
 
     @Builder
     public DepositLogDto(String type,
-                         Long amount) {
+                         Integer amount) {
         this.type = type != null ? type : "";
-        this.amount = amount != null ? amount : 0L;
+        this.amount = amount != null ? amount : 0;
     }
 
     @Data

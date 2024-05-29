@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PropertyRepository extends JpaRepository<Property, Long>{
+public interface PropertyRepository extends JpaRepository<Property, UUID>{
 
 //    @Query("SELECT new org.example.first.groundingappapis.dto.PropertyDto$ReadResponse " +
 //            "(p.uuid, p.name, p.price, p.pieceCount, p.piecePrice, p.viewCount, p.likeCount, p.createdAt, p.updatedAt) " +

@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.DepositLogDto;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -24,36 +26,37 @@ public class DepositLog {
     public void prePersist() {
         if (this.id == null)
             this.id = UUID.randomUUID();
+        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_deposit_logs_account"))
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_deposit_logs_user"))
-    private User user;
-
     //매수, 매도
     @Column(name = "type", length = 10)
     private String type;
 
     @Column(name = "amount")
-    private Long amount;
+    private Integer amount;
 
-    private void updateAccount(Account account) {
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    public void updateAccount(Account account) {
         this.account = account;
-        //account.getDepositLogs().add(this);
+        account.getDepositLogs().add(this);
     }
 
     //입금
-    public void setLogToDeposit(Long amount) {
+    public void setLogOfDeposit(Integer amount) {
         this.type = "입금";
         this.amount = amount;
     }
 
     //출금
-    public void setLogToWithdraw(Long amount) {
+    public void setLogOfWithdraw(Integer amount) {
         this.type = "출금";
         this.amount = amount;
     }
@@ -66,12 +69,11 @@ public class DepositLog {
     }
 
     @Builder
-    public DepositLog(Account account, User user, String type, Long amount) {
+    public DepositLog(Account account, String type, Integer amount, LocalDateTime createdAt) {
         this.account = account;
-        this.user = user;
         this.type = type;
         this.amount = amount;
+        this.createdAt = createdAt;
     }
-
 
 }

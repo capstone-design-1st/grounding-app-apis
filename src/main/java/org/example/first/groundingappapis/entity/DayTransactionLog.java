@@ -35,9 +35,6 @@ public class DayTransactionLog {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @Column(name = "amount")
-    private Integer amount;
-
     //변동률
     @Column(name = "fluctuation_rate")
     private Double fluctuationRate;
@@ -76,4 +73,9 @@ public class DayTransactionLog {
                 .minPrice(this.minPrice)
                 .build();
     }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+    }
+
 }

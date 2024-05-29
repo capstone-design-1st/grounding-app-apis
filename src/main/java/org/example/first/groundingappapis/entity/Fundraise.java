@@ -56,7 +56,7 @@ public class Fundraise {
 
     //발행 가액
     @Column(name = "issue_price")
-    private Long issuePrice;
+    private Integer issuePrice;
 
     //총 모집액
     @Column(name = "total_fund")
@@ -86,7 +86,7 @@ public class Fundraise {
                      String securityType,
                      String issuer,
                      Integer securityCount,
-                     Long issuePrice,
+                     Integer issuePrice,
                      Integer totalFund,
                      LocalDate subscriptionStartDate,
                      LocalDate subscriptionEndDate,

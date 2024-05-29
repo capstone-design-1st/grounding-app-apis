@@ -71,4 +71,14 @@ public class RealTimeTransactionLog {
                 .fluctuationRate(fluctuationRate)
                 .build();
     }
+
+    public void updateProperty(Property property) {
+        this.property = property;
+        property.getRealTimeTransactionLogs().add(this);
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+        user.getRealTimeTransactionLogs().add(this);
+    }
 }
