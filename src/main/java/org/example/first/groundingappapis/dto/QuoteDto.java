@@ -17,17 +17,14 @@ public class QuoteDto {
 
     private Integer price;
     private Integer quantity;
-    private String type;
     private LocalDateTime createdAt;
     @Builder
     public QuoteDto(Integer price,
                     Integer quantity,
-                    String type,
                     LocalDateTime createdAt) {
 
         this.price = price != null ? price : 0;
         this.quantity = quantity != null ? quantity : 0;
-        this.type = type != null ? type : "";
         this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
     }
 
@@ -54,8 +51,20 @@ public class QuoteDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class GetResponse{}
     @Data
-    @Builder
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class ReadResponse{}
+    public static class ReadResponse{
+        private Integer price;
+        private Integer quantity;
+        private LocalDateTime createdAt;
+        @Builder
+        public ReadResponse(Integer price,
+                            Integer quantity,
+                            LocalDateTime createdAt) {
+            this.price = price != null ? price : 0;
+            this.quantity = quantity != null ? quantity : 0;
+            this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+        }
+    }
+
 }

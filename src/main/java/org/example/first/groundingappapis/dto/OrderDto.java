@@ -72,4 +72,20 @@ public class OrderDto {
             this.createdAt = createdAt;
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class GetQuantityOfInventoryResponse {
+        private String propertyId;
+        private Integer quantity;
+        private LocalDateTime createdAt;
+
+        @Builder
+        public GetQuantityOfInventoryResponse(String propertyId, Integer quantity, LocalDateTime createdAt) {
+            this.propertyId = propertyId;
+            this.quantity = quantity;
+            this.createdAt = createdAt;
+        }
+    }
 }

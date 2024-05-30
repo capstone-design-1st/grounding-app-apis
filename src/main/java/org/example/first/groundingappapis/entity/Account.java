@@ -45,6 +45,9 @@ public class Account {
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DepositLog> depositLogs = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Inventory> inventories = new LinkedHashSet<>();
+
     @Builder
     public Account(User user, Long deposit, Double totalEarningRate) {
         this.user = user;

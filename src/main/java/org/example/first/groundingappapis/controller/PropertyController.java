@@ -50,7 +50,6 @@ public class PropertyController {
     }
 
     //거래량이 많은 매물 페이지
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/popular")
     public ResponseEntity<Page<PropertyDto.ReadBasicInfoResponse>> getPopularProperties(@RequestParam(defaultValue = "0") int page,
                                                                              @RequestParam(defaultValue = "10") int size) {
