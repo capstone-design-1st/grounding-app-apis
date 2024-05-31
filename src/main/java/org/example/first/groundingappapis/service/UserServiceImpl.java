@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.JwtDto;
 import org.example.first.groundingappapis.dto.UserDto;
+import org.example.first.groundingappapis.entity.Account;
 import org.example.first.groundingappapis.entity.Role;
 import org.example.first.groundingappapis.entity.User;
 import org.example.first.groundingappapis.exception.UserErrorResult;
 import org.example.first.groundingappapis.exception.UserException;
+import org.example.first.groundingappapis.repository.AccountRepository;
 import org.example.first.groundingappapis.repository.UserRepository;
 import org.example.first.groundingappapis.security.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    
+    private final AccountRepository accountRepository;
     @Override
     public boolean userExistsByEmail(String email) {
         return userRepository.existsByEmail(email);
@@ -89,6 +91,12 @@ public class UserServiceImpl implements UserService {
                     .updatedAt(LocalDateTime.now())
                     .build();
             userRepository.save(user);
+
+            Account account = Account.builder()
+                    .deposit(0L)
+                    .build();
+
+            accountRepository.save(account);
         } catch (Exception e) {
             log.error("Error creating user: ", e);
         }

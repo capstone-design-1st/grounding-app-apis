@@ -11,13 +11,11 @@ public class TradingDto {
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class BuyRequest {
-        private String propertyId;
         private int quantity;
         private int price;
 
         @Builder
         public BuyRequest(String propertyId, int quantity, int price) {
-            this.propertyId = propertyId;
             this.quantity = quantity;
             this.price = price;
         }
@@ -27,13 +25,11 @@ public class TradingDto {
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SellRequest {
-        private String propertyId;
         private int quantity;
         private int price;
 
         @Builder
-        public SellRequest(String propertyId, int quantity) {
-            this.propertyId = propertyId;
+        public SellRequest(int quantity, int price) {
             this.quantity = quantity;
             this.price = price;
         }

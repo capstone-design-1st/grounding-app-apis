@@ -31,50 +31,54 @@ public class Fundraise {
     private Property property;
 
     //진행률
-    @Column(name = "progress_rate")
+    @Column(name = "progress_rate", columnDefinition = "DOUBLE DEFAULT 0.0")
     private Double progressRate;
 
+    @Column(name = "progress_amount", columnDefinition = "BIGINT DEFAULT 0")
+    private Integer progressAmount;
+
     //마감일(사용자)
-    @Column(name = "deadline")
+    @Column(name = "deadline", columnDefinition = "DATE")
     private LocalDate deadline;
 
     //투자 참여 인원
-    @Column(name = "investor_count")
+    @Column(name = "investor_count", columnDefinition = "INT DEFAULT 0")
     private Integer investorCount;
 
     //증권 종류
-    @Column(name = "security_type", length = 20)
+    @Column(name = "security_type", columnDefinition = "VARCHAR(20) DEFAULT '주식'")
     private String securityType;
 
     //발행인
-    @Column(name = "issuer", length = 20)
+    @Column(name = "issuer", columnDefinition = "VARCHAR(20) DEFAULT '주식회사'")
     private String issuer;
 
     //발행 증권 수
-    @Column(name = "security_count")
+    @Column(name = "security_count", columnDefinition = "INT DEFAULT 0")
     private Integer securityCount;
 
     //발행 가액
-    @Column(name = "issue_price")
+    @Column(name = "issue_price", columnDefinition = "INT DEFAULT 0")
     private Integer issuePrice;
 
     //총 모집액
-    @Column(name = "total_fund")
+    @Column(name = "total_fund", columnDefinition = "BIGINT DEFAULT 0")
     private Integer totalFund;
 
     //청약 시작일
-    @Column(name = "subscription_start_date")
+    @Column(name = "subscription_start_date", columnDefinition = "DATE")
     private LocalDate subscriptionStartDate;
 
     //청약 마감일
-    @Column(name = "subscription_end_date")
+    @Column(name = "subscription_end_date", columnDefinition = "DATE")
     private LocalDate subscriptionEndDate;
 
     //공간운영사정보
-    @Column(name = "operator_name")
+    @Column(name = "operator_name", columnDefinition = "VARCHAR(20)")
     private String operatorName;
 
     //회사소개
+    @Lob
     @Column(name = "operator_introduction")
     private String operatorIntroduction;
 
@@ -94,6 +98,7 @@ public class Fundraise {
                      String operatorIntroduction) {
 
         this.property = property;
+        this.progressAmount = progressAmount;
         this.progressRate = progressRate;
         this.deadline = deadline;
         this.investorCount = investorCount;
@@ -111,6 +116,7 @@ public class Fundraise {
     public FundraiseDto toDto() {
         return FundraiseDto.builder()
                 .progressRate(progressRate)
+                .progressAmount(progressAmount)
                 .deadline(deadline)
                 .investorCount(investorCount)
                 .securityType(securityType)
@@ -128,5 +134,10 @@ public class Fundraise {
     public void updateProperty(Property property) {
         this.property = property;
         property.setFundraise(this);
+    }
+
+    public void setProgress(int progressAmount) {
+        this.progressAmount = progressAmount;
+        this.progressRate = (double) progressAmount / totalFund * 100;
     }
 }

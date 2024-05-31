@@ -5,9 +5,9 @@ VALUES
 ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
-INSERT INTO fundraises (fundraise_id, property_id, progress_rate, deadline, investor_count, security_type, issuer, security_count, issue_price, total_fund, subscription_start_date, subscription_end_date, operator_name, operator_introduction)
+INSERT INTO fundraises (fundraise_id, property_id, progress_rate, progress_amount, deadline, investor_count, security_type, issuer, security_count, issue_price, total_fund, subscription_start_date, subscription_end_date, operator_name, operator_introduction)
 VALUES
-    (UNHEX(REPLACE('2111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 0.0, '2025-01-01', 0, '땡땡증권', 'ABC 회사', 1000, 1000000, 1000000000, '2024-05-19', '2024-12-31', 'XYZ 운영사', '이 운영사는 XYZ입니다.')
+    (UNHEX(REPLACE('2111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 0.0, 0,'2025-01-01', 0, '땡땡증권', 'ABC 회사', 1000, 1000000, 1000000000, '2024-05-19', '2024-12-31', 'XYZ 운영사', '이 운영사는 XYZ입니다.')
 ON DUPLICATE KEY UPDATE fundraise_id = fundraise_id;
 
 -- buildings 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조

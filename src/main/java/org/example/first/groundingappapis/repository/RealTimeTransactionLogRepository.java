@@ -46,17 +46,19 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "ORDER BY r.executedAt DESC")
     Optional<RealTimeTransactionLogDto> findFirstByPropertyOrderByExecutedAtDesc(@Param("property") Property property);
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
-            "r.property.id, r.executedPrice) " +
+    @Query("SELECT CASE COUNT(r) WHEN 0 THEN false ELSE true END " +
             "FROM RealTimeTransactionLog r " +
-            "WHERE r.property = :propertyId " +
-            "ORDER BY r.executedAt DESC")
+            "WHERE r.property.id = :propertyId")
     boolean existsByPropertyId(UUID propertyId);
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
-            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
+    @Query("SELECT r " +
             "FROM RealTimeTransactionLog r " +
-            "WHERE r.property = :propertyId " +
+            "WHERE r.property.id = :propertyId " +
             "ORDER BY r.executedAt DESC")
     Optional<RealTimeTransactionLog> findFirstByPropertyIdOrderByExecutedAtDesc(UUID propertyId);
+
+    @Query("SELECT CASE COUNT(r) WHEN 0 THEN false ELSE true END " +
+            "FROM RealTimeTransactionLog r " +
+            "WHERE r.property = :property AND r.user = :user")
+    boolean existsByPropertyAndUser(Property property, User user);
 }

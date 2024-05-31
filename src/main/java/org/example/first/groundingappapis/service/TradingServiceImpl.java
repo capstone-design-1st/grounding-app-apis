@@ -31,6 +31,7 @@ public class TradingServiceImpl implements TradingService {
     private final AccountRepository accountRepository;
     private final PropertyRepository propertyRepository;
     private final InventoryRepository inventoryRepository;
+
     @Transactional
     @Override
     public void uploadBuyingOrderOnQuote(User buyer, UUID propertyId, TradingDto.BuyRequest buyRequest) {
@@ -40,6 +41,9 @@ public class TradingServiceImpl implements TradingService {
                 new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
         if (buyRequest.getPrice() * buyRequest.getQuantity() > buyerAccount.getDeposit()) {
             throw new TradingException(TradingErrorResult.NOT_ENOUGH_DEPOSIT);
+        }
+        if(!isEnoughFundraise(property)){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
         }
 
         DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property).orElseGet(() -> {
@@ -66,6 +70,7 @@ public class TradingServiceImpl implements TradingService {
                     .createdAt(LocalDateTime.now())
                     .build();
             quote.updateProperty(property);
+            quote.updateAccount(buyerAccount);
             quoteRepository.save(quote);
         }
 
@@ -146,12 +151,17 @@ public class TradingServiceImpl implements TradingService {
         }
     }
 
+    @Transactional
     @Override
     public void uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest) {
         final Account sellerAccount = accountRepository.findByUser(user).orElseThrow(() ->
                 new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                 new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+        if(!isEnoughFundraise(property)){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
+
 
         DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property).orElseGet(() -> {
             DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
@@ -177,6 +187,7 @@ public class TradingServiceImpl implements TradingService {
                     .createdAt(LocalDateTime.now())
                     .build();
             quote.updateProperty(property);
+            quote.updateAccount(sellerAccount);
             quoteRepository.save(quote);
         }
 
@@ -209,6 +220,7 @@ public class TradingServiceImpl implements TradingService {
         return ((double) (executedPrice - openingPrice) / openingPrice) * 100;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public OrderDto.GetQuantityOfInventoryResponse getQuantityOfInventory(User user, UUID propertyId, int division) {
         final Account account = accountRepository.findByUser(user).orElseThrow(() ->
@@ -230,10 +242,15 @@ public class TradingServiceImpl implements TradingService {
         return response;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<QuoteDto.ReadResponse> readUpperQuotes(UUID propertyId, int basePrice, int page, int size) {
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                 new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+
+        if(!isEnoughFundraise(property)){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
 
         if(basePrice == 0){
             if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)){
@@ -250,10 +267,15 @@ public class TradingServiceImpl implements TradingService {
         return quoteRepository.findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(propertyId, basePrice, pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<QuoteDto.ReadResponse> readDownQuotes(UUID propertyId, int basePrice, int page, int size) {
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                 new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+
+        if(!isEnoughFundraise(property)){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
 
         if(basePrice == 0){
             if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)){
@@ -349,21 +371,24 @@ public class TradingServiceImpl implements TradingService {
         return executedQuantityOfOrder;
     }
 
-    private void updateOrderStatus(User user, Property property, int price, int quantity, String type) {
+    @Transactional
+    public void updateOrderStatus(User user, Property property, int price, int quantity, String type) {
         Order order = orderRepository.findByUserAndPropertyAndPriceAndQuantityAndType(user, property, price, quantity, "체결 대기중").orElseThrow(() ->
                 new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
         order.setStatus("체결 완료");
         orderRepository.save(order);
     }
 
-    private void updateOrderQuantity(User user, Property property, int price, int quantity, String type) {
+    @Transactional
+    public void updateOrderQuantity(User user, Property property, int price, int quantity, String type) {
         Order order = orderRepository.findByUserAndPropertyAndPriceAndQuantityAndType(user, property, price, quantity, "체결 대기중").orElseThrow(() ->
                 new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
         order.setQuantity(order.getQuantity() - quantity);
         orderRepository.save(order);
     }
 
-    private void saveTransactionLog(Property property, int executedQuantity, int executedPrice, User user, DayTransactionLog dayTransactionLog) {
+    @Transactional
+    public void saveTransactionLog(Property property, int executedQuantity, int executedPrice, User user, DayTransactionLog dayTransactionLog) {
         RealTimeTransactionLog realTimeTransactionLog = RealTimeTransactionLog.builder()
                 .quantity(executedQuantity)
                 .executedPrice(executedPrice)
@@ -376,7 +401,8 @@ public class TradingServiceImpl implements TradingService {
         realTimeTransactionLog.updateUser(user);
     }
 
-    private void sellerDeposit(Account sellerAccount, int executedQuantity, int executedPrice) {
+    @Transactional
+    public void sellerDeposit(Account sellerAccount, int executedQuantity, int executedPrice) {
         DepositLog sellerDepositLog = DepositLog.builder()
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -386,7 +412,8 @@ public class TradingServiceImpl implements TradingService {
         sellerDepositLog.updateAccount(sellerAccount);
     }
 
-    private void buyerWithdraw(Account buyerAccount, int executedQuantity, int executedPrice) {
+    @Transactional
+    public void buyerWithdraw(Account buyerAccount, int executedQuantity, int executedPrice) {
         DepositLog buyerDepositLog = DepositLog.builder()
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -396,6 +423,7 @@ public class TradingServiceImpl implements TradingService {
         buyerDepositLog.updateAccount(buyerAccount);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public OrderDto.GetTotalPriceResponse getTotalOrderPrice(UUID propertyId, int quantity) {
         int totalPrice = 0;
@@ -443,5 +471,10 @@ public class TradingServiceImpl implements TradingService {
                 .build();
 
         return response;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isEnoughFundraise(Property property){
+        return property.getFundraise().getProgressRate() >= 100.0;
     }
 }

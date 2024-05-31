@@ -84,6 +84,20 @@ public class ControllerExceptionAdvice {
         //return body, nothing. refator this
         return ResponseEntity.status(errorResult.getHttpStatus()).body(responseDto);
     }
+    @ExceptionHandler(TradingException.class)
+    public ResponseEntity<ResponseDto> handleTradingException(TradingException e) {
+
+        log.error("TradingException", e);
+
+        final TradingErrorResult errorResult = e.getTradingErrorResult();
+
+        final ResponseDto responseDto = ResponseDto.error()
+                .error(errorResult.getMessage())
+                .build();
+
+        //return body, nothing. refator this
+        return ResponseEntity.status(errorResult.getHttpStatus()).body(responseDto);
+    }
 
 
     @ExceptionHandler(Exception.class)

@@ -73,4 +73,9 @@ public class Quote { //필요한가?
         this.property = property;
         property.getQuotes().add(this);
     }
+
+    public void updateAccount(Account account) {
+        this.account = account;
+        account.getQuotes().add(this);
+    }
 }

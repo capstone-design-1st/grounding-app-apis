@@ -9,12 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FundraiseDto {
     private Double progressRate;
+    private Integer progressAmount;
     private LocalDate deadline;
     private Integer investorCount;
     private String securityType;
@@ -29,6 +32,7 @@ public class FundraiseDto {
 
     @Builder
     public FundraiseDto(Double progressRate,
+                        Integer progressAmount,
                         LocalDate deadline,
                         Integer investorCount,
                         String securityType,
@@ -41,6 +45,7 @@ public class FundraiseDto {
                         String operatorName,
                         String operatorIntroduction) {
         this.progressRate = progressRate;
+        this.progressAmount = progressAmount;
         this.deadline = deadline;
         this.investorCount = investorCount;
         this.securityType = securityType;
@@ -52,5 +57,38 @@ public class FundraiseDto {
         this.subscriptionEndDate = subscriptionEndDate;
         this.operatorName = operatorName;
         this.operatorIntroduction = operatorIntroduction;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FundraiseRequest{
+
+        private Integer quantity;
+
+        @Builder
+        public FundraiseRequest(Integer quantity) {
+            this.quantity = quantity;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FundraiseResponse {
+        private String userId;
+        private String propertyId;
+        private Integer quantity;
+        private Integer price;
+        private LocalDateTime createdAt;
+
+        @Builder
+        public FundraiseResponse(String userId, String propertyId, Integer quantity, Integer price, LocalDateTime createdAt) {
+            this.userId = userId;
+            this.propertyId = propertyId;
+            this.quantity = quantity;
+            this.price = price;
+            this.createdAt = createdAt;
+        }
     }
 }
