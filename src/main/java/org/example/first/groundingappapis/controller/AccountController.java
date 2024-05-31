@@ -24,7 +24,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping
+    @GetMapping("/inventory")
     public ResponseEntity<List<AccountDto.ReadUserPropertyResponse>> readUserProperty(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         log.info("readUserProperty");
         final UUID userId = userPrincipal.getUser().getId();

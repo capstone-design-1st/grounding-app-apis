@@ -15,7 +15,8 @@ public enum TradingErrorResult {
     FUNDRAISE_ENDED(HttpStatus.FORBIDDEN, "청약 마감된 매물입니다. 거래를 이용해주세요."),
     EXCEED_FUNDRAISE_TOTAL_AMOUNT(HttpStatus.FORBIDDEN, "총 모집 금액을 초과한 주문입니다."),
     ALREADY_SUBSCRIBED(HttpStatus.FORBIDDEN, "이미 청약한 매물입니다." ),
-    NOT_ENOUGH_FUNDRAISE(HttpStatus.FORBIDDEN, "청약이 끝나지 않은 매물입니다.");//409;
+    NOT_ENOUGH_FUNDRAISE(HttpStatus.FORBIDDEN, "청약이 끝나지 않은 매물입니다."),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다.");//409;
     private final HttpStatus httpStatus;
     private final String message;
 }

@@ -21,6 +21,10 @@ public class Inventory {
     @Column(name = "quantity")
     private Integer quantity;
 
+    //매도 주문 가능 수량, 호가 등록시 -, 매도 주문 취소 시 +
+    @Column(name = "sellable_quantity")
+    private Integer sellableQuantity;
+
     //매입금액
     @Column(name = "average_buying_price")
     private Integer averageBuyingPrice;
@@ -34,9 +38,10 @@ public class Inventory {
     private Property property;
 
     @Builder
-    public Inventory(Integer quantity, Integer averageBuyingPrice) {
+    public Inventory(Integer quantity, Integer averageBuyingPrice, Integer sellableQuantity) {
         this.quantity = quantity;
         this.averageBuyingPrice = averageBuyingPrice;
+        this.sellableQuantity = sellableQuantity;
     }
 
     public void updateProperty(Property property) {
@@ -60,6 +65,10 @@ public class Inventory {
 
     public void setAverageBuyingPrice(Integer averageBuyingPrice) {
         this.averageBuyingPrice = averageBuyingPrice;
+    }
+
+    public void setSellableQuantity(int sellableQuantity) {
+        this.sellableQuantity = sellableQuantity;
     }
 
 

@@ -79,13 +79,15 @@ public class TradingServiceImpl implements TradingService {
         Inventory inventory = inventoryRepository.findByAccountAndProperty(buyerAccount, property).orElseGet(() -> {
             Inventory newInventory = Inventory.builder()
                     .quantity(0)
+                    .sellableQuantity(0)
                     .averageBuyingPrice(0)
                     .build();
             newInventory.updateAccount(buyerAccount);
             newInventory.updateProperty(property);
             return newInventory;
         });
-
+        //매수자쪽 inventory 업데이트는 한번에
+        inventory.setSellableQuantity(inventory.getSellableQuantity() + finalExecutedQuantityOfOrder);
         inventory.setQuantity(inventory.getQuantity() + finalExecutedQuantityOfOrder);
         inventory.setAverageBuyingPrice((inventory.getAverageBuyingPrice() + buyRequest.getPrice()) / (inventory.getQuantity() + finalExecutedQuantityOfOrder));
 
@@ -193,15 +195,11 @@ public class TradingServiceImpl implements TradingService {
 
         saveOrder(user, sellRequest.getPrice(), executedQuantityOfOrder, sellRequest.getQuantity(), "매도", property);
 
-        Inventory inventory = inventoryRepository.findByAccountAndProperty(sellerAccount, property).orElseGet(() -> {
-            Inventory newInventory = Inventory.builder()
-                    .quantity(0)
-                    .averageBuyingPrice(0)
-                    .build();
-            newInventory.updateAccount(sellerAccount);
-            newInventory.updateProperty(property);
-            return newInventory;
-        });
+        Inventory inventory = inventoryRepository.findByAccountAndProperty(sellerAccount, property).orElseThrow(() ->
+                new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
+
+        inventory.setSellableQuantity(inventory.getSellableQuantity() - sellRequest.getQuantity());
+
         if(inventory.getQuantity() == executedQuantityOfOrder){
             inventoryRepository.delete(inventory);
         }else{
@@ -211,6 +209,7 @@ public class TradingServiceImpl implements TradingService {
 
         sellerAccount.minusDeposit(Long.valueOf(sellRequest.getPrice() * sellRequest.getQuantity()));
         accountRepository.save(sellerAccount);
+
     }
     @Override
     public Double getFluctuationRate(int openingPrice, int executedPrice) {
@@ -325,6 +324,20 @@ public class TradingServiceImpl implements TradingService {
             saveTransactionLog(property, executedQuantity, executedPrice, buyer, dayTransactionLog);
 
             sellerDeposit(sellerAccount, executedQuantity, executedPrice);
+
+            //매도자측 inventory 업데이트
+            Inventory inventory = inventoryRepository.findByAccountAndProperty(sellerAccount, property).orElseGet(() -> {
+                Inventory newInventory = Inventory.builder()
+                        .quantity(0)
+                        .sellableQuantity(0)
+                        .averageBuyingPrice(0)
+                        .build();
+                newInventory.updateAccount(sellerAccount);
+                newInventory.updateProperty(property);
+                return newInventory;
+            });
+
+            inventory.setQuantity(inventory.getQuantity() - executedQuantity);
         }
 
         saveOrder(buyer, buyRequest.getPrice(), executedQuantityOfOrder, executedQuantityOfOrder, "매수", property);
@@ -364,6 +377,21 @@ public class TradingServiceImpl implements TradingService {
             saveTransactionLog(property, executedQuantity, executedPrice, seller, dayTransactionLog);
 
             buyerWithdraw(buyerAccount, executedQuantity, executedPrice);
+
+            //매수자측 inventory 업데이트
+            Inventory inventory = inventoryRepository.findByAccountAndProperty(buyerAccount, property).orElseGet(() -> {
+                Inventory newInventory = Inventory.builder()
+                        .quantity(0)
+                        .sellableQuantity(0)
+                        .averageBuyingPrice(0)
+                        .build();
+                newInventory.updateAccount(buyerAccount);
+                newInventory.updateProperty(property);
+                return newInventory;
+            });
+
+            inventory.setQuantity(inventory.getQuantity() + executedQuantity);
+            inventoryRepository.save(inventory);
         }
 
         saveOrder(seller, sellRequest.getPrice(), executedQuantityOfOrder, executedQuantityOfOrder, "매도", property);
@@ -374,7 +402,7 @@ public class TradingServiceImpl implements TradingService {
     @Transactional
     public void updateOrderStatus(User user, Property property, int price, int quantity, String type) {
         Order order = orderRepository.findByUserAndPropertyAndPriceAndQuantityAndType(user, property, price, quantity, "체결 대기중").orElseThrow(() ->
-                new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+                new TradingException(TradingErrorResult.ORDER_NOT_FOUND));
         order.setStatus("체결 완료");
         orderRepository.save(order);
     }
@@ -382,7 +410,7 @@ public class TradingServiceImpl implements TradingService {
     @Transactional
     public void updateOrderQuantity(User user, Property property, int price, int quantity, String type) {
         Order order = orderRepository.findByUserAndPropertyAndPriceAndQuantityAndType(user, property, price, quantity, "체결 대기중").orElseThrow(() ->
-                new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+                new TradingException(TradingErrorResult.ORDER_NOT_FOUND));
         order.setQuantity(order.getQuantity() - quantity);
         orderRepository.save(order);
     }
