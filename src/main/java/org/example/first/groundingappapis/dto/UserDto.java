@@ -74,6 +74,9 @@ public class UserDto {
         @NotBlank
         private String gender;
 
+        @NotBlank
+        private String walletAddress;
+
     }
 
     @Getter
@@ -172,5 +175,14 @@ public class UserDto {
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class GetUserIdResponseDto {
         private UUID userId;
+    }
+
+
+    @Getter
+    @Builder @NoArgsConstructor @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class GetWalletAddressResponseDto {
+        private UUID userId;
+        private String walletAddress;
     }
 }

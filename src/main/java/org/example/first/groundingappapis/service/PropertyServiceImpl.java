@@ -141,6 +141,17 @@ public class PropertyServiceImpl implements PropertyService {
         });
     }
 
+    @Override
+    public Page<DayTransactionLogDto.ReadResponse> getDayTransactionLog(String propertyId, Pageable pageable) {
+
+        final Property property = propertyRepository.findById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+
+        Page<DayTransactionLogDto.ReadResponse> dayTransactionLogs = dayTransactionLogRepository
+                .readDayTransactionLogsByPropertyId(property.getId(), pageable);
+
+        return dayTransactionLogs;
+    }
+
     private PropertyDetailDto buildLandInformation(Land land) {
         return LandDto.landBuilder()
                 .useArea(land.getUseArea())

@@ -38,6 +38,10 @@ public class User {
     @Column(name = "role", length = 10)
     private Role role;
 
+    @Column(name = "wallet_address")
+    private String walletAddress;
+
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -72,7 +76,8 @@ public class User {
                 Role role,
                 LocalDateTime createdAt,
                 LocalDateTime updatedAt,
-                Set<Like> likes) {
+                Set<Like> likes,
+                String walletAddress) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -82,6 +87,7 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.likes = likes;
+        this.walletAddress = walletAddress;
     }
 
     public UserDto toDto() {

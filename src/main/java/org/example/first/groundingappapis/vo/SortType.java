@@ -22,7 +22,7 @@ public enum SortType {
             case VIEWS:
                 return "viewCount";
             case VOLUMES:
-                return "volumeCount";
+                return "volume";
             default:
                 return "createdAt";
         }

@@ -24,4 +24,5 @@ public interface UserService {
 
     UserDto.GetPhoneNumberResponseDto getPhoneNumber(UUID userId);
 
+    UserDto.GetWalletAddressResponseDto getWallet(UUID userId);
 }

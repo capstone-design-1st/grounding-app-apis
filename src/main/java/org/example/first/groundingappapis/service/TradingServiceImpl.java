@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.OrderDto;
 import org.example.first.groundingappapis.dto.QuoteDto;
+import org.example.first.groundingappapis.dto.RealTimeTransactionLogDto;
 import org.example.first.groundingappapis.dto.TradingDto;
 import org.example.first.groundingappapis.entity.*;
 import org.example.first.groundingappapis.exception.*;
@@ -31,6 +32,7 @@ public class TradingServiceImpl implements TradingService {
     private final AccountRepository accountRepository;
     private final PropertyRepository propertyRepository;
     private final InventoryRepository inventoryRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
@@ -163,13 +165,16 @@ public class TradingServiceImpl implements TradingService {
         if(!isEnoughFundraise(property)){
             throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
         }
+        LocalDate date = LocalDate.now();
 
+        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property, date).orElseGet(() -> {
+            RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
+                    new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
 
-        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property).orElseGet(() -> {
             DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
                     .date(LocalDate.now())
                     .openingPrice(sellRequest.getPrice())
-                    .closingPrice(null)
+                    .closingPrice(null) //TODO
                     .maxPrice(sellRequest.getPrice())
                     .minPrice(sellRequest.getPrice())
                     .build();
@@ -221,7 +226,7 @@ public class TradingServiceImpl implements TradingService {
 
     @Transactional(readOnly = true)
     @Override
-    public OrderDto.GetQuantityOfInventoryResponse getQuantityOfInventory(User user, UUID propertyId, int division) {
+    public OrderDto.GetQuantityOfInventoryResponse getQuantityOfInventory(User user, UUID propertyId) {
         final Account account = accountRepository.findByUser(user).orElseThrow(() ->
                 new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
@@ -230,11 +235,9 @@ public class TradingServiceImpl implements TradingService {
         Inventory inventory = inventoryRepository.findByAccountAndProperty(account, property).orElseThrow(() ->
                 new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
 
-        int quantity = inventory.getQuantity() / division;
-
         OrderDto.GetQuantityOfInventoryResponse response = OrderDto.GetQuantityOfInventoryResponse.builder()
                 .propertyId(propertyId.toString())
-                .quantity(quantity)
+                .quantity(inventory.getQuantity())
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -338,6 +341,15 @@ public class TradingServiceImpl implements TradingService {
             });
 
             inventory.setQuantity(inventory.getQuantity() - executedQuantity);
+
+            RealTimeTransactionLog realTimeTransactionLog = RealTimeTransactionLog.builder()
+                    .quantity(executedQuantity)
+                    .executedPrice(executedPrice)
+                    .executedAt(LocalDateTime.now())
+                    .fluctuationRate(getFluctuationRate(dayTransactionLog.getOpeningPrice(), executedPrice))
+                    .build();
+
+            realTimeTransactionLogRepository.save(realTimeTransactionLog);
         }
 
         saveOrder(buyer, buyRequest.getPrice(), executedQuantityOfOrder, executedQuantityOfOrder, "매수", property);
@@ -427,6 +439,15 @@ public class TradingServiceImpl implements TradingService {
 
         realTimeTransactionLog.updateProperty(property);
         realTimeTransactionLog.updateUser(user);
+
+        if(executedPrice > dayTransactionLog.getMaxPrice())
+            dayTransactionLog.updateMaxPrice(executedPrice);
+        else if(executedPrice < dayTransactionLog.getMinPrice())
+            dayTransactionLog.updateMinPrice(executedPrice);
+
+        dayTransactionLog.increaseVolume(executedQuantity);
+
+        dayTransactionLogRepository.save(dayTransactionLog);
     }
 
     @Transactional
@@ -453,7 +474,7 @@ public class TradingServiceImpl implements TradingService {
 
     @Transactional(readOnly = true)
     @Override
-    public OrderDto.GetTotalPriceResponse getTotalOrderPrice(UUID propertyId, int quantity) {
+    public OrderDto.GetTotalPriceResponse getTotalPrice(UUID propertyId, int quantity) {
         int totalPrice = 0;
         //realtime transaction log가 있으면 해당 가격을 가져와서 계산, 없으면 property의 fundraise의 securityprice 가격을 가져와서 계산
 
@@ -476,20 +497,29 @@ public class TradingServiceImpl implements TradingService {
         return response;
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public OrderDto.GetQuantityResponse getQuantity(UUID propertyId, int totalOrderPrice) {
-        int quantity = 0;
+    public OrderDto.GetQuantityResponse getQuantity(UUID userId, UUID propertyId) {
         //realtime transaction log가 있으면 해당 가격을 가져와서 계산, 없으면 property의 fundraise의 securityprice 가격을 가져와서 계산
         //property의 fundraise의 securityprice 가격을 가져와서 계산
+
+        final User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserException(UserErrorResult.USER_NOT_FOUND));
+
+        final Account account = accountRepository.findByUser(user).orElseThrow(() ->
+                new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
+
+        final Long deposit = account.getDeposit();
+        int quantity;
 
         if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)) {
             RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
                     new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
-            quantity = totalOrderPrice / realTimeTransactionLog.getExecutedPrice();
+            quantity = (int) (deposit / Long.valueOf(realTimeTransactionLog.getExecutedPrice()));
         }else{
             Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                     new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
-            quantity = totalOrderPrice / property.getFundraise().getIssuePrice();
+            quantity = (int) (deposit / Long.valueOf(property.getFundraise().getIssuePrice()));
         }
 
         OrderDto.GetQuantityResponse response = OrderDto.GetQuantityResponse.builder()

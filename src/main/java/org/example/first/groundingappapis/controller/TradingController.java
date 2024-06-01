@@ -1,5 +1,6 @@
 package org.example.first.groundingappapis.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.OrderDto;
@@ -51,31 +52,35 @@ public class TradingController {
     }
 
     //get total price by quantity and propertyId response
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{propertyId}/total-price")
-    public ResponseEntity<OrderDto.GetTotalPriceResponse> getTotalPrice(@PathVariable UUID propertyId,
-                                                                        @RequestParam int quantity) {
-
-        return ResponseEntity.ok(tradingService.getTotalOrderPrice(propertyId, quantity));
-    }
+//    @Operation(summary = "구매 가능한 총 금액 조회")
+//    @PreAuthorize("isAuthenticated()")
+//    @GetMapping("/{propertyId}/total-price-by-quantity")
+//    public ResponseEntity<OrderDto.GetTotalPriceResponse> getTotalPrice(@PathVariable UUID propertyId,
+//                                                                        @RequestParam int quantity) {
+//
+//        return ResponseEntity.ok(tradingService.getTotalPrice(propertyId, quantity));
+//    }
     //get quantity by amount of money and propertyId response
+    @Operation(summary = "구매 가능한 수량 조회")
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{propertyId}/quantity")
-    public ResponseEntity<OrderDto.GetQuantityResponse> getQuantity(@PathVariable UUID propertyId,
-                                               @RequestParam int amount) {
+    @GetMapping("/{propertyId}/buyable-quantity")
+    public ResponseEntity<OrderDto.GetQuantityResponse> getTotalBuyableQuantity(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable UUID propertyId) {
 
-        return ResponseEntity.ok(tradingService.getQuantity(propertyId, amount));
+        UUID userId = userPrincipal.getUser().getId();
+
+        return ResponseEntity.ok(tradingService.getQuantity(userId, propertyId));
     }
 
     //get quantity of inventory by propertyId
+    @Operation(summary = "보유중인 매물 총 수량 조회")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{propertyId}/inventory/quantity")
     public ResponseEntity<OrderDto.GetQuantityOfInventoryResponse> getInventory(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                                      @PathVariable UUID propertyId,
-                                                                      @RequestParam int division) {
+                                                                      @PathVariable UUID propertyId) {
         User user = userPrincipal.getUser();
-
-        return ResponseEntity.ok(tradingService.getQuantityOfInventory(user, propertyId, division));
+        return ResponseEntity.ok(tradingService.getQuantityOfInventory(user, propertyId));
     }
 
 

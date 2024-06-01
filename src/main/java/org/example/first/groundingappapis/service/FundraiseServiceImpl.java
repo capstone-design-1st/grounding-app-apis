@@ -23,6 +23,7 @@ public class FundraiseServiceImpl implements FundraiseService{
     private final InventoryRepository inventoryRepository;
     private final UserRepository userRepository;
     private final FundraiseRepository fundraiseRepository;
+    private final DayTransactionLogRepository dayTransactionLogRepository;
     private void validateFundraiseOrder(Fundraise fundraise, Account buyerAccount, User buyer, Property property, int totalSubscriptionPrice) {
         if (fundraise == null) {
             throw new PropertyException(PropertyErrorResult.FUNDRAISE_NOT_FOUND);
@@ -97,8 +98,28 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         int currentProgressAmount = fundraise.getProgressAmount();
         fundraise.setProgress(currentProgressAmount + totalSubscriptionPrice);
-
+        fundraise.increaseInvestorCount();
         fundraiseRepository.save(fundraise);
+
+        if(fundraise.getTotalFund().equals(fundraise.getProgressAmount())){
+            fundraise.setSubscriptionEndDate(LocalDate.now());
+            fundraiseRepository.save(fundraise);
+
+            DayTransactionLog dayTransactionLog = DayTransactionLog.builder()
+                    .closingPrice(fundraise.getIssuePrice())
+                    .openingPrice(fundraise.getIssuePrice())
+                    .closingPrice(fundraise.getIssuePrice())
+                    .maxPrice(fundraise.getIssuePrice())
+                    .minPrice(fundraise.getIssuePrice())
+                    .fluctuationRate(0.0)
+                    .volume(0L)
+                    .date(LocalDate.now())
+                    .build();
+
+            dayTransactionLog.updateProperty(property);
+            dayTransactionLogRepository.save(dayTransactionLog);
+        }
+
 
         return FundraiseDto.FundraiseResponse.builder()
                 .userId(buyer.getId().toString())

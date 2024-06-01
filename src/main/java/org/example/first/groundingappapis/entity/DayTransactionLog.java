@@ -51,8 +51,11 @@ public class DayTransactionLog {
     @Column(name = "min_price")
     private Integer minPrice;
 
+    @Column(name = "volume")
+    private Long volume;
+
     @Builder
-    public DayTransactionLog(Property property, LocalDate date, Double fluctuationRate, Integer openingPrice, Integer closingPrice, Integer maxPrice, Integer minPrice) {
+    public DayTransactionLog(Property property, LocalDate date, Double fluctuationRate, Integer openingPrice, Integer closingPrice, Integer maxPrice, Integer minPrice, Long volume) {
         this.property = property;
         this.date = date;
         this.fluctuationRate = fluctuationRate;
@@ -60,6 +63,7 @@ public class DayTransactionLog {
         this.closingPrice = closingPrice;
         this.maxPrice = maxPrice;
         this.minPrice = minPrice;
+        this.volume = volume;
     }
 
     public DayTransactionLogDto toDto() {
@@ -71,6 +75,7 @@ public class DayTransactionLog {
                 .closingPrice(this.closingPrice)
                 .maxPrice(this.maxPrice)
                 .minPrice(this.minPrice)
+                .volume(this.volume)
                 .build();
     }
 
@@ -78,4 +83,15 @@ public class DayTransactionLog {
         this.property = property;
     }
 
+    public void updateMaxPrice(int executedPrice) {
+        this.maxPrice = executedPrice;
+    }
+
+    public void updateMinPrice(int executedPrice) {
+        this.minPrice = executedPrice;
+    }
+
+    public void increaseVolume(int executedQuantity) {
+        this.volume += executedQuantity;
+    }
 }

@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService {
                     .role(Role.USER)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
+                    .walletAddress(signUpRequestDto.getWalletAddress())
                     .build();
             userRepository.save(user);
 
@@ -142,5 +143,19 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(user.getPhoneNumber())
                 .build();
         return getPhoneNumberResponseDto;
+    }
+
+    @Override
+    public UserDto.GetWalletAddressResponseDto getWallet(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+
+        UserDto.GetWalletAddressResponseDto getWalletAddressResponseDto = UserDto.GetWalletAddressResponseDto
+                .builder()
+                .userId(user.getId())
+                .walletAddress(user.getWalletAddress())
+                .build();
+        return getWalletAddressResponseDto;
+
     }
 }

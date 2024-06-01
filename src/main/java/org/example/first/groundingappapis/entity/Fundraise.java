@@ -37,10 +37,6 @@ public class Fundraise {
     @Column(name = "progress_amount", columnDefinition = "BIGINT DEFAULT 0")
     private Integer progressAmount;
 
-    //마감일(사용자)
-    @Column(name = "deadline", columnDefinition = "DATE")
-    private LocalDate deadline;
-
     //투자 참여 인원
     @Column(name = "investor_count", columnDefinition = "INT DEFAULT 0")
     private Integer investorCount;
@@ -85,7 +81,6 @@ public class Fundraise {
     @Builder
     public Fundraise(Property property,
                      Double progressRate,
-                     LocalDate deadline,
                      Integer investorCount,
                      String securityType,
                      String issuer,
@@ -100,7 +95,6 @@ public class Fundraise {
         this.property = property;
         this.progressAmount = progressAmount;
         this.progressRate = progressRate;
-        this.deadline = deadline;
         this.investorCount = investorCount;
         this.securityType = securityType;
         this.issuer = issuer;
@@ -117,7 +111,6 @@ public class Fundraise {
         return FundraiseDto.builder()
                 .progressRate(progressRate)
                 .progressAmount(progressAmount)
-                .deadline(deadline)
                 .investorCount(investorCount)
                 .securityType(securityType)
                 .issuer(issuer)
@@ -139,5 +132,13 @@ public class Fundraise {
     public void setProgress(int progressAmount) {
         this.progressAmount = progressAmount;
         this.progressRate = (double) progressAmount / totalFund * 100;
+    }
+
+    public void setSubscriptionEndDate(LocalDate now) {
+        this.subscriptionEndDate = now;
+    }
+
+    public void increaseInvestorCount() {
+        this.investorCount++;
     }
 }

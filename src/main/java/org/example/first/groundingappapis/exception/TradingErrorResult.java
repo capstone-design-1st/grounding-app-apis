@@ -16,7 +16,8 @@ public enum TradingErrorResult {
     EXCEED_FUNDRAISE_TOTAL_AMOUNT(HttpStatus.FORBIDDEN, "총 모집 금액을 초과한 주문입니다."),
     ALREADY_SUBSCRIBED(HttpStatus.FORBIDDEN, "이미 청약한 매물입니다." ),
     NOT_ENOUGH_FUNDRAISE(HttpStatus.FORBIDDEN, "청약이 끝나지 않은 매물입니다."),
-    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다.");//409;
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다."),
+    DAY_TRANSACTION_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "일별 로그가 존재하지 않습니다.");
     private final HttpStatus httpStatus;
     private final String message;
 }

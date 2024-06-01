@@ -100,15 +100,6 @@ public class UserController {
                 return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
             }
 
-//            if (!verificationService.isVerified(signUpRequestDto.getPhoneNumber())){
-//                log.info("검증되지 않은 전화번호");
-//                UserErrorResult userErrorResult = UserErrorResult.UNVERIFIED_PHONE_NUMBER;
-//                ResponseDto responseDto = ResponseDto.builder().error(userErrorResult.getMessage()).build();
-//
-//                return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
-//            }
-
-
             if (userService.userExistsByEmail(signUpRequestDto.getEmail())) {
                 log.info("이미 존재하는 이메일");
                 UserErrorResult userErrorResult = UserErrorResult.DUPLICATED_EMAIL;
@@ -286,6 +277,17 @@ public class UserController {
         }
     }
 
+    @GetMapping("/wallet")
+    public ResponseEntity<ResponseDto> getWalletAddress(@AuthenticationPrincipal UserPrincipal user) {
+        UUID userId = user.getUser().getId();
+        UserDto.GetWalletAddressResponseDto getWalletAddressResponseDto = userService.getWallet(userId);
+
+        ResponseDto responseDto = ResponseDto.builder()
+                .payload(objectMapper.convertValue(getWalletAddressResponseDto, Map.class))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto); //200
+    }
 //
 //    //현재 투자금액
 //    @GetMapping("/investment")

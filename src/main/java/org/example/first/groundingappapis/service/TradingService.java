@@ -15,13 +15,13 @@ public interface TradingService {
 
     void uploadBuyingOrderOnQuote(User user, UUID propertyId, TradingDto.BuyRequest buyRequest);
 
-    OrderDto.GetTotalPriceResponse getTotalOrderPrice(UUID propertyId, int quantity);
+    OrderDto.GetTotalPriceResponse getTotalPrice(UUID propertyId, int quantity);
 
-    OrderDto.GetQuantityResponse getQuantity(UUID propertyId, int amount);
+    OrderDto.GetQuantityResponse getQuantity(UUID userId, UUID propertyId);
 
     Double getFluctuationRate(int openingPrice, int executedPrice);
 
-    OrderDto.GetQuantityOfInventoryResponse getQuantityOfInventory(User user, UUID propertyId, int division);
+    OrderDto.GetQuantityOfInventoryResponse getQuantityOfInventory(User user, UUID propertyId);
 
     Page<QuoteDto.ReadResponse> readUpperQuotes(UUID propertyId, int basePrice, int page, int size);
 

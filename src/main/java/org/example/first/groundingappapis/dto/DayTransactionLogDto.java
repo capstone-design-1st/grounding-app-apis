@@ -34,6 +34,8 @@ public class DayTransactionLogDto {
     private Integer maxPrice;
     //최저가
     private Integer minPrice;
+    //거래량
+    private Long volume;
 
     @Builder
     public DayTransactionLogDto(
@@ -43,7 +45,8 @@ public class DayTransactionLogDto {
                                 Integer openingPrice,
                                 Integer closingPrice,
                                 Integer maxPrice,
-                                Integer minPrice) {
+                                Integer minPrice,
+                                Long volume) {
         this.propertyId = propertyId;
         this.date = date != null ? date : LocalDate.now();
         this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
@@ -53,9 +56,43 @@ public class DayTransactionLogDto {
         this.minPrice = minPrice != null ? minPrice : 0;
     }
 
+    /*
+        public DayTransactionLogDto toDto() {
+        return DayTransactionLogDto.builder()
+                .propertyId(property.getId())
+                .date(this.date)
+                .fluctuationRate(this.fluctuationRate)
+                .openingPrice(this.openingPrice)
+                .closingPrice(this.closingPrice)
+                .maxPrice(this.maxPrice)
+                .minPrice(this.minPrice)
+                .volume(this.volume)
+                .build();
+    }
+     */
     @Data
-    @Builder
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class ReadResponse{}
+    public static class ReadResponse{
+        private UUID propertyId;
+        private LocalDate date;
+        private Double fluctuationRate;
+        private Integer openingPrice;
+        private Integer closingPrice;
+        private Integer maxPrice;
+        private Integer minPrice;
+        private Long volume;
+
+        @Builder
+        public ReadResponse(UUID propertyId, LocalDate date, Double fluctuationRate, Integer openingPrice, Integer closingPrice, Integer maxPrice, Integer minPrice, Long volume) {
+            this.propertyId = propertyId;
+            this.date = date != null ? date : LocalDate.now();
+            this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
+            this.openingPrice = openingPrice != null ? openingPrice : 0;
+            this.closingPrice = closingPrice != null ? closingPrice : 0;
+            this.maxPrice = maxPrice != null ? maxPrice : 0;
+            this.minPrice = minPrice != null ? minPrice : 0;
+            this.volume = volume != null ? volume : 0L;
+        }
+    }
 }
