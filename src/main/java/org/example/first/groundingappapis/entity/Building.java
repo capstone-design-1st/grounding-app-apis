@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "buildings")
+@Table(name = "buildings", indexes = {
+        @Index(name = "idx_building_property_id", columnList = "property_id")
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

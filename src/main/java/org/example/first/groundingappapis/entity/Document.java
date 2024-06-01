@@ -10,7 +10,9 @@ import org.example.first.groundingappapis.dto.DocumentDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "documents")
+@Table(name = "documents", indexes = {
+        @Index(name = "idx_documents_property_id", columnList = "property_id")
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

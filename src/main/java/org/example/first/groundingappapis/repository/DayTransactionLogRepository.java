@@ -23,9 +23,18 @@ public interface DayTransactionLogRepository extends JpaRepository<DayTransactio
             "ORDER BY d.date DESC")
     List<DayTransactionLogDto> findRecentDayTransactionLogsByProperties(List<Property> properties);
 
+//    @Query("SELECT new org.example.first.groundingappapis.dto.DayTransactionLogDto(" +
+//            "d.property.id, d.date, d.fluctuationRate, d.openingPrice, d.closingPrice, d.maxPrice, d.minPrice) " +
+//            "FROM DayTransactionLog d " +
+//            "WHERE d.property IN :properties AND d.date = (" +
+//            "SELECT MAX(subd.date) FROM DayTransactionLog subd WHERE subd.property = d.property)")
+//    List<DayTransactionLogDto> findRecentDayTransactionLogsByProperties(List<Property> properties);
+
     @Query("SELECT d " +
             "FROM DayTransactionLog d " +
             "WHERE d.property = :property " +
             "ORDER BY d.date DESC")
     Optional<DayTransactionLog> findRecentDayTransactionLogByProperty(Property property);
+
+
 }

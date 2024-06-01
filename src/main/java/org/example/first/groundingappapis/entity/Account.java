@@ -13,7 +13,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "accounts", indexes = {
+        @Index(name = "idx_accounts_user_id", columnList = "user_id")
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

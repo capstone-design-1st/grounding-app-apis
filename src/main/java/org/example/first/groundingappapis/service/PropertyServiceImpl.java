@@ -1,6 +1,6 @@
 package org.example.first.groundingappapis.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.*;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +30,7 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyRepository propertyRepository;
     private final RealTimeTransactionLogRepository realTimeTransactionLogRepository;
     private final DayTransactionLogRepository dayTransactionLogRepository;
+    private final AsyncService asyncService;
     @Override
     public Page<PropertyDto.ReadBasicInfoResponse> readPropertiesOrderedByVolume(Pageable pageable) {
         return null;
@@ -39,7 +41,7 @@ public class PropertyServiceImpl implements PropertyService {
         return null;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public PropertyDto.GetResponse getProperty(String propertyId) {
         Property property = propertyRepository.getDetailPropertyById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
@@ -103,21 +105,22 @@ public class PropertyServiceImpl implements PropertyService {
 
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<PropertyDto.ReadBasicInfoResponse> getPopularProperties(Pageable pageable) {
-
         Page<Property> popularProperties = propertyRepository.findAll(pageable);
 
-        List<RealTimeTransactionLogDto> transactionLogs = realTimeTransactionLogRepository
-                .findRecentTransactionLogsByProperties(popularProperties.getContent());
+        List<Property> properties = popularProperties.getContent();
 
-        Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogs.stream()
+        CompletableFuture<List<RealTimeTransactionLogDto>> transactionLogsFuture = asyncService.findRecentTransactionLogsAsync(properties);
+        CompletableFuture<List<DayTransactionLogDto>> dayTransactionLogsFuture = asyncService.findRecentDayTransactionLogsAsync(properties);
+
+        CompletableFuture.allOf(transactionLogsFuture, dayTransactionLogsFuture).join();
+
+        Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogsFuture.join().stream()
                 .collect(Collectors.toMap(RealTimeTransactionLogDto::getPropertyId, log -> log));
 
-        List<DayTransactionLogDto> dayTransactionLogs = dayTransactionLogRepository
-                .findRecentDayTransactionLogsByProperties(popularProperties.getContent());
-
-        Map<UUID, DayTransactionLogDto> dayTransactionLogMap = dayTransactionLogs.stream()
+        Map<UUID, DayTransactionLogDto> dayTransactionLogMap = dayTransactionLogsFuture.join().stream()
                 .collect(Collectors.toMap(DayTransactionLogDto::getPropertyId, log -> log));
 
         return popularProperties.map(property -> {
@@ -140,7 +143,6 @@ public class PropertyServiceImpl implements PropertyService {
                     .build();
         });
     }
-
     private PropertyDetailDto buildLandInformation(Land land) {
         return LandDto.landBuilder()
                 .useArea(land.getUseArea())

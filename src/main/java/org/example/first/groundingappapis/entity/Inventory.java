@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inventorys")
+@Table(name = "inventorys", indexes = {
+        @Index(name = "idx_inventorys_property_id", columnList = "property_id"),
+        @Index(name = "idx_inventorys_account_id", columnList = "account_id")
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

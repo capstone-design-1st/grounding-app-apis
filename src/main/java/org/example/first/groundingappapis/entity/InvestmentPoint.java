@@ -10,7 +10,9 @@ import org.example.first.groundingappapis.dto.InvestmentPointDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "investment_points")
+@Table(name = "investment_points", indexes = {
+        @Index(name = "idx_investment_points_property_id", columnList = "property_id")
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
