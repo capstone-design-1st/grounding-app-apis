@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-@Table(name = "properties")
+@Table(name = "properties", indexes = {
+        @Index(name = "idx_property_name", columnList = "property_name")
+})
 @Getter
 @Setter
 @NoArgsConstructor

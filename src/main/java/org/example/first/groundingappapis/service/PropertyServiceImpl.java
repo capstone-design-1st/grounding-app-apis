@@ -1,6 +1,6 @@
 package org.example.first.groundingappapis.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.*;
@@ -150,6 +150,35 @@ public class PropertyServiceImpl implements PropertyService {
                 .readDayTransactionLogsByPropertyId(property.getId(), pageable);
 
         return dayTransactionLogs;
+    }
+    @Transactional(readOnly = true)
+    @Override
+    public Page<PropertyDto.SearchResultResponse> searchProperties(String keyword, Pageable pageable) {
+
+        Page<PropertyDto.SearchResultResponse> searchResult = propertyRepository.searchProperties(keyword, pageable)
+                .map(result -> {
+                    //UUID propertyId = (UUID) result[0];
+                    //UUID propertyId = UUID.nameUUIDFromBytes(((String) result[0]).getBytes());
+                    UUID propertyId = UUID.fromString((String) result[0]);
+                    String type = (String) result[1];
+                    String city = (String) result[2];
+                    String gu = (String) result[3];
+                    String name = (String) result[4];
+                    String oneline = (String) result[5];
+                    Double fluctuationRate = (Double) result[6];
+
+                    return PropertyDto.SearchResultResponse.builder()
+                            .propertyId(propertyId)
+                            .type(type)
+                            .city(city)
+                            .gu(gu)
+                            .name(name)
+                            .oneLine(oneline)
+                            .fluctuationRate(fluctuationRate)
+                            .build();
+                });
+
+        return searchResult;
     }
 
     private PropertyDetailDto buildLandInformation(Land land) {

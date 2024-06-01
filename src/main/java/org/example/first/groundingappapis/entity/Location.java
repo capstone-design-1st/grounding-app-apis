@@ -13,7 +13,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "locations", indexes = {
+        @Index(name = "idx_location_city", columnList = "city"),
+        @Index(name = "idx_location_gu", columnList = "gu")
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

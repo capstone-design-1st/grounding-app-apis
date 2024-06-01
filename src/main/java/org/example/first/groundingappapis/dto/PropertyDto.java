@@ -204,4 +204,28 @@ public class PropertyDto {
             this.createdAt = createdAt;
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class SearchResultResponse {
+        private UUID propertyId;
+        private String type;
+        private String city;
+        private String gu;
+        private String name;
+        private String oneLine;
+        private Double fluctuationRate;
+
+        @Builder
+        public SearchResultResponse(UUID propertyId, String type, String city, String gu, String name, String oneLine, Double fluctuationRate) {
+            this.propertyId = propertyId;
+            this.type = type;
+            this.city = city;
+            this.gu = gu;
+            this.name = name;
+            this.oneLine = oneLine;
+            this.fluctuationRate = fluctuationRate;
+        }
+    }
 }
