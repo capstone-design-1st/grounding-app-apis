@@ -112,7 +112,7 @@ public class FundraiseServiceImpl implements FundraiseService{
                     .maxPrice(fundraise.getIssuePrice())
                     .minPrice(fundraise.getIssuePrice())
                     .fluctuationRate(0.0)
-                    .volume(0L)
+                    .volumeCount(0L)
                     .date(LocalDate.now())
                     .build();
 
@@ -120,6 +120,8 @@ public class FundraiseServiceImpl implements FundraiseService{
             dayTransactionLogRepository.save(dayTransactionLog);
         }
 
+        property.increaseVolumeCount(fundraiseRequest.getQuantity());
+        propertyRepository.save(property);
 
         return FundraiseDto.FundraiseResponse.builder()
                 .userId(buyer.getId().toString())

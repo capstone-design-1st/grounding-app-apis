@@ -7,6 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 public interface FundraiseService {
-    @Transactional
     FundraiseDto.FundraiseResponse fundraiseProperty(String propertyId, FundraiseDto.FundraiseRequest fundraiseRequest, UUID userId);
 }

@@ -1,14 +1,11 @@
 package org.example.first.groundingappapis.service;
 
+import org.example.first.groundingappapis.exception.*;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.*;
 import org.example.first.groundingappapis.entity.*;
-import org.example.first.groundingappapis.exception.PropertyErrorResult;
-import org.example.first.groundingappapis.exception.PropertyException;
-import org.example.first.groundingappapis.exception.UserErrorResult;
-import org.example.first.groundingappapis.exception.UserException;
 import org.example.first.groundingappapis.repository.DayTransactionLogRepository;
 import org.example.first.groundingappapis.repository.PropertyRepository;
 import org.example.first.groundingappapis.repository.RealTimeTransactionLogRepository;
@@ -145,6 +142,10 @@ public class PropertyServiceImpl implements PropertyService {
     public Page<DayTransactionLogDto.ReadResponse> getDayTransactionLog(String propertyId, Pageable pageable) {
 
         final Property property = propertyRepository.findById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+        final Fundraise fundraise = property.getFundraise();
+        if(fundraise.getProgressRate() < 100) {
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
 
         Page<DayTransactionLogDto.ReadResponse> dayTransactionLogs = dayTransactionLogRepository
                 .readDayTransactionLogsByPropertyId(property.getId(), pageable);

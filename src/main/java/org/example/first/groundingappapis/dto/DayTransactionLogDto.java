@@ -35,7 +35,7 @@ public class DayTransactionLogDto {
     //최저가
     private Integer minPrice;
     //거래량
-    private Long volume;
+    private Long volumeCount;
 
     @Builder
     public DayTransactionLogDto(
@@ -46,7 +46,7 @@ public class DayTransactionLogDto {
                                 Integer closingPrice,
                                 Integer maxPrice,
                                 Integer minPrice,
-                                Long volume) {
+                                Long volumeCount) {
         this.propertyId = propertyId;
         this.date = date != null ? date : LocalDate.now();
         this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
@@ -54,6 +54,7 @@ public class DayTransactionLogDto {
         this.closingPrice = closingPrice != null ? closingPrice : 0;
         this.maxPrice = maxPrice != null ? maxPrice : 0;
         this.minPrice = minPrice != null ? minPrice : 0;
+        this.volumeCount = volumeCount != null ? volumeCount : 0L;
     }
 
     /*
@@ -66,7 +67,7 @@ public class DayTransactionLogDto {
                 .closingPrice(this.closingPrice)
                 .maxPrice(this.maxPrice)
                 .minPrice(this.minPrice)
-                .volume(this.volume)
+                .volumeCount(this.volumeCount)
                 .build();
     }
      */
@@ -81,10 +82,10 @@ public class DayTransactionLogDto {
         private Integer closingPrice;
         private Integer maxPrice;
         private Integer minPrice;
-        private Long volume;
+        private Long volumeCount;
 
         @Builder
-        public ReadResponse(UUID propertyId, LocalDate date, Double fluctuationRate, Integer openingPrice, Integer closingPrice, Integer maxPrice, Integer minPrice, Long volume) {
+        public ReadResponse(UUID propertyId, LocalDate date, Double fluctuationRate, Integer openingPrice, Integer closingPrice, Integer maxPrice, Integer minPrice, Long volumeCount) {
             this.propertyId = propertyId;
             this.date = date != null ? date : LocalDate.now();
             this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
@@ -92,7 +93,7 @@ public class DayTransactionLogDto {
             this.closingPrice = closingPrice != null ? closingPrice : 0;
             this.maxPrice = maxPrice != null ? maxPrice : 0;
             this.minPrice = minPrice != null ? minPrice : 0;
-            this.volume = volume != null ? volume : 0L;
+            this.volumeCount = volumeCount != null ? volumeCount : 0L;
         }
     }
 }

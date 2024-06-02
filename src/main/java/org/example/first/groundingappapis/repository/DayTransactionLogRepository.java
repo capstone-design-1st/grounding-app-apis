@@ -20,7 +20,7 @@ import java.util.UUID;
 public interface DayTransactionLogRepository extends JpaRepository<DayTransactionLog, UUID> {
 
     @Query("SELECT new org.example.first.groundingappapis.dto.DayTransactionLogDto(" +
-            "d.property.id, d.date, d.fluctuationRate, d.openingPrice, d.closingPrice, d.maxPrice, d.minPrice) " +
+            "d.property.id, d.date, d.fluctuationRate, d.openingPrice, d.closingPrice, d.maxPrice, d.minPrice, d.volumeCount) " +
             "FROM DayTransactionLog d " +
             "WHERE d.property IN :properties " +
             "ORDER BY d.date DESC")
@@ -56,7 +56,7 @@ public interface DayTransactionLogRepository extends JpaRepository<DayTransactio
         private Long volume;
      */
     @Query("SELECT new org.example.first.groundingappapis.dto.DayTransactionLogDto$ReadResponse(" +
-            "d.property.id, d.date, d.fluctuationRate, d.openingPrice, d.closingPrice, d.maxPrice, d.minPrice, d.volume) " +
+            "d.property.id, d.date, d.fluctuationRate, d.openingPrice, d.closingPrice, d.maxPrice, d.minPrice, d.volumeCount) " +
             "FROM DayTransactionLog d " +
             "WHERE d.property.id = :propertyId " +
             "ORDER BY d.date DESC")

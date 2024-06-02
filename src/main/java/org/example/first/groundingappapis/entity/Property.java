@@ -192,8 +192,8 @@ public class Property {
         this.likeCount--;
     }
 
-    public void increaseVolumeCount(){
-        this.volumeCount++;
+    public void increaseVolumeCount(int executedQuantity){
+        volumeCount += executedQuantity;
     }
 
     public PropertyDto toDto() {

@@ -99,6 +99,9 @@ public class TradingServiceImpl implements TradingService {
 
         buyerAccount.minusDeposit(Long.valueOf(buyRequest.getPrice() * buyRequest.getQuantity()));
         accountRepository.save(buyerAccount);
+
+        property.increaseVolumeCount(executedQuantityOfOrder);
+        propertyRepository.save(property);
     }
 
     @Transactional
@@ -445,7 +448,7 @@ public class TradingServiceImpl implements TradingService {
         else if(executedPrice < dayTransactionLog.getMinPrice())
             dayTransactionLog.updateMinPrice(executedPrice);
 
-        dayTransactionLog.increaseVolume(executedQuantity);
+        dayTransactionLog.increaseVolumeCount(executedQuantity);
 
         dayTransactionLogRepository.save(dayTransactionLog);
     }

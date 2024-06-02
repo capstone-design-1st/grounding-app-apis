@@ -18,7 +18,6 @@ import java.util.UUID;
 public class FundraiseDto {
     private Double progressRate;
     private Integer progressAmount;
-    private LocalDate deadline;
     private Integer investorCount;
     private String securityType;
     private String issuer;
@@ -33,7 +32,6 @@ public class FundraiseDto {
     @Builder
     public FundraiseDto(Double progressRate,
                         Integer progressAmount,
-                        LocalDate deadline,
                         Integer investorCount,
                         String securityType,
                         String issuer,
@@ -46,7 +44,6 @@ public class FundraiseDto {
                         String operatorIntroduction) {
         this.progressRate = progressRate;
         this.progressAmount = progressAmount;
-        this.deadline = deadline;
         this.investorCount = investorCount;
         this.securityType = securityType;
         this.issuer = issuer;
