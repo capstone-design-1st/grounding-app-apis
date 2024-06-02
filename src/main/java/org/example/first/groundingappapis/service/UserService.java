@@ -12,7 +12,7 @@ public interface UserService {
 
     UserDto.LoginResponseDto login(UserDto.LoginRequestDto loginRequestDto);
 
-    boolean userExistsByNickname(String email);
+    boolean userExistsByName(String email);
 
     UserDto.SignUpResponseDto signUp(UserDto.SignUpRequestDto signUpRequestDto);
 

@@ -23,4 +23,11 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID>{
 
     @Query("SELECT i FROM Inventory i WHERE i.account = :account")
     List<Inventory> findByAccount(Account account);
+
+    @Query(value = "SELECT CASE WHEN SUM(i.quantity) = 0 THEN 1 " +
+            "ELSE SUM(i.quantity * i.earnings_rate) / SUM(i.quantity) END AS average_earning_rate " +
+            "FROM inventorys i " +
+            "WHERE i.account_id = :accountId", nativeQuery = true)
+    Double getAverageEarningRateByAccount(UUID accountId);
+
 }

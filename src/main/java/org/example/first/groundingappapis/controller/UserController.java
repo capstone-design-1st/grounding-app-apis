@@ -85,7 +85,7 @@ public class UserController {
     public ResponseEntity<ResponseDto> signUp(@Valid @RequestBody UserDto.
             SignUpRequestDto signUpRequestDto) throws Exception {
         try{
-            if (signUpRequestDto.getEmail() == null || signUpRequestDto.getPassword() == null || signUpRequestDto.getNickname() == null || signUpRequestDto.getPhoneNumber() == null) {
+            if (signUpRequestDto.getEmail() == null || signUpRequestDto.getPassword() == null || signUpRequestDto.getName() == null || signUpRequestDto.getPhoneNumber() == null) {
                 log.info("필수값 누락");
                 UserErrorResult userErrorResult = UserErrorResult.REQUIRED_VALUE;
                 ResponseDto responseDto = ResponseDto.builder().error(userErrorResult.getMessage()).build();
@@ -93,7 +93,7 @@ public class UserController {
                 return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
             }
 
-            if (userService.userExistsByNickname(signUpRequestDto.getEmail())) {
+            if (userService.userExistsByName(signUpRequestDto.getEmail())) {
                 log.info("이미 존재하는 닉네임");
                 UserErrorResult userErrorResult = UserErrorResult.DUPLICATED_NICKNAME;
                 ResponseDto responseDto = ResponseDto.builder().error(userErrorResult.getMessage()).build();

@@ -88,6 +88,8 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         Inventory inventory = Inventory.builder()
                 .quantity(fundraiseRequest.getQuantity())
+                .sellableQuantity(fundraiseRequest.getQuantity())
+                .earningsRate(0.0)
                 .averageBuyingPrice(fundraise.getIssuePrice())
                 .build();
 

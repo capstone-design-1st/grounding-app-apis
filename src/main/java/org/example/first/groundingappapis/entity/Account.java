@@ -36,8 +36,8 @@ public class Account {
     @Column(name = "deposit", columnDefinition = "BIGINT DEFAULT 0")
     private Long deposit;
 
-    @Column(name = "total_earning_rate", columnDefinition = "DOUBLE DEFAULT 0.0")
-    private Double totalEarningRate;
+    @Column(name = "average_earning_rate", columnDefinition = "DOUBLE DEFAULT 0.0")
+    private Double averageEarningRate;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Quote> quotes = new LinkedHashSet<>();
@@ -49,16 +49,16 @@ public class Account {
     private Set<Inventory> inventories = new LinkedHashSet<>();
 
     @Builder
-    public Account(User user, Long deposit, Double totalEarningRate) {
+    public Account(User user, Long deposit, Double averageEarningRate) {
         this.user = user;
         this.deposit = deposit;
-        this.totalEarningRate = totalEarningRate;
+        this.averageEarningRate = averageEarningRate;
     }
 
     public AccountDto toDto() {
         return AccountDto.builder()
                 .deposit(deposit)
-                .totalEarningRate(totalEarningRate)
+                .averageEarningRate(averageEarningRate)
                 .build();
     }
     public void plusDeposit(Long amount) {
@@ -67,5 +67,9 @@ public class Account {
 
     public void minusDeposit(Long amount) {
         this.deposit -= amount;
+    }
+
+    public void setAverageEarningRate(Double averageEarningRate) {
+        this.averageEarningRate = averageEarningRate;
     }
 }

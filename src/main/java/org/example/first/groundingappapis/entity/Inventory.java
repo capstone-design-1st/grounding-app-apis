@@ -29,6 +29,9 @@ public class Inventory {
     @Column(name = "average_buying_price")
     private Integer averageBuyingPrice;
 
+    @Column(name = "earnings_rate")
+    private Double earningsRate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_inventorys_account"))
     private Account account;
@@ -38,10 +41,11 @@ public class Inventory {
     private Property property;
 
     @Builder
-    public Inventory(Integer quantity, Integer averageBuyingPrice, Integer sellableQuantity) {
+    public Inventory(Integer quantity, Integer averageBuyingPrice, Integer sellableQuantity, Double earningsRate) {
         this.quantity = quantity;
         this.averageBuyingPrice = averageBuyingPrice;
         this.sellableQuantity = sellableQuantity;
+        this.earningsRate = earningsRate;
     }
 
     public void updateProperty(Property property) {
@@ -71,6 +75,9 @@ public class Inventory {
         this.sellableQuantity = sellableQuantity;
     }
 
+    public void setEarningsRate(Double earningsRate) {
+        this.earningsRate = earningsRate;
+    }
 
 //    public InventoryDto toDto() {
 //        return InventoryDto.builder()

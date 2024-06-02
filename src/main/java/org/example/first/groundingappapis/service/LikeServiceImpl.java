@@ -12,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.DayTransactionLogDto;
 import org.example.first.groundingappapis.dto.PropertyDto;
 import org.example.first.groundingappapis.dto.RealTimeTransactionLogDto;
-import org.example.first.groundingappapis.entity.Like;
-import org.example.first.groundingappapis.entity.Property;
-import org.example.first.groundingappapis.entity.RealTimeTransactionLog;
-import org.example.first.groundingappapis.entity.User;
+import org.example.first.groundingappapis.entity.*;
 import org.example.first.groundingappapis.exception.PropertyErrorResult;
 import org.example.first.groundingappapis.exception.PropertyException;
 import org.example.first.groundingappapis.exception.UserErrorResult;
@@ -109,12 +106,12 @@ public class LikeServiceImpl implements LikeService{
                 .collect(Collectors.toMap(RealTimeTransactionLogDto::getPropertyId, log -> log));
 
         //매물에 대한 가장 최근 일일 거래 로그 조회
-        List<DayTransactionLogDto> dayTransactionLogs = dayTransactionLogRepository
-                .findRecentDayTransactionLogsByProperties(userLikedProperties.getContent());
+        List<DayTransactionLog> dayTransactionLogs = dayTransactionLogRepository
+                .findRecentDayTransactionLogsByPropertyIds(userLikedProperties.getContent().stream().map(Property::getId).collect(Collectors.toList()));
 
         // 매물과 거래 로그를 매핑하여 DTO 생성
         Map<UUID, DayTransactionLogDto> dayTransactionLogMap = dayTransactionLogs.stream()
-                .collect(Collectors.toMap(DayTransactionLogDto::getPropertyId, log -> log));
+                .collect(Collectors.toMap(DayTransactionLog::getPropertyId, DayTransactionLog::toDto));
 
         // DTO 매핑하여 반환
         return userLikedProperties.map(property -> {
@@ -127,7 +124,7 @@ public class LikeServiceImpl implements LikeService{
             return PropertyDto.ReadBasicInfoResponse.builder()
                     .id(property.getId())
                     .name(property.getName())
-                    .presentPrice(Long.valueOf(transactionLog.getExecutedPrice()))
+                    .presentPrice(Long.valueOf(executedPrice))
                     .priceDifference(getPriceDifference(executedPrice, openingPrice))
                     .fluctuationRate(fluctuationRate)
                     .viewCount(property.getViewCount())
@@ -136,9 +133,7 @@ public class LikeServiceImpl implements LikeService{
                     .type(property.getType())
                     .build();
         });
-
     }
-
     @Override
     public PropertyDto.GetLikesResponse isUserLikeProperty(UUID uuid, User user) {
         Property property = propertyRepository.findById(uuid)

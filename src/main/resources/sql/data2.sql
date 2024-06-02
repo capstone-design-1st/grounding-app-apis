@@ -58,3 +58,69 @@ VALUES
     (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a214-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '2024-05-31', 1.0, 5400, 5450, 5500, 5350, 1600),
     (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a215-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '2024-06-01', 0.5, 5450, 5475, 5550, 5400, 1500)
     ON DUPLICATE KEY UPDATE day_transaction_log_id = day_transaction_log_id;
+
+-- user3
+
+INSERT INTO users (user_id, email, password, phone_number, name, role, created_at, updated_at, wallet_address)
+VALUES
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')),'test3@user.com' , '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user3', 'USER', NOW(), NOW(), 'r3roFB8dSpw6wPr4QH9JUKnXTaD628Zx9L')
+    ON DUPLICATE KEY UPDATE user_id = user_id;
+
+INSERT INTO accounts (account_id, user_id, deposit, average_earning_rate)
+VALUES
+    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), 9999999999999999, 0.0)
+    ON DUPLICATE KEY UPDATE account_id = account_id;
+/*
+ package org.example.first.groundingappapis.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import java.util.UUID;
+
+@Entity
+@Table(name = "inventorys")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Inventory {
+    @Id
+    @Column(name = "inventory_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID id;
+
+    //수량, 가격, 수익률, 현재가
+    @Column(name = "quantity")
+    private Integer quantity;
+
+    //매도 주문 가능 수량, 호가 등록시 -, 매도 주문 취소 시 +
+    @Column(name = "sellable_quantity")
+    private Integer sellableQuantity;
+
+    //매입금액
+    @Column(name = "average_buying_price")
+    private Integer averageBuyingPrice;
+
+    @Column(name = "earnings_rate")
+    private Double earningsRate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_inventorys_account"))
+    private Account account;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_inventorys_property"))
+    private Property property;
+
+    @Builder
+    public Inventory(Integer quantity, Integer averageBuyingPrice, Integer sellableQuantity, Double earningsRate) {
+        this.quantity = quantity;
+        this.averageBuyingPrice = averageBuyingPrice;
+        this.sellableQuantity = sellableQuantity;
+        this.earningsRate = earningsRate;
+    }
+*/
+-- INSERT INTO inventorys (inventory_id, quantity, sellable_quantity, average_buying_price, earnings_rate, account_id, property_id) VALUES
+--     (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 3000, 3000, 5000, 0.0, UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', ''))
+--     ON DUPLICATE KEY UPDATE inventory_id = inventory_id;

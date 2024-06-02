@@ -18,11 +18,11 @@ import java.util.UUID;
 public class AccountDto {
 
     private Long deposit;
-    private Double totalEarningRate;
+    private Double AverageEarningRate;
     @Builder
-    public AccountDto(Long deposit, Double totalEarningRate) {
+    public AccountDto(Long deposit, Double averageEarningRate) {
         this.deposit = deposit != null ? deposit : 0L;
-        this.totalEarningRate = totalEarningRate != null ? totalEarningRate : 0.0;
+        this.AverageEarningRate = averageEarningRate != null ? averageEarningRate : 0.0;
     }
 
     @Data

@@ -94,4 +94,8 @@ public class DayTransactionLog {
     public void increaseVolumeCount(int executedQuantity) {
         this.volumeCount += executedQuantity;
     }
+
+    public UUID getPropertyId() {
+        return property.getId();
+    }
 }

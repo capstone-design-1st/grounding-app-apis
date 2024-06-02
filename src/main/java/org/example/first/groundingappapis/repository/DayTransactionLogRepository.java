@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -19,24 +20,28 @@ import java.util.UUID;
 @Repository
 public interface DayTransactionLogRepository extends JpaRepository<DayTransactionLog, UUID> {
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.DayTransactionLogDto(" +
-            "d.property.id, d.date, d.fluctuationRate, d.openingPrice, d.closingPrice, d.maxPrice, d.minPrice, d.volumeCount) " +
-            "FROM DayTransactionLog d " +
-            "WHERE d.property IN :properties " +
-            "ORDER BY d.date DESC")
-    List<DayTransactionLogDto> findRecentDayTransactionLogsByProperties(List<Property> properties);
+    @Query(value = "SELECT d.* FROM day_transaction_logs d " +
+            "INNER JOIN (" +
+            "    SELECT property_id, MAX(date) as max_date " +
+            "    FROM day_transaction_logs " +
+            "    WHERE property_id IN :propertyIds " +
+            "    GROUP BY property_id" +
+            ") sub ON d.property_id = sub.property_id AND d.date = sub.max_date",
+            nativeQuery = true)
+    List<DayTransactionLog> findRecentDayTransactionLogsByPropertyIds(@Param("propertyIds") List<UUID> propertyIds);
 
-    @Query("SELECT d " +
-            "FROM DayTransactionLog d " +
-            "WHERE d.property = :property " +
-            "ORDER BY d.date DESC")
-    Optional<DayTransactionLog> findRecentDayTransactionLogByProperty(Property property);
+    @Query(value = "SELECT * FROM day_transaction_logs d " +
+            "WHERE d.property_id = :propertyId " +
+            "ORDER BY d.date DESC " +
+            "LIMIT 1", nativeQuery = true)
+    Optional<DayTransactionLog> findRecentDayTransactionLogByProperty(UUID propertyId);
 
-    @Query("SELECT d " +
-            "FROM DayTransactionLog d " +
-            "WHERE d.property = :property " +
-            "AND d.date = :date")
-    Optional<DayTransactionLog> findRecentDayTransactionLogByPropertyAndToday(Property property, LocalDate date);
+    @Query(value = "SELECT * FROM day_transaction_logs d " +
+            "WHERE d.property_id = :propertyId " +
+            "AND d.date = :date " +
+            "ORDER BY d.date DESC " +
+            "LIMIT 1", nativeQuery = true)
+    Optional<DayTransactionLog> findRecentDayTransactionLogByPropertyAndToday(@Param("propertyId") UUID propertyId, @Param("date") LocalDate date);
 
     @Query("SELECT d " +
             "FROM DayTransactionLog d " +

@@ -48,7 +48,7 @@ public class TradingServiceImpl implements TradingService {
             throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
         }
 
-        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property).orElseGet(() -> {
+        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property.getId()).orElseGet(() -> {
             DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
                     .date(LocalDate.now())
                     .openingPrice(buyRequest.getPrice())
@@ -91,12 +91,21 @@ public class TradingServiceImpl implements TradingService {
         //매수자쪽 inventory 업데이트는 한번에
         inventory.setSellableQuantity(inventory.getSellableQuantity() + finalExecutedQuantityOfOrder);
         inventory.setQuantity(inventory.getQuantity() + finalExecutedQuantityOfOrder);
-        inventory.setAverageBuyingPrice((inventory.getAverageBuyingPrice() + buyRequest.getPrice()) / (inventory.getQuantity() + finalExecutedQuantityOfOrder));
 
+        //0 보정
+        if(inventory.getQuantity() == 0) {
+            inventory.setAverageBuyingPrice(0);
+            inventory.setEarningsRate(0.0);
+        }else{
+            inventory.setAverageBuyingPrice((inventory.getAverageBuyingPrice() * inventory.getQuantity() + buyRequest.getPrice() * finalExecutedQuantityOfOrder) / (inventory.getQuantity() + finalExecutedQuantityOfOrder));
+            inventory.setEarningsRate(Double.valueOf((inventory.getAverageBuyingPrice() - buyRequest.getPrice()) / buyRequest.getPrice() * 100));
+        }
         inventoryRepository.save(inventory);
 
         saveBuyOrder(buyer, buyRequest, executedQuantityOfOrder, property);
 
+        //buyerAccount.setAverageEarningRate();, 모든 inventory earningRate랑 quantity 조회해서 평균
+        buyerAccount.setAverageEarningRate(inventoryRepository.getAverageEarningRateByAccount(buyerAccount.getId()));
         buyerAccount.minusDeposit(Long.valueOf(buyRequest.getPrice() * buyRequest.getQuantity()));
         accountRepository.save(buyerAccount);
 
@@ -168,9 +177,12 @@ public class TradingServiceImpl implements TradingService {
         if(!isEnoughFundraise(property)){
             throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
         }
+        final Inventory inventory = inventoryRepository.findByAccountAndProperty(sellerAccount, property).orElseThrow(() ->
+                new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
+
         LocalDate date = LocalDate.now();
 
-        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property, date).orElseGet(() -> {
+        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property.getId(), date).orElseGet(() -> {
             RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
                     new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
 
@@ -203,22 +215,17 @@ public class TradingServiceImpl implements TradingService {
 
         saveOrder(user, sellRequest.getPrice(), executedQuantityOfOrder, sellRequest.getQuantity(), "매도", property);
 
-        Inventory inventory = inventoryRepository.findByAccountAndProperty(sellerAccount, property).orElseThrow(() ->
-                new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
-
         inventory.setSellableQuantity(inventory.getSellableQuantity() - sellRequest.getQuantity());
 
-        if(inventory.getQuantity() == executedQuantityOfOrder){
+        sellerAccount.setAverageEarningRate(inventoryRepository.getAverageEarningRateByAccount(sellerAccount.getId()));
+
+        if (inventory.getQuantity() == 0) {
             inventoryRepository.delete(inventory);
-        }else{
+        } else {
             inventory.setQuantity(inventory.getQuantity() - executedQuantityOfOrder);
             inventoryRepository.save(inventory);
         }
-
-        sellerAccount.minusDeposit(Long.valueOf(sellRequest.getPrice() * sellRequest.getQuantity()));
         accountRepository.save(sellerAccount);
-
-
     }
     @Override
     public Double getFluctuationRate(int openingPrice, int executedPrice) {
@@ -539,4 +546,5 @@ public class TradingServiceImpl implements TradingService {
     public boolean isEnoughFundraise(Property property){
         return property.getFundraise().getProgressRate() >= 100.0;
     }
+
 }

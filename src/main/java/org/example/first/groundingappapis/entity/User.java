@@ -31,8 +31,8 @@ public class User {
     @Column(name = "phone_number", length = 30)
     private String phoneNumber;
 
-    @Column(name = "nickname", length = 10)
-    private String nickname;
+    @Column(name = "name", length = 10)
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 10)
@@ -40,7 +40,6 @@ public class User {
 
     @Column(name = "wallet_address")
     private String walletAddress;
-
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -72,7 +71,7 @@ public class User {
                 String email,
                 String password,
                 String phoneNumber,
-                String nickname,
+                String name,
                 Role role,
                 LocalDateTime createdAt,
                 LocalDateTime updatedAt,
@@ -82,7 +81,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.nickname = nickname;
+        this.name = name;
         this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -96,7 +95,7 @@ public class User {
                 .email(email)
                 .password(password)
                 .phoneNumber(phoneNumber)
-                .nickname(nickname)
+                .name(name)
                 .build();
     }
 
