@@ -84,7 +84,6 @@ public class TradingController {
     }
 
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{propertyId}/quotes/upper")
     public ResponseEntity<Page<QuoteDto.ReadResponse>> getUpperQuotes(
             @PathVariable UUID propertyId,
@@ -96,7 +95,6 @@ public class TradingController {
         return ResponseEntity.ok(tradingService.readUpperQuotes(propertyId, basePrice, page, size));
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{propertyId}/quotes/down")
     public ResponseEntity<Page<QuoteDto.ReadResponse>> getDownQuotes(
             @PathVariable UUID propertyId,

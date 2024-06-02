@@ -30,4 +30,8 @@ public class AccountController {
         final UUID userId = userPrincipal.getUser().getId();
         return ResponseEntity.ok(accountService.readUserProperty(userId));
     }
+
+    //@PreAuthorize("isAuthenticated()")
+
+
 }

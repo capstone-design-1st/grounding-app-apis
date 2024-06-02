@@ -32,7 +32,6 @@ public class PropertyController {
     private final LikeService likeService;
 
     //매물 상세
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{propertyId}")
     public ResponseEntity<PropertyDto.GetResponse> getProperty(@PathVariable String propertyId) {
         log.info("getProperty called with propertyId: {}", propertyId);
