@@ -121,6 +121,7 @@ public class Inventory {
         this.earningsRate = earningsRate;
     }
 */
+    -- user3이 처음에 3000개의 예시 임야를 5000원에 구매
 -- INSERT INTO inventorys (inventory_id, quantity, sellable_quantity, average_buying_price, earnings_rate, account_id, property_id) VALUES
 --     (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 3000, 3000, 5000, 0.0, UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', ''))
 --     ON DUPLICATE KEY UPDATE inventory_id = inventory_id;

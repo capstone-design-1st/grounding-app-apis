@@ -74,7 +74,12 @@ public class PropertyServiceImpl implements PropertyService {
                 .map(document -> document.toDto())
                 .collect(Collectors.toList());
 
+        Optional<RealTimeTransactionLog> realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(property.getId());
+
+        Integer presentPrice = realTimeTransactionLog.isPresent() ? realTimeTransactionLog.get().getExecutedPrice() : property.getFundraise().getIssuePrice();
+
         PropertyDto.GetResponse response = PropertyDto.GetResponse.builder()
+                .presentPrice(presentPrice)
                 .propertyDto(propertyDto)
                 .fundraiseDto(fundraiseDto)
                 .propertyDetailDto(propertyDetailDto)

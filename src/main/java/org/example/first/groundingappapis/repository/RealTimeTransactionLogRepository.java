@@ -52,10 +52,15 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "WHERE r.property.id = :propertyId")
     boolean existsByPropertyId(UUID propertyId);
 
-    @Query("SELECT r " +
-            "FROM RealTimeTransactionLog r " +
-            "WHERE r.property.id = :propertyId " +
-            "ORDER BY r.executedAt DESC")
+//    @Query("SELECT r " +
+//            "FROM RealTimeTransactionLog r " +
+//            "WHERE r.property.id = :propertyId " +
+//            "ORDER BY r.executedAt DESC")
+    //native query, limit 1로
+    @Query(value = "SELECT * FROM real_time_transaction_logs r " +
+            "WHERE r.property_id = :propertyId " +
+            "ORDER BY r.executed_at DESC " +
+            "LIMIT 1", nativeQuery = true)
     Optional<RealTimeTransactionLog> findFirstByPropertyIdOrderByExecutedAtDesc(UUID propertyId);
 
     @Query("SELECT CASE COUNT(r) WHEN 0 THEN false ELSE true END " +

@@ -51,6 +51,7 @@ public class PropertyDto {
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class GetResponse {
+        private Integer presentPrice;
         private PropertyDto propertyDto;
         private FundraiseDto fundraiseDto;
         private PropertyDetailDto propertyDetailDto;
@@ -62,7 +63,9 @@ public class PropertyDto {
         private List<DocumentDto> documentDto;
 
         @Builder
-        public GetResponse(PropertyDto propertyDto,
+        public GetResponse(
+                Integer presentPrice,
+                          PropertyDto propertyDto,
                           FundraiseDto fundraiseDto,
                           PropertyDetailDto propertyDetailDto,
                           LocationDto locationDto,
@@ -71,6 +74,7 @@ public class PropertyDto {
                           List<RepresentationPhotoUrlDto> representationPhotoUrlDto,
                           List<InvestmentPointDto> investmentPointDto,
                           List<DocumentDto> documentDto) {
+            this.presentPrice = presentPrice;
             this.propertyDto = propertyDto;
             this.fundraiseDto = fundraiseDto;
             this.propertyDetailDto = propertyDetailDto;
