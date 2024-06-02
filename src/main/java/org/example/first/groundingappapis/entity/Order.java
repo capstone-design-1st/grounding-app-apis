@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.OrderDto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -24,6 +25,8 @@ public class Order {
     public void prePersist() {
         if (this.id == null)
             this.id = UUID.randomUUID();
+        if (this.createdAt == null)
+            this.createdAt = LocalDateTime.now();
     }
     //매수/매도
     @Column(name = "type", length = 10)
@@ -37,9 +40,12 @@ public class Order {
     @Column(name = "quantity")
     private Integer quantity;
 
-    //상태, 대기중, 체결 완료, 취소
+    //체결 대기중, 체결 완료, 취소
     @Column(name = "status", length = 10)
     private String status;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_orders_user"))
@@ -50,13 +56,14 @@ public class Order {
     private Property property;
 
     @Builder
-    public Order(String type, Integer price, Integer quantity, User user, Property property, String status) {
+    public Order(String type, Integer price, Integer quantity, User user, Property property, String status, LocalDateTime createdAt) {
         this.type = type;
         this.price = price;
         this.quantity = quantity;
         this.user = user;
         this.property = property;
         this.status = status;
+        this.createdAt = createdAt;
     }
 
     public OrderDto toDto() {
@@ -66,6 +73,7 @@ public class Order {
                 .price(price)
                 .quantity(quantity)
                 .status(status)
+                .createdAt(createdAt)
                 .build();
     }
 

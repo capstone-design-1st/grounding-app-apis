@@ -9,9 +9,13 @@ import org.example.first.groundingappapis.exception.TradingException;
 import org.example.first.groundingappapis.exception.UserErrorResult;
 import org.example.first.groundingappapis.exception.UserException;
 import org.example.first.groundingappapis.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +31,7 @@ public class AccountServiceImpl implements AccountService {
     private final PropertyRepository propertyRepository;
     private final UserRepository userRepository;
     private final InventoryRepository inventoryRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -72,4 +77,27 @@ public class AccountServiceImpl implements AccountService {
 
         return readUserPropertyResponses;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<AccountDto.ReadTransactionResponse> readTransactions(UUID userId, Pageable pageable, String startDate, String endDate, String type) {
+
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+
+        if(type != null && !type.equals("매수") && !type.equals("매도") && !type.equals(""))
+            throw new TradingException(TradingErrorResult.INVALID_TYPE);
+
+        LocalDateTime parsedStartDate = LocalDateTime.parse(startDate + "T00:00:00");
+        LocalDateTime parsedEndDate = LocalDateTime.parse(endDate + "T23:59:59");
+
+        if (type.equals(""))
+            return orderRepository.findByUserAndCreatedAtBetweenAndCompleted(user, parsedStartDate, parsedEndDate, pageable);
+        else
+            return orderRepository.findByUserAndCreatedAtBetweenAndTypeAndCompleted(user, parsedStartDate, parsedEndDate, pageable, type);
+
+
+    }
+
+
 }

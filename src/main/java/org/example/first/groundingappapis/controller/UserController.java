@@ -238,15 +238,15 @@ public class UserController {
     public ResponseEntity<ResponseDto> validationEmail(@Valid @RequestBody MailDto.MailRequestDto mailRequestDto) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
         String email = mailRequestDto.getEmail();
 
-        if (!userService.userExistsByEmail(email)) {
-            log.info("존재하지 않는 회원");
-            UserErrorResult userErrorResult = UserErrorResult.USER_NOT_FOUND;
-            ResponseDto responseDto = ResponseDto.builder()
-                    .error(userErrorResult.getMessage())
-                    .build();
-
-            return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
-        }
+//        if (!userService.userExistsByEmail(email)) {
+//            log.info("존재하지 않는 회원");
+//            UserErrorResult userErrorResult = UserErrorResult.USER_NOT_FOUND;
+//            ResponseDto responseDto = ResponseDto.builder()
+//                    .error(userErrorResult.getMessage())
+//                    .build();
+//
+//            return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
+//        }
 
         String verificationCode = verificationService.makeVerificationCode();
 

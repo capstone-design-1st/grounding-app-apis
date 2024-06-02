@@ -17,7 +17,8 @@ public enum TradingErrorResult {
     ALREADY_SUBSCRIBED(HttpStatus.FORBIDDEN, "이미 모집한 매물입니다." ),
     NOT_ENOUGH_FUNDRAISE(HttpStatus.FORBIDDEN, "모집이 끝나지 않은 매물입니다."),
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다."),
-    DAY_TRANSACTION_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "일별 로그가 존재하지 않습니다.");
+    DAY_TRANSACTION_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "일별 로그가 존재하지 않습니다."),
+    INVALID_TYPE(HttpStatus.FORBIDDEN, "유효하지 않은 거래유형입니다." );
     private final HttpStatus httpStatus;
     private final String message;
 }

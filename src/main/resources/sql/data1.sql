@@ -39,3 +39,28 @@ INSERT INTO accounts (account_id, user_id, deposit, total_earning_rate)
 VALUES
     (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 9999999999999999, 0.0)
 ON DUPLICATE KEY UPDATE account_id = account_id;
+
+
+-- user2
+INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at)
+VALUES
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 'test2@user.com', '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user2', 'USER', NOW(), NOW())
+ON DUPLICATE KEY UPDATE user_id = user_id;
+
+INSERT INTO accounts (account_id, user_id, deposit, total_earning_rate)
+VALUES
+    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 9999999999999999, 0.0)
+ON DUPLICATE KEY UPDATE account_id = account_id;
+
+-- user3
+
+INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at)
+VALUES
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')),'test3@user.com' , '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user3', 'USER', NOW(), NOW())
+ON DUPLICATE KEY UPDATE user_id = user_id;
+
+INSERT INTO accounts (account_id, user_id, deposit, total_earning_rate)
+VALUES
+    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), 9999999999999999, 0.0)
+ON DUPLICATE KEY UPDATE account_id = account_id;
+

@@ -31,6 +31,9 @@ spring:
   sql:
     init:
       mode: always
+      schema-locations: classpath:/schema.sql
+      data-locations: classpath:/sql/data1.sql
+      #, classpath:/sql/data2.sql, classpath:/sql/data3.sql, classpath:/sql/data4.sql, classpath:/sql/data5.sql, classpath:/sql/data6.sql, classpath:/sql/data7.sql, classpath:/sql/data8.sql, classpath:/sql/data9.sql, classpath:/sql/data10.sql
   jwt:
     secret: ${JWT_SECRET}
   jpa:

@@ -8,6 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @JsonNaming
@@ -60,6 +64,32 @@ public class AccountDto {
             this.differenceAmount = differenceAmount != null ? differenceAmount : 0;
             this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
             this.totalBuyingPrice = totalBuyingPrice != null ? totalBuyingPrice : 0;
+        }
+    }
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ReadTransactionResponse {
+        private UUID propertyId;
+        private String propertyName;
+        private Integer quantity;
+        private LocalDate date;
+        private String type;
+        private Integer price;
+
+        @Builder
+        public ReadTransactionResponse(UUID propertyId,
+                                       String propertyName,
+                                       Integer quantity,
+                                       LocalDateTime dateTime,
+                                       String type,
+                                       Integer price) {
+            this.propertyId = propertyId != null ? propertyId : UUID.randomUUID();
+            this.propertyName = propertyName != null ? propertyName : "";
+            this.quantity = quantity != null ? quantity : 0;
+            this.date = dateTime != null ? dateTime.toLocalDate() : LocalDate.now();
+            this.type = type != null ? type : "";
+            this.price = price != null ? price : 0;
         }
     }
 }

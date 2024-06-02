@@ -20,14 +20,16 @@ public class OrderDto {
     private Integer price;
     private Integer quantity;
     private String status;
+    private LocalDateTime createdAt;
 
     @Builder
-    public OrderDto(UUID id, String type, Integer price, Integer quantity, String status) {
+    public OrderDto(UUID id, String type, Integer price, Integer quantity, String status, LocalDateTime createdAt) {
         this.id = id;
         this.type = type;
         this.price = price;
         this.quantity = quantity;
         this.status = status;
+        this.createdAt = createdAt;
     }
 
     @Data
