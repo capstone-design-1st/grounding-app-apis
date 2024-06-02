@@ -2,6 +2,7 @@ package org.example.first.groundingappapis.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -128,6 +129,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto); //400
         }
     }
+
+    @Operation(summary = "이메일 중복 확인")
     @PostMapping("/sign-up/email/validation")
     public ResponseEntity<ResponseDto> checkDuplicatedEmail(@Valid @RequestBody UserDto.CheckDuplicatedEmailRequestDto checkDuplicatedEmailRequestDto) {
 
@@ -146,52 +149,52 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); //204
     }
 
-    @PostMapping("/sign-up/phone/validation")
-    public ResponseEntity<ResponseDto> validationPhoneNumber(@Valid @RequestBody SmsDto.ValidationRequestDto validationRequestDto) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
-        String phoneNumber = validationRequestDto.getPhoneNumber();
-
-        if (userService.userExistsByPhoneNumber(phoneNumber)) {
-            log.info("이미 존재하는 전화번호");
-            UserErrorResult userErrorResult = UserErrorResult.DUPLICATED_PHONE_NUMBER;
-            ResponseDto responseDto = ResponseDto.builder().error(userErrorResult.getMessage()).build();
-
-            return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
-        }
-
-        String verificationCode = verificationService.makeVerificationCode();
-
-        SmsDto.MessageDto messageDto = SmsDto.MessageDto.builder()
-                .to(phoneNumber)
-                .content("[그라운딩]\n가입 인증번호는 " + verificationCode + " 입니다")
-                .build();
-
-        log.info(verificationCode);
-
-        smsService.sendAlimtalk(messageDto);
-
-        verificationService.saveVerificationCode(phoneNumber, verificationCode);
-        verificationService.saveCompletionCode(phoneNumber, false);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); //204
-    }
-    @PostMapping("/sign-up/phone/verification")
-    public ResponseEntity<ResponseDto> verificationPhoneNumber(@Valid @RequestBody SmsDto.VerificationRequestDto verificationRequestDto) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
-        String phoneNumber = verificationRequestDto.getPhoneNumber();
-
-        if (verificationService.verifyCode(verificationRequestDto.getPhoneNumber(), verificationRequestDto.getVerificationCode())) {
-            log.info("인증 코드 검증 성공");
-
-            verificationService.deleteVerificationCode(verificationRequestDto.getPhoneNumber());
-            verificationService.saveCompletionCode(verificationRequestDto.getPhoneNumber(), true);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); //204
-        } else {
-            log.info("인증 코드 검증 실패");
-            UserErrorResult userErrorResult = UserErrorResult.FAILED_VALIDATING_CODE;
-            ResponseDto responseDto = ResponseDto.builder().error(userErrorResult.getMessage()).build();
-
-            return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
-        }
-    }
+//    @PostMapping("/sign-up/phone/validation")
+//    public ResponseEntity<ResponseDto> validationPhoneNumber(@Valid @RequestBody SmsDto.ValidationRequestDto validationRequestDto) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
+//        String phoneNumber = validationRequestDto.getPhoneNumber();
+//
+//        if (userService.userExistsByPhoneNumber(phoneNumber)) {
+//            log.info("이미 존재하는 전화번호");
+//            UserErrorResult userErrorResult = UserErrorResult.DUPLICATED_PHONE_NUMBER;
+//            ResponseDto responseDto = ResponseDto.builder().error(userErrorResult.getMessage()).build();
+//
+//            return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
+//        }
+//
+//        String verificationCode = verificationService.makeVerificationCode();
+//
+//        SmsDto.MessageDto messageDto = SmsDto.MessageDto.builder()
+//                .to(phoneNumber)
+//                .content("[그라운딩]\n가입 인증번호는 " + verificationCode + " 입니다")
+//                .build();
+//
+//        log.info(verificationCode);
+//
+//        smsService.sendAlimtalk(messageDto);
+//
+//        verificationService.saveVerificationCode(phoneNumber, verificationCode);
+//        verificationService.saveCompletionCode(phoneNumber, false);
+//
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); //204
+//    }
+//    @PostMapping("/sign-up/phone/verification")
+//    public ResponseEntity<ResponseDto> verificationPhoneNumber(@Valid @RequestBody SmsDto.VerificationRequestDto verificationRequestDto) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
+//        String phoneNumber = verificationRequestDto.getPhoneNumber();
+//
+//        if (verificationService.verifyCode(verificationRequestDto.getPhoneNumber(), verificationRequestDto.getVerificationCode())) {
+//            log.info("인증 코드 검증 성공");
+//
+//            verificationService.deleteVerificationCode(verificationRequestDto.getPhoneNumber());
+//            verificationService.saveCompletionCode(verificationRequestDto.getPhoneNumber(), true);
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); //204
+//        } else {
+//            log.info("인증 코드 검증 실패");
+//            UserErrorResult userErrorResult = UserErrorResult.FAILED_VALIDATING_CODE;
+//            ResponseDto responseDto = ResponseDto.builder().error(userErrorResult.getMessage()).build();
+//
+//            return ResponseEntity.status(userErrorResult.getHttpStatus()).body(responseDto);
+//        }
+//    }
 
 
     @PreAuthorize("isAuthenticated()")
@@ -229,6 +232,8 @@ public class UserController {
     }
 
     //email validation, verification
+
+    @Operation(summary = "이메일 인증코드 전송")
     @PostMapping("/email/validation")
     public ResponseEntity<ResponseDto> validationEmail(@Valid @RequestBody MailDto.MailRequestDto mailRequestDto) throws JsonProcessingException, RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
         String email = mailRequestDto.getEmail();
@@ -257,6 +262,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); //204
     }
+    @Operation(summary = "이메일 인증코드 검증")
     @PostMapping("/email/verification")
     public ResponseEntity<ResponseDto> verificationEmail(@RequestBody MailDto.MailVerifyDto mailVerifyDto) {
         String email = mailVerifyDto.getEmail();
