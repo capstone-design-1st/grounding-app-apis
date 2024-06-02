@@ -1,7 +1,7 @@
 -- properties 테이블에 샘플 데이터 삽입
-INSERT INTO properties (property_id, property_name, oneline, present_price, view_count, like_count, volume_count, created_at, updated_at, type)
+INSERT INTO properties (property_id, property_name, oneline, view_count, like_count, total_volume, created_at, updated_at, type)
 VALUES
-    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '샘플 빌딩', '이 빌딩은 샘플 빌딩입니다.', 1000000, 0, 0, 0, NOW(), NOW(), 'building')
+    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '샘플 빌딩', '이 빌딩은 샘플 빌딩입니다.', 0, 0, 0, NOW(), NOW(), 'building')
 ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
@@ -29,9 +29,9 @@ VALUES
 ON DUPLICATE KEY UPDATE document_id = document_id;
 
 -- users 테이블에 샘플 데이터 삽입
-INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at)
+INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at, wallet_address)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'test@user.com', '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user', 'USER', NOW(), NOW())
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'test@user.com', '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user', 'USER', NOW(), NOW(), null)
 ON DUPLICATE KEY UPDATE user_id = user_id;
 
 -- accounts 테이블에 샘플 데이터 삽입, user_id는 방금 삽입된 users 테이블 데이터 참조
@@ -42,9 +42,9 @@ ON DUPLICATE KEY UPDATE account_id = account_id;
 
 
 -- user2
-INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at)
+INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at, wallet_address)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 'test2@user.com', '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user2', 'USER', NOW(), NOW())
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 'test2@user.com', '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user2', 'USER', NOW(), NOW(), null)
 ON DUPLICATE KEY UPDATE user_id = user_id;
 
 INSERT INTO accounts (account_id, user_id, deposit, total_earning_rate)
@@ -54,9 +54,9 @@ ON DUPLICATE KEY UPDATE account_id = account_id;
 
 -- user3
 
-INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at)
+INSERT INTO users (user_id, email, password, phone_number, nickname, role, created_at, updated_at, wallet_address)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')),'test3@user.com' , '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user3', 'USER', NOW(), NOW())
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')),'test3@user.com' , '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user3', 'USER', NOW(), NOW(), null)
 ON DUPLICATE KEY UPDATE user_id = user_id;
 
 INSERT INTO accounts (account_id, user_id, deposit, total_earning_rate)

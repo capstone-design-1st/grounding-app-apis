@@ -51,7 +51,7 @@ public class DayTransactionLog {
     @Column(name = "min_price")
     private Integer minPrice;
 
-    @Column(name = "volumeCount")
+    @Column(name = "volume_count")
     private Long volumeCount;
 
     @Builder

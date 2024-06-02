@@ -120,7 +120,7 @@ public class FundraiseServiceImpl implements FundraiseService{
             dayTransactionLogRepository.save(dayTransactionLog);
         }
 
-        property.increaseVolumeCount(fundraiseRequest.getQuantity());
+        property.increaseTotalVolume(fundraiseRequest.getQuantity());
         propertyRepository.save(property);
 
         return FundraiseDto.FundraiseResponse.builder()

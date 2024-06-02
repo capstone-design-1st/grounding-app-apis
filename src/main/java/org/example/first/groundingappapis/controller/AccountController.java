@@ -37,7 +37,7 @@ public class AccountController {
 
     @Operation(summary = "거래 내역 조회, type : 매수, 매도 (null 시 전부 조회)")
     @GetMapping("/transactions")
-    public ResponseEntity<Page<AccountDto.ReadTransactionResponse>> readTransactions(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseEntity<Page<AccountDto.ReadCompletedOrderResponse>> readTransactions(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                                                      @RequestParam(defaultValue = "0") int page,
                                                                                      @RequestParam(defaultValue = "10") int size,
                                                                                      @RequestParam(defaultValue = "2020-01-01") String startDate,

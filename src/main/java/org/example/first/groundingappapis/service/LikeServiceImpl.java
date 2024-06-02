@@ -127,12 +127,12 @@ public class LikeServiceImpl implements LikeService{
             return PropertyDto.ReadBasicInfoResponse.builder()
                     .id(property.getId())
                     .name(property.getName())
-                    .presentPrice(property.getPresentPrice())
+                    .presentPrice(Long.valueOf(transactionLog.getExecutedPrice()))
                     .priceDifference(getPriceDifference(executedPrice, openingPrice))
                     .fluctuationRate(fluctuationRate)
                     .viewCount(property.getViewCount())
                     .likeCount(property.getLikeCount())
-                    .volumeCount(property.getVolumeCount())
+                    .totalVolume(property.getTotalVolume())
                     .type(property.getType())
                     .build();
         });

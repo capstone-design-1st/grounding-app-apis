@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -30,9 +31,23 @@ public class RealTimeTransactionLogDto {
         this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
     }
 
-    @Builder
-    public RealTimeTransactionLogDto(UUID propertyId, Integer executedPrice) {
-        this.propertyId = propertyId;
-        this.executedPrice = executedPrice != null ? executedPrice : 0;
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ReadResponse{
+        private UUID propertyId;
+        private Time executedAt;
+        private Integer quantity;
+        private Integer executedPrice;
+        private Double fluctuationRate;
+
+        @Builder
+        public ReadResponse(UUID propertyId, LocalDateTime executedAt, Integer quantity, Integer executedPrice, Double fluctuationRate) {
+            this.propertyId = propertyId;
+            this.executedAt = executedAt != null ? Time.valueOf(LocalDateTime.now().toLocalTime()) : Time.valueOf(LocalDateTime.now().toLocalTime());
+            this.quantity = quantity != null ? quantity : 0;
+            this.executedPrice = executedPrice != null ? executedPrice : 0;
+            this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
+        }
     }
 }

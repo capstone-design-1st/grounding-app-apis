@@ -13,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,12 +130,12 @@ public class PropertyServiceImpl implements PropertyService {
             return PropertyDto.ReadBasicInfoResponse.builder()
                     .id(property.getId())
                     .name(property.getName())
-                    .presentPrice(property.getPresentPrice())
+                    .presentPrice(Long.valueOf(executedPrice))
                     .priceDifference(getPriceDifference(executedPrice, openingPrice))
                     .fluctuationRate(fluctuationRate)
                     .viewCount(property.getViewCount())
                     .likeCount(property.getLikeCount())
-                    .volumeCount(property.getVolumeCount())
+                    .totalVolume(property.getTotalVolume())
                     .type(property.getType())
                     .build();
         });
@@ -182,18 +185,33 @@ public class PropertyServiceImpl implements PropertyService {
         return searchResult;
     }
 
+
+    @Override
+    public Page<RealTimeTransactionLogDto.ReadResponse> getRealTimeTransactionLog(String propertyId, Pageable pageable) {
+
+        final Property property = propertyRepository.findById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+        final Fundraise fundraise = property.getFundraise();
+        if(fundraise.getProgressRate() < 100) {
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
+
+        LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
+
+        Page<RealTimeTransactionLogDto.ReadResponse> realTimeTransactionLogs = realTimeTransactionLogRepository
+                .readRealTimeTransactionLogsByPropertyAndExecutedAtToday(property, startOfDay, endOfDay, pageable);
+
+        return realTimeTransactionLogs;
+    }
+
     private PropertyDetailDto buildLandInformation(Land land) {
         return LandDto.landBuilder()
-                .useArea(land.getUseArea())
-                .mainUse(land.getMainUse())
-                .totalFloorArea(land.getTotalFloorArea())
-                .landArea(land.getLandArea())
-                .scale(land.getScale())
-                .completionDate(land.getCompletionDate())
-                .officialLandPrice(land.getOfficialLandPrice())
-                .leaser(land.getLeaser())
-                .leaseStartDate(land.getLeaseStartDate())
-                .leaseEndDate(land.getLeaseEndDate())
+                .area(land.getArea())
+                .landUse(land.getLandUse())
+                .etc(land.getEtc())
+                .recommendUse(land.getRecommendUse())
+                .parking(land.isParking())
+                .nearestStation(land.getNearestStation())
                 .build();
     }
 

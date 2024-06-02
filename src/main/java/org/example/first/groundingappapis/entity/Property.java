@@ -32,17 +32,14 @@ public class Property {
     @Column(name = "oneline", length = 50)
     private String oneline;
 
-    @Column(name = "present_price")
-    private Long presentPrice;
-
     @Column(name = "view_count")
     private Long viewCount;
 
     @Column(name = "like_count")
     private Long likeCount;
 
-    @Column(name = "volume_count")
-    private Long volumeCount;
+    @Column(name = "total_volume")
+    private Long totalVolume;
 
     @Column(name = "type", nullable = false)
     private String type;
@@ -121,9 +118,9 @@ public class Property {
     @Builder
     public Property(String name,
                     String oneline,
-                    Long presentPrice,
                     Long viewCount,
                     Long likeCount,
+                    Long totalVolume,
                     String type,
                     LocalDateTime createdAt,
                     LocalDateTime updatedAt,
@@ -141,7 +138,6 @@ public class Property {
     ) {
         this.name = name;
         this.oneline = oneline;
-        this.presentPrice = presentPrice;
         this.viewCount = viewCount;
         this.likeCount = likeCount;
         this.type = type;
@@ -157,6 +153,7 @@ public class Property {
         this.investmentPoints = investmentPoints;
         this.documents = documents;
         this.disclosures = disclosures;
+        this.totalVolume = totalVolume;
         //this.quotes = quotes;
     }
 
@@ -192,8 +189,8 @@ public class Property {
         this.likeCount--;
     }
 
-    public void increaseVolumeCount(int executedQuantity){
-        volumeCount += executedQuantity;
+    public void increaseTotalVolume(int executedQuantity){
+        this.totalVolume += executedQuantity;
     }
 
     public PropertyDto toDto() {
@@ -201,10 +198,9 @@ public class Property {
                 .id(this.id)
                 .name(this.name)
                 .oneline(this.oneline)
-                .presentPrice(this.presentPrice)
                 .viewCount(this.viewCount)
                 .likeCount(this.likeCount)
-                .volumeCount(this.volumeCount)
+                .totalVolume(this.totalVolume)
                 .type(this.type)
                 .build();
     }

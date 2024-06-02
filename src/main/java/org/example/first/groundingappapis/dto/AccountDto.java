@@ -69,7 +69,7 @@ public class AccountDto {
     @Data
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class ReadTransactionResponse {
+    public static class ReadCompletedOrderResponse {
         private UUID propertyId;
         private String propertyName;
         private Integer quantity;
@@ -78,7 +78,7 @@ public class AccountDto {
         private Integer price;
 
         @Builder
-        public ReadTransactionResponse(UUID propertyId,
+        public ReadCompletedOrderResponse(UUID propertyId,
                                        String propertyName,
                                        Integer quantity,
                                        LocalDateTime dateTime,

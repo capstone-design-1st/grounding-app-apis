@@ -17,10 +17,9 @@ public class PropertyDto {
     private UUID id;
     private String name;
     private String oneline;
-    private Long presentPrice;
     private Long viewCount;
     private Long likeCount;
-    private Long volumeCount;
+    private Long totalVolume;
     private String type;
     //시가 - 현재가
     private Long priceDifference;
@@ -31,20 +30,18 @@ public class PropertyDto {
     public PropertyDto(UUID id,
                        String name,
                        String oneline,
-                       Long presentPrice,
                        Long viewCount,
                        Long likeCount,
-                       Long volumeCount,
+                       Long totalVolume,
                        String type,
                        Long priceDifference,
                        Double priceDifferenceRate) {
         this.id = id;
         this.name = name != null ? name : "";
         this.oneline = oneline != null ? oneline : "";
-        this.presentPrice = presentPrice != null ? presentPrice : 0L;
         this.viewCount = viewCount != null ? viewCount : 0L;
         this.likeCount = likeCount != null ? likeCount : 0L;
-        this.volumeCount = volumeCount != null ? volumeCount : 0L;
+        this.totalVolume = totalVolume != null ? totalVolume : 0L;
         this.type = type != null ? type : "";
         this.priceDifference = priceDifference != null ? priceDifference : 0L;
         this.priceDifferenceRate = priceDifferenceRate != null ? priceDifferenceRate : 0.0;
@@ -126,7 +123,7 @@ public class PropertyDto {
         private Double fluctuationRate;
         private Long viewCount;
         private Long likeCount;
-        private Long volumeCount;
+        private Long totalVolume;
         private String type;
 
         @Builder
@@ -137,7 +134,7 @@ public class PropertyDto {
                                      Double fluctuationRate,
                                      Long viewCount,
                                      Long likeCount,
-                                     Long volumeCount,
+                                     Long totalVolume,
                                      String type) {
             this.id = id;
             this.name = name;
@@ -146,7 +143,7 @@ public class PropertyDto {
             this.fluctuationRate = fluctuationRate;
             this.viewCount = viewCount;
             this.likeCount = likeCount;
-            this.volumeCount = volumeCount;
+            this.totalVolume = totalVolume;
             this.type = type;
         }
     }

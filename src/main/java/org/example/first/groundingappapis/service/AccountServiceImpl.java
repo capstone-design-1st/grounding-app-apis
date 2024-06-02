@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<AccountDto.ReadTransactionResponse> readTransactions(UUID userId, Pageable pageable, String startDate, String endDate, String type) {
+    public Page<AccountDto.ReadCompletedOrderResponse> readTransactions(UUID userId, Pageable pageable, String startDate, String endDate, String type) {
 
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));

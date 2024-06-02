@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.first.groundingappapis.dto.LandDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,54 +29,56 @@ public class Land {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", nullable = false,columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_lands_property"))
     private Property property;
+    //면적
+    @Column(name = "area", length = 20)
+    private String area;
 
-    @Column(name = "use_area", length = 20)
-    private String useArea;
+    //지목
+    @Column(name = "land_use", length = 30)
+    private String landUse;
 
-    @Column(name = "main_use", length = 20)
-    private String mainUse;
+    //기타사항
+    @Column(name = "etc", length = 50)
+    private String etc;
 
-    @Column(name = "total_floor_area")
-    private Double totalFloorArea;
+    //추천용도
+    @Column(name = "recommend_use", length = 30)
+    private String recommendUse;
 
-    @Column(name = "land_area")
-    private Double landArea;
+    //주차 가능 여부
+    @Column(name = "parking", columnDefinition = "TINYINT")
+    private boolean parking;
 
-    @Column(name = "scale", length = 20)
-    private String scale;
-
-    @Column(name = "completion_date")
-    private LocalDate completionDate;
-
-    @Column(name = "official_land_price", length = 20)
-    private String officialLandPrice;
-
-    @Column(name = "leaser", length = 20)
-    private String leaser;
-
-    @Column(name = "lease_start_date")
-    private LocalDate leaseStartDate;
-
-    @Column(name = "lease_end_date")
-    private LocalDate leaseEndDate;
+    //가장 가까운 기차역
+    @Column(name = "nearest_station", length = 50)
+    private String nearestStation;
 
     @Builder
-    public Land(String useArea, String mainUse, Double totalFloorArea, Double landArea, String scale, LocalDate completionDate, String officialLandPrice, String leaser, LocalDate leaseStartDate, LocalDate leaseEndDate) {
-        this.useArea = useArea;
-        this.mainUse = mainUse;
-        this.totalFloorArea = totalFloorArea;
-        this.landArea = landArea;
-        this.scale = scale;
-        this.completionDate = completionDate;
-        this.officialLandPrice = officialLandPrice;
-        this.leaser = leaser;
-        this.leaseStartDate = leaseStartDate;
-        this.leaseEndDate = leaseEndDate;
+    public Land(Property property, String area, String landUse, String etc, String recommendUse, boolean parking, String nearestStation) {
+        this.property = property;
+        this.area = area;
+        this.landUse = landUse;
+        this.etc = etc;
+        this.recommendUse = recommendUse;
+        this.parking = parking;
+        this.nearestStation = nearestStation;
     }
 
     public void updateProperty(Property property) {
         this.property = property;
         property.setLand(this);
+    }
+
+    //toDto
+    public LandDto toDto() {
+        return LandDto.landBuilder()
+                .area(area)
+                .landUse(landUse)
+                .etc(etc)
+                .recommendUse(recommendUse)
+                .parking(parking)
+                .nearestStation(nearestStation)
+                .build();
     }
 
 }

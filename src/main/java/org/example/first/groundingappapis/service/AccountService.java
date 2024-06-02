@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface AccountService {
     List<AccountDto.ReadUserPropertyResponse> readUserProperty(UUID userID);
 
-    Page<AccountDto.ReadTransactionResponse> readTransactions(UUID userId, Pageable pageable, String startDate, String endDate, String type);
+    Page<AccountDto.ReadCompletedOrderResponse> readTransactions(UUID userId, Pageable pageable, String startDate, String endDate, String type);
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.DayTransactionLogDto;
 import org.example.first.groundingappapis.dto.PropertyDto;
+import org.example.first.groundingappapis.dto.RealTimeTransactionLogDto;
 import org.example.first.groundingappapis.entity.User;
 import org.example.first.groundingappapis.security.UserPrincipal;
 import org.example.first.groundingappapis.service.LikeService;
@@ -67,7 +68,7 @@ public class PropertyController {
     //거래 중 매물 가격 정보
 
     //swagger
-    @Operation(summary = "일별 가격 정보 조회")
+    @Operation(summary = "일별 가격 정보 조회, 시세 & 차트")
     @GetMapping("/{propertyId}/price-info")
     public ResponseEntity<Page<DayTransactionLogDto.ReadResponse>> getPropertyDayTransactionLog(
             @PathVariable String propertyId,
@@ -92,5 +93,14 @@ public class PropertyController {
         return ResponseEntity.ok(propertyService.searchProperties(keyword, pageable));
     }
 
+    @GetMapping("/{propertyId}/real-time-transaction-log")
+    public ResponseEntity<Page<RealTimeTransactionLogDto.ReadResponse>> getRealTimeTransactionLog(@PathVariable String propertyId,
+                                                                                                  @RequestParam(defaultValue = "0") int page,
+                                                                                                  @RequestParam(defaultValue = "20") int size) {
+        log.info("getRealTimeTransactionLog called with propertyId: {}, page: {}, size: {}", propertyId, page, size);
 
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(propertyService.getRealTimeTransactionLog(propertyId, pageable));
+    }
 }

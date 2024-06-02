@@ -42,15 +42,13 @@ public class RealTimeTransactionLog {
     @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_real_time_transaction_logs_user"))
     private User user;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     @PrePersist
     public void prePersist() {
-        this.createdAt = (this.createdAt == null) ? LocalDateTime.now() : this.createdAt;
         if (this.id == null)
             this.id = UUID.randomUUID();
+
+        if (this.executedAt == null)
+            this.executedAt = LocalDateTime.now();
     }
 
     @Builder

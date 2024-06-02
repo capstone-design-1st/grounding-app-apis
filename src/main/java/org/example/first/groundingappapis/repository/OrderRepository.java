@@ -19,16 +19,16 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<Order, UUID> {
     Optional<Order> findByUserAndPropertyAndPriceAndQuantityAndType(User seller, Property property, int executedPrice, int executedQuantity, String status);
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadTransactionResponse" +
+    @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadCompletedOrderResponse" +
             "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price) " +
             "FROM Order o " +
             "JOIN o.property p " +
             "WHERE o.user = :user " +
             "AND o.createdAt BETWEEN :parsedStartDate AND :parsedEndDate " +
             "AND o.status = '체결 완료'")
-    Page<AccountDto.ReadTransactionResponse> findByUserAndCreatedAtBetweenAndCompleted(User user, LocalDateTime parsedStartDate, LocalDateTime parsedEndDate, Pageable pageable);
+    Page<AccountDto.ReadCompletedOrderResponse> findByUserAndCreatedAtBetweenAndCompleted(User user, LocalDateTime parsedStartDate, LocalDateTime parsedEndDate, Pageable pageable);
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadTransactionResponse" +
+    @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadCompletedOrderResponse" +
             "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price) " +
             "FROM Order o " +
             "JOIN o.property p " +
@@ -36,5 +36,5 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             "AND o.createdAt BETWEEN :parsedStartDate AND :parsedEndDate " +
             "AND o.status = '체결 완료' " +
             "AND o.type = :type")
-    Page<AccountDto.ReadTransactionResponse> findByUserAndCreatedAtBetweenAndTypeAndCompleted(User user, LocalDateTime parsedStartDate, LocalDateTime parsedEndDate, Pageable pageable, String type);
+    Page<AccountDto.ReadCompletedOrderResponse> findByUserAndCreatedAtBetweenAndTypeAndCompleted(User user, LocalDateTime parsedStartDate, LocalDateTime parsedEndDate, Pageable pageable, String type);
 }

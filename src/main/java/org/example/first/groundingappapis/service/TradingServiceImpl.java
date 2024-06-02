@@ -100,7 +100,7 @@ public class TradingServiceImpl implements TradingService {
         buyerAccount.minusDeposit(Long.valueOf(buyRequest.getPrice() * buyRequest.getQuantity()));
         accountRepository.save(buyerAccount);
 
-        property.increaseVolumeCount(executedQuantityOfOrder);
+        property.increaseTotalVolume(executedQuantityOfOrder);
         propertyRepository.save(property);
     }
 
@@ -217,6 +217,7 @@ public class TradingServiceImpl implements TradingService {
 
         sellerAccount.minusDeposit(Long.valueOf(sellRequest.getPrice() * sellRequest.getQuantity()));
         accountRepository.save(sellerAccount);
+
 
     }
     @Override

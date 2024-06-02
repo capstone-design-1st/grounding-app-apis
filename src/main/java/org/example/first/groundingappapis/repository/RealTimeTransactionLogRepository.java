@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,4 +62,12 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "FROM RealTimeTransactionLog r " +
             "WHERE r.property = :property AND r.user = :user")
     boolean existsByPropertyAndUser(Property property, User user);
+
+    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto$ReadResponse" +
+            "(r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
+            "FROM RealTimeTransactionLog r " +
+            "WHERE r.property = :property " +
+            "AND r.executedAt BETWEEN :startOfDay AND :endOfDay " +
+            "ORDER BY r.executedAt DESC")
+    Page<RealTimeTransactionLogDto.ReadResponse> readRealTimeTransactionLogsByPropertyAndExecutedAtToday(Property property, LocalDateTime startOfDay, LocalDateTime endOfDay, Pageable pageable);
 }
