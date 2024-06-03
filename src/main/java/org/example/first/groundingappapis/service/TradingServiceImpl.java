@@ -243,12 +243,17 @@ public class TradingServiceImpl implements TradingService {
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                 new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
 
-        Inventory inventory = inventoryRepository.findByAccountAndProperty(account, property).orElseThrow(() ->
-                new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
+        Optional<Inventory> inventory = inventoryRepository.findByAccountAndProperty(account, property);
+
+        int quantity = 0;
+
+        if(inventory.isPresent()){
+            quantity = inventory.get().getQuantity();
+        }
 
         OrderDto.GetQuantityOfInventoryResponse response = OrderDto.GetQuantityOfInventoryResponse.builder()
                 .propertyId(propertyId.toString())
-                .quantity(inventory.getQuantity())
+                .quantity(quantity)
                 .createdAt(LocalDateTime.now())
                 .build();
 
