@@ -179,29 +179,53 @@ public class PropertyServiceImpl implements PropertyService {
     @Transactional(readOnly = true)
     @Override
     public Page<PropertyDto.SearchResultResponse> searchProperties(String keyword, Pageable pageable) {
+        Page<PropertyDto.SearchResultResponse> searchResult = null;
+        if(keyword == null || keyword.isEmpty()) {
+             searchResult = propertyRepository.searchProperties(pageable)
+                    .map(result -> {
+                        UUID propertyId = UUID.fromString((String) result[0]);
+                        String type = (String) result[1];
+                        String city = (String) result[2];
+                        String gu = (String) result[3];
+                        String name = (String) result[4];
+                        String oneline = (String) result[5];
+                        Double fluctuationRate = (Double) result[6];
 
-        Page<PropertyDto.SearchResultResponse> searchResult = propertyRepository.searchProperties(keyword, pageable)
-                .map(result -> {
-                    //UUID propertyId = (UUID) result[0];
-                    //UUID propertyId = UUID.nameUUIDFromBytes(((String) result[0]).getBytes());
-                    UUID propertyId = UUID.fromString((String) result[0]);
-                    String type = (String) result[1];
-                    String city = (String) result[2];
-                    String gu = (String) result[3];
-                    String name = (String) result[4];
-                    String oneline = (String) result[5];
-                    Double fluctuationRate = (Double) result[6];
+                        return PropertyDto.SearchResultResponse.builder()
+                                .propertyId(propertyId)
+                                .type(type)
+                                .city(city)
+                                .gu(gu)
+                                .name(name)
+                                .oneLine(oneline)
+                                .fluctuationRate(fluctuationRate)
+                                .build();
+                    });
+        }else {
+            searchResult = propertyRepository.searchProperties(keyword, pageable)
+                    .map(result -> {
+                        //UUID propertyId = (UUID) result[0];
+                        //UUID propertyId = UUID.nameUUIDFromBytes(((String) result[0]).getBytes());
+                        UUID propertyId = UUID.fromString((String) result[0]);
+                        String type = (String) result[1];
+                        String city = (String) result[2];
+                        String gu = (String) result[3];
+                        String name = (String) result[4];
+                        String oneline = (String) result[5];
+                        Double fluctuationRate = (Double) result[6];
 
-                    return PropertyDto.SearchResultResponse.builder()
-                            .propertyId(propertyId)
-                            .type(type)
-                            .city(city)
-                            .gu(gu)
-                            .name(name)
-                            .oneLine(oneline)
-                            .fluctuationRate(fluctuationRate)
-                            .build();
-                });
+                        return PropertyDto.SearchResultResponse.builder()
+                                .propertyId(propertyId)
+                                .type(type)
+                                .city(city)
+                                .gu(gu)
+                                .name(name)
+                                .oneLine(oneline)
+                                .fluctuationRate(fluctuationRate)
+                                .build();
+                    });
+        }
+
 
         return searchResult;
     }

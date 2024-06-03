@@ -83,7 +83,7 @@ public class PropertyController {
 
     //거래 중인 건물 및 토지 검색 페이지
     @GetMapping("/searching")
-    public ResponseEntity<Page<PropertyDto.SearchResultResponse>> searchProperties(@RequestParam String keyword,
+    public ResponseEntity<Page<PropertyDto.SearchResultResponse>> searchProperties(@RequestParam(required = false) String keyword,
                                                                                     @RequestParam(defaultValue = "0") int page,
                                                                                     @RequestParam(defaultValue = "10") int size) {
         log.info("searchProperties called with keyword: {}, page: {}, size: {}", keyword, page, size);

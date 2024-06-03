@@ -59,5 +59,21 @@ public interface PropertyRepository extends JpaRepository<Property, UUID>{
         nativeQuery = true)
     Page<Object[]> searchProperties(@Param("keyword") String keyword, Pageable pageable);
 
-
+/*
+search all property,
+ */
+    @Query(value = "SELECT BIN_TO_UUID(p.property_id) AS propertyId, p.type AS type, l.city AS city, l.gu AS gu, p.property_name AS propertyName, p.oneline AS oneline, " +
+            "CASE " +
+            "  WHEN rt.fluctuation_rate IS NOT NULL THEN rt.fluctuation_rate " +
+            "  ELSE dt.fluctuation_rate " +
+            "END AS fluctuationRate " +
+            "FROM properties p " +
+            "LEFT JOIN locations l ON p.property_id = l.property_id " +
+            "LEFT JOIN (SELECT property_id, fluctuation_rate FROM real_time_transaction_logs ORDER BY executed_at DESC LIMIT 1) rt ON p.property_id = rt.property_id " +
+            "LEFT JOIN (SELECT property_id, fluctuation_rate FROM day_transaction_logs ORDER BY date DESC LIMIT 1) dt ON p.property_id = dt.property_id",
+            countQuery = "SELECT COUNT(*) " +
+                    "FROM properties p " +
+                    "LEFT JOIN locations l ON p.property_id = l.property_id",
+            nativeQuery = true)
+    Page<Object[]> searchProperties(Pageable pageable);
 }
