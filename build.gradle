@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -56,6 +57,7 @@ dependencies {
 	//mailsender
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
 }
 
 tasks.named('bootBuildImage') {
