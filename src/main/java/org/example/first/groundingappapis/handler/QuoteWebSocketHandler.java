@@ -62,7 +62,6 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
 
         sendUpdate();
     }
-
     @Scheduled(fixedRate = 3000)
     public void sendUpdate() {
         try {
@@ -75,12 +74,7 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
                     } else {
                         quotes = tradingService.readDownQuotes(propertyId, basePrice, page, size);
                     }
-                    String response = objectMapper.writeValueAsString(quotes);
-                    for (WebSocketSession session : sessions) {
-                        if (session.isOpen()) {
-                            session.sendMessage(new TextMessage(response));
-                        }
-                    }
+                    sendQuotesToAllSessions(quotes);
                 } else {
                     Page<QuoteDto.ReadResponse> upperQuotes = tradingService.readUpperQuotes(propertyId, basePrice, page, size);
                     Page<QuoteDto.ReadResponse> downQuotes = tradingService.readDownQuotes(propertyId, basePrice, page, size);
@@ -89,16 +83,37 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
                             .collect(Collectors.toList());
                     quotes = new PageImpl<>(combinedQuotes, Pageable.unpaged(), combinedQuotes.size());
 
-                    String response = objectMapper.writeValueAsString(quotes);
-                    for (WebSocketSession session : sessions) {
-                        if (session.isOpen()) {
-                            session.sendMessage(new TextMessage(response));
-                        }
-                    }
+                    sendQuotesToAllSessions(quotes);
                 }
             }
         } catch (Exception e) {
+            sendErrorMessageToAllSessions(e);
             log.error("Failed to send update message", e);
+        }
+    }
+
+    private void sendQuotesToAllSessions(Page<QuoteDto.ReadResponse> quotes) throws Exception {
+        String response = objectMapper.writeValueAsString(quotes);
+        for (WebSocketSession session : sessions) {
+            if (session.isOpen()) {
+                session.sendMessage(new TextMessage(response));
+            }
+        }
+    }
+
+    private void sendErrorMessageToAllSessions(Exception e) {
+        try {
+            String errorMessage = objectMapper.writeValueAsString(Map.of(
+                    "status", "error",
+                    "message", e.getMessage() != null ? e.getMessage() : "Unknown error"
+            ));
+            for (WebSocketSession session : sessions) {
+                if (session.isOpen()) {
+                    session.sendMessage(new TextMessage(errorMessage));
+                }
+            }
+        } catch (Exception ex) {
+            log.error("Failed to send error message", ex);
         }
     }
 }
