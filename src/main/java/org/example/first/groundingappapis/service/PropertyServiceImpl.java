@@ -119,33 +119,18 @@ public class PropertyServiceImpl implements PropertyService {
         Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogs.stream()
                 .collect(Collectors.toMap(RealTimeTransactionLogDto::getPropertyId, log -> log));
 
-//        List<DayTransactionLog> dayTransactionLogs = dayTransactionLogRepository
-//                .findRecentDayTransactionLogsByProperties(popularProperties.getContent());
-//
-//        Map<UUID, DayTransactionLogDto> dayTransactionLogMap = dayTransactionLogs.stream()
-//                .collect(Collectors.toMap(DayTransactionLog::getPropertyId, log -> log));
-/*
-    @Query(value = "SELECT d.* FROM day_transaction_logs d " +
-            "INNER JOIN (" +
-            "    SELECT property_id, MAX(date) as max_date " +
-            "    FROM day_transaction_logs " +
-            "    WHERE property_id IN :propertyIds " +
-            "    GROUP BY property_id" +
-            ") sub ON d.property_id = sub.property_id AND d.date = sub.max_date",
-            nativeQuery = true)
-    List<DayTransactionLog> findRecentDayTransactionLogsByPropertyIds(@Param("propertyIds") List<UUID> propertyIds);
- */
         List<DayTransactionLog> dayTransactionLogs = dayTransactionLogRepository
                 .findRecentDayTransactionLogsByPropertyIds(popularProperties.getContent().stream().map(Property::getId).collect(Collectors.toList()));
 
         Map<UUID, DayTransactionLogDto> dayTransactionLogMap = dayTransactionLogs.stream()
                 .collect(Collectors.toMap(DayTransactionLog::getPropertyId, log -> log.toDto()));
 
+
         return popularProperties.map(property -> {
             RealTimeTransactionLogDto transactionLog = transactionLogMap.get(property.getId());
             DayTransactionLogDto dayTransactionLog = dayTransactionLogMap.get(property.getId());
-            Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : 0;
-            Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : 0;
+            Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : property.getFundraise() != null ? property.getFundraise().getIssuePrice() : 0;
+            Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : property.getFundraise() != null ? property.getFundraise().getIssuePrice() : 0;
             Double fluctuationRate = transactionLog != null ? transactionLog.getFluctuationRate() : 0.0;
 
             return PropertyDto.ReadBasicInfoResponse.builder()
