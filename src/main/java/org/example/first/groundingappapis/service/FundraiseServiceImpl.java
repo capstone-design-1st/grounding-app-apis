@@ -115,7 +115,7 @@ public class FundraiseServiceImpl implements FundraiseService{
                     .maxPrice(fundraise.getIssuePrice())
                     .minPrice(fundraise.getIssuePrice())
                     .fluctuationRate(0.0)
-                    .volumeCount(0L)
+                    .volumeCount(Long.valueOf(fundraise.getSecurityCount()))
                     .date(LocalDate.now())
                     .build();
 
