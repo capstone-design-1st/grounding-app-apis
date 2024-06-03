@@ -40,7 +40,7 @@ public class Order {
     @Column(name = "quantity")
     private Integer quantity;
 
-    //체결 대기중, 체결 완료, 취소
+    //청약중, 체결 대기중, 체결 완료, 취소
     @Column(name = "status", length = 10)
     private String status;
 

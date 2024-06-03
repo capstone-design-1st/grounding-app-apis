@@ -52,4 +52,12 @@ public class AccountController {
         return ResponseEntity.ok(accountService.readTransactions(userId, pageable, startDate, endDate, type));
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "현재 투자 금액 및 자산현황 조회")
+    @GetMapping("/present-status")
+    public ResponseEntity<AccountDto.ReadPresentStatusResponse> readPresentStatus(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        log.info("readPresentStatus");
+        final UUID userId = userPrincipal.getUser().getId();
+        return ResponseEntity.ok(accountService.readPresentStatus(userId));
+    }
 }

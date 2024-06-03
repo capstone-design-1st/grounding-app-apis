@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -65,7 +66,7 @@ public class FundraiseServiceImpl implements FundraiseService{
                 .type("매수")
                 .quantity(fundraiseRequest.getQuantity())
                 .price(fundraise.getIssuePrice())
-                .status("체결 완료")
+                .status("청약중")
                 .build();
         newOrder.updateUser(buyer);
         newOrder.updateProperty(property);
@@ -120,6 +121,12 @@ public class FundraiseServiceImpl implements FundraiseService{
 
             dayTransactionLog.updateProperty(property);
             dayTransactionLogRepository.save(dayTransactionLog);
+
+            List<Order> orders = orderRepository.findByStatusAndProperty("청약중", property);
+            for(Order order : orders){
+                order.setStatus("체결 완료");
+                orderRepository.save(order);
+            }
         }
 
         property.increaseTotalVolume(fundraiseRequest.getQuantity());

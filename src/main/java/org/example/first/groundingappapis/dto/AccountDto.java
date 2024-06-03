@@ -92,4 +92,39 @@ public class AccountDto {
             this.price = price != null ? price : 0;
         }
     }
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ReadPresentStatusResponse {
+        private UUID userId;
+        //매입금액
+        private Long totalBuyingPrice;
+        //조각모집중인금액
+        private Long fundraisingPrice;
+        //예수금
+        private Long deposit;
+        //총수익률
+        private Double averageEarningRate;
+        //평가금액
+        private Integer evaluationPrice;
+        //평가손익
+        private Integer evaluationEarning;
+
+        @Builder
+        public ReadPresentStatusResponse(UUID userId,
+                                          Long totalBuyingPrice,
+                                          Long fundraisingPrice,
+                                          Long deposit,
+                                          Double averageEarningRate,
+                                          Integer evaluationPrice,
+                                          Integer evaluationEarning) {
+            this.userId = userId;
+            this.totalBuyingPrice = totalBuyingPrice != null ? totalBuyingPrice : 0L;
+            this.fundraisingPrice = fundraisingPrice != null ? fundraisingPrice : 0L;
+            this.deposit = deposit != null ? deposit : 0L;
+            this.averageEarningRate = averageEarningRate != null ? averageEarningRate : 0.0;
+            this.evaluationPrice = evaluationPrice != null ? evaluationPrice : 0;
+            this.evaluationEarning = evaluationEarning != null ? evaluationEarning : 0;
+        }
+    }
 }

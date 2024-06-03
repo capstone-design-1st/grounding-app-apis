@@ -11,4 +11,6 @@ public interface AccountService {
     List<AccountDto.ReadUserPropertyResponse> readUserProperty(UUID userID);
 
     Page<AccountDto.ReadCompletedOrderResponse> readTransactions(UUID userId, Pageable pageable, String startDate, String endDate, String type);
+
+    AccountDto.ReadPresentStatusResponse readPresentStatus(UUID userId);
 }

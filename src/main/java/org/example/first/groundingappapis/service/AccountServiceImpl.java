@@ -99,5 +99,70 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public AccountDto.ReadPresentStatusResponse readPresentStatus(UUID userId) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        final Account account = accountRepository.findByUser(user)
+                .orElseThrow(() -> new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
 
+        List<Inventory> inventories = inventoryRepository.findByAccount(account);
+        Long totalBuyingPrice;
+        Integer evaluationPrice;
+        Integer evaluationEarning;
+
+        if(inventories.isEmpty()){
+            totalBuyingPrice = 0L;
+            evaluationPrice = 0;
+            evaluationEarning = 0;
+        }else{
+            totalBuyingPrice = inventories.stream().mapToLong(inventory ->
+                    inventory.getQuantity() * inventory.getAverageBuyingPrice()).sum();
+            evaluationPrice = inventories.stream().mapToInt(inventory -> {
+
+                int recentExecutedPrice = 0;
+                if(realTimeTransactionLogRepository.existsByPropertyId(inventory.getProperty().getId())) {
+                    Optional<RealTimeTransactionLog> realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(inventory.getProperty().getId());
+                    if(realTimeTransactionLog.isPresent())
+                        recentExecutedPrice = realTimeTransactionLog.get().getExecutedPrice();
+                    else
+                        recentExecutedPrice = inventory.getProperty().getFundraise().getIssuePrice();
+                }
+
+                return recentExecutedPrice * inventory.getQuantity();
+            }).sum();
+            evaluationEarning = inventories.stream().mapToInt(inventory -> {
+
+                int recentExecutedPrice = 0;
+                if(realTimeTransactionLogRepository.existsByPropertyId(inventory.getProperty().getId())) {
+                    Optional<RealTimeTransactionLog> realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(inventory.getProperty().getId());
+                    if(realTimeTransactionLog.isPresent())
+                        recentExecutedPrice = realTimeTransactionLog.get().getExecutedPrice();
+                    else
+                        recentExecutedPrice = inventory.getProperty().getFundraise().getIssuePrice();
+                }
+
+                return (recentExecutedPrice - inventory.getAverageBuyingPrice()) * inventory.getQuantity();
+            }).sum();
+        }
+
+
+        Long fundrasingPrice = orderRepository.sumPriceByStatus("청약중") != null ? orderRepository.sumPriceByStatus("청약중") : 0L;
+
+        Long deposit = account.getDeposit() != null ? account.getDeposit() : 0L;
+
+        Double averageEarningRate = account.getAverageEarningRate() != null ? account.getAverageEarningRate() : 0.0;
+
+        AccountDto.ReadPresentStatusResponse readPresentStatusResponse = AccountDto.ReadPresentStatusResponse.builder()
+                .userId(userId)
+                .totalBuyingPrice(totalBuyingPrice)
+                .fundraisingPrice(fundrasingPrice)
+                .deposit(deposit)
+                .averageEarningRate(averageEarningRate)
+                .evaluationPrice(evaluationPrice)
+                .evaluationEarning(evaluationEarning)
+                .build();
+
+        return readPresentStatusResponse;
+    }
 }
