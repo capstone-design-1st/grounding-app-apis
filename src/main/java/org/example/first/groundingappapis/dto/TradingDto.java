@@ -34,4 +34,31 @@ public class TradingDto {
             this.price = price;
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class BuyResponse {
+        private String userId;
+        private String walletAddress;
+
+        private String propertyId;
+        private Integer executedQuantity;
+        private Integer executedPrice;
+
+        private List<PurchasedSellQuotesInfoDto> purchasedSellQuotesInfoDto;
+        @Builder
+        public BuyResponse(String userId, String walletAddress, String propertyId, Integer executedQuantity, Integer executedPrice) {
+            this.userId = userId;
+            this.walletAddress = walletAddress;
+            this.propertyId = propertyId;
+            this.executedQuantity = executedQuantity;
+            this.executedPrice = executedPrice;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+
 }

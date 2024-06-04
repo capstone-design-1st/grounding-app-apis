@@ -13,11 +13,8 @@ import lombok.NoArgsConstructor;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class InvestmentPointDto {
     private String title;
-    private String content;
     @Builder
-    public InvestmentPointDto(String title,
-                              String content) {
+    public InvestmentPointDto(String title) {
         this.title = title != null ? title : "";
-        this.content = content != null ? content : "";
     }
 }

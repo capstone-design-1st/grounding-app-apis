@@ -94,6 +94,7 @@ jobs:
                 -e REDIS_PORT='${{ secrets.REDIS_PORT }}' \
                 -e MAIL_USERNAME='${{ secrets.MAIL_USERNAME }}' \
                 -e MAIL_PASSWORD='${{ secrets.MAIL_PASSWORD }}' \
+                -e OPEN_AI_API_KEY='${{ secrets.OPEN_AI_API_KEY }}' \
                 ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.NEXT_APP_VER }}
             sleep 15
             sudo docker image prune -af || true

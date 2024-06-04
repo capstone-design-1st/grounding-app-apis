@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.OrderDto;
 import org.example.first.groundingappapis.dto.QuoteDto;
-import org.example.first.groundingappapis.dto.RealTimeTransactionLogDto;
 import org.example.first.groundingappapis.dto.TradingDto;
 import org.example.first.groundingappapis.entity.*;
 import org.example.first.groundingappapis.exception.*;
@@ -36,7 +35,7 @@ public class TradingServiceImpl implements TradingService {
 
     @Transactional
     @Override
-    public void uploadBuyingOrderOnQuote(User buyer, UUID propertyId, TradingDto.BuyRequest buyRequest) {
+    public TradingDto.BuyResponse uploadBuyingOrderOnQuote(User buyer, UUID propertyId, TradingDto.BuyRequest buyRequest) {
         final Account buyerAccount = accountRepository.findByUser(buyer).orElseThrow(() ->
                 new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
@@ -111,6 +110,16 @@ public class TradingServiceImpl implements TradingService {
 
         property.increaseTotalVolume(executedQuantityOfOrder);
         propertyRepository.save(property);
+
+        TradingDto.BuyResponse response = TradingDto.BuyResponse.builder()
+                .userId(buyer.getId().toString())
+                .walletAddress(buyer.getWalletAddress())
+                .propertyId(propertyId.toString())
+                .executedQuantity(executedQuantityOfOrder)
+                .executedPrice(buyRequest.getPrice())
+                .build();
+
+        return response;
     }
 
     @Transactional

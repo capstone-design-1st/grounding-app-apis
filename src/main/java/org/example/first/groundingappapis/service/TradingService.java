@@ -1,7 +1,6 @@
 package org.example.first.groundingappapis.service;
 
 import org.example.first.groundingappapis.dto.OrderDto;
-import org.example.first.groundingappapis.dto.PropertyDto;
 import org.example.first.groundingappapis.dto.QuoteDto;
 import org.example.first.groundingappapis.dto.TradingDto;
 import org.example.first.groundingappapis.entity.User;
@@ -13,7 +12,7 @@ public interface TradingService {
 
     void uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest);
 
-    void uploadBuyingOrderOnQuote(User user, UUID propertyId, TradingDto.BuyRequest buyRequest);
+    TradingDto.BuyResponse uploadBuyingOrderOnQuote(User user, UUID propertyId, TradingDto.BuyRequest buyRequest);
 
     OrderDto.GetTotalPriceResponse getTotalPrice(UUID propertyId, int quantity);
 

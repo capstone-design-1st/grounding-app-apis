@@ -28,30 +28,20 @@ public class InvestmentPoint {
     @Column(name = "title", length = 50)
     private String title;
 
-    @Lob
-    @Column(name = "content")
-    private String content;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_investment_points_property"))
     private Property property;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "summary_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_investment_points_summary"))
-    private Summary summary;
 
     @Builder
-    public InvestmentPoint(String title, String content, Property property, Summary summary) {
+    public InvestmentPoint(String title, Property property) {
         this.title = title;
-        this.content = content;
         this.property = property;
-        this.summary = summary;
     }
 
     public InvestmentPointDto toDto() {
         return InvestmentPointDto.builder()
                 .title(this.title)
-                .content(this.content)
                 .build();
     }
 }

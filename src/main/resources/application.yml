@@ -69,6 +69,9 @@ app:
   jwt:
     secret: ${APP_JWT_SECRET}
     expiration: ${APP_JWT_EXPIRATION}
+  open-ai:
+    api-key: ${OPEN_AI_API_KEY}
+
   client:
     url: ${CLIENT_URL}
   host:

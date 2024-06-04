@@ -43,7 +43,7 @@ public class News {
     private String url;
 
     @Lob
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "reported_at")
@@ -53,10 +53,6 @@ public class News {
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_news_property"))
     private Property property;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "summary_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_news_summary"))
-    private Summary summary;
-
     @Builder
     public News(String s3Url,
                 String cloudfrontUrl,
@@ -65,15 +61,13 @@ public class News {
                 LocalDate reportedAt,
                 String publisher,
                 String url,
-                Property property,
-                Summary summary) {
+                Property property) {
         this.s3Url = s3Url;
         this.cloudfrontUrl = cloudfrontUrl;
         this.title = title;
         this.content = content;
         this.reportedAt = reportedAt;
         this.property = property;
-        this.summary = summary;
         this.publisher = publisher;
         this.url = url;
     }
@@ -81,10 +75,6 @@ public class News {
     public void updateProperty(Property property) {
         this.property = property;
         property.getNews().add(this);
-    }
-
-    public void updateSummary(Summary summary) {
-        this.summary = summary;
     }
 
     public NewsDto toDto() {

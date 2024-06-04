@@ -28,6 +28,10 @@ VALUES
     (UNHEX(REPLACE('5111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'url', 'url', 'test')
 ON DUPLICATE KEY UPDATE document_id = document_id;
 
+-- investment_points 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
+INSERT INTO investment_points (investment_point_id, property_id, point_name, point_description, point_image_url)
+
+
 -- users 테이블에 샘플 데이터 삽입
 INSERT INTO users (user_id, email, password, phone_number, name, role, created_at, updated_at, wallet_address)
 VALUES
