@@ -21,7 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Optional<Order> findByUserAndPropertyAndPriceAndQuantityAndType(User seller, Property property, int executedPrice, int executedQuantity, String status);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadCompletedOrderResponse" +
-            "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price) " +
+            "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price, p.type) " +
             "FROM Order o " +
             "JOIN o.property p " +
             "WHERE o.user = :user " +
@@ -30,7 +30,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Page<AccountDto.ReadCompletedOrderResponse> findByUserAndCreatedAtBetweenAndCompleted(User user, LocalDateTime parsedStartDate, LocalDateTime parsedEndDate, Pageable pageable);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadCompletedOrderResponse" +
-            "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price) " +
+            "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price, p.type) " +
             "FROM Order o " +
             "JOIN o.property p " +
             "WHERE o.user = :user " +

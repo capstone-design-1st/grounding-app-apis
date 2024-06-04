@@ -74,8 +74,9 @@ public class AccountDto {
         private String propertyName;
         private Integer quantity;
         private LocalDate date;
-        private String type;
+        private String type; //매수, 매도
         private Integer price;
+        private String propertyType;
 
         @Builder
         public ReadCompletedOrderResponse(UUID propertyId,
@@ -83,13 +84,15 @@ public class AccountDto {
                                        Integer quantity,
                                        LocalDateTime dateTime,
                                        String type,
-                                       Integer price) {
+                                       Integer price,
+                                       String propertyType) {
             this.propertyId = propertyId != null ? propertyId : UUID.randomUUID();
             this.propertyName = propertyName != null ? propertyName : "";
             this.quantity = quantity != null ? quantity : 0;
             this.date = dateTime != null ? dateTime.toLocalDate() : LocalDate.now();
             this.type = type != null ? type : "";
             this.price = price != null ? price : 0;
+            this.propertyType = propertyType != null ? propertyType : "";
         }
     }
     @Data

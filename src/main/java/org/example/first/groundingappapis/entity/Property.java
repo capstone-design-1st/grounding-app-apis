@@ -41,8 +41,11 @@ public class Property {
     @Column(name = "total_volume")
     private Long totalVolume;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false) //부동산, 건물
     private String type;
+
+    @Column(name = "uploader_wallet_address")
+    private String uploaderWalletAddress;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
