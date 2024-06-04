@@ -2,6 +2,9 @@ server:
   port: 8033
 
 spring:
+  kafka:
+#    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
   mail:
     host: smtp.gmail.com
     port: 587
