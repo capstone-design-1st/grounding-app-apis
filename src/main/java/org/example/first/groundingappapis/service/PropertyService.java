@@ -23,4 +23,6 @@ public interface PropertyService {
     Page<PropertyDto.SearchResultResponse> searchProperties(String keyword, Pageable pageable);
 
     Page<RealTimeTransactionLogDto.ReadResponse> getRealTimeTransactionLog(String propertyId, Pageable pageable);
+
+    Page<PropertyDto.GetFundraisingResponse> getFundraisingProperties(Pageable pageable);
 }

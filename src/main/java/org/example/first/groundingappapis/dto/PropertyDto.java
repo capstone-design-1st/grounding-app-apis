@@ -52,6 +52,7 @@ public class PropertyDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class GetResponse {
         private Integer presentPrice;
+        private Boolean isFundraising;
         private PropertyDto propertyDto;
         private FundraiseDto fundraiseDto;
         private PropertyDetailDto propertyDetailDto;
@@ -65,6 +66,7 @@ public class PropertyDto {
         @Builder
         public GetResponse(
                 Integer presentPrice,
+                Boolean isFundraising,
                           PropertyDto propertyDto,
                           FundraiseDto fundraiseDto,
                           PropertyDetailDto propertyDetailDto,
@@ -75,6 +77,7 @@ public class PropertyDto {
                           List<InvestmentPointDto> investmentPointDto,
                           List<DocumentDto> documentDto) {
             this.presentPrice = presentPrice;
+            this.isFundraising = isFundraising;
             this.propertyDto = propertyDto;
             this.fundraiseDto = fundraiseDto;
             this.propertyDetailDto = propertyDetailDto;
@@ -91,26 +94,19 @@ public class PropertyDto {
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class GetFundraisingResponse {
-        private PropertyDto propertyDto;
-        private FundraiseDto fundraiseDto;
-        private PropertyDetailDto propertyDetailDto;
-        private LocationDto locationDto;
-        private ThumbnailUrlDto thumbnailUrlDto;
-        private List<RepresentationPhotoUrlDto> representationPhotoUrlDto;
+        private LocalDateTime createdAt;
+        private UUID propertyId;
+        private String name;
+        private String oneline;
+        private String thumbnailUrl;
 
         @Builder
-        public GetFundraisingResponse(PropertyDto propertyDto,
-                                      FundraiseDto fundraiseDto,
-                                      PropertyDetailDto propertyDetailDto,
-                                      LocationDto locationDto,
-                                      ThumbnailUrlDto thumbnailUrlDto,
-                                      List<RepresentationPhotoUrlDto> representationPhotoUrlDto) {
-            this.propertyDto = propertyDto;
-            this.fundraiseDto = fundraiseDto;
-            this.propertyDetailDto = propertyDetailDto;
-            this.locationDto = locationDto;
-            this.thumbnailUrlDto = thumbnailUrlDto;
-            this.representationPhotoUrlDto = representationPhotoUrlDto;
+        public GetFundraisingResponse(LocalDateTime createdAt, UUID propertyId, String name, String oneline, String thumbnailUrl) {
+            this.createdAt = createdAt;
+            this.propertyId = propertyId;
+            this.name = name;
+            this.oneline = oneline;
+            this.thumbnailUrl = thumbnailUrl;
         }
     }
 
@@ -215,17 +211,17 @@ public class PropertyDto {
         private String city;
         private String gu;
         private String name;
-        private String oneLine;
+        private String oneline;
         private Double fluctuationRate;
 
         @Builder
-        public SearchResultResponse(UUID propertyId, String type, String city, String gu, String name, String oneLine, Double fluctuationRate) {
+        public SearchResultResponse(UUID propertyId, String type, String city, String gu, String name, String oneline, Double fluctuationRate) {
             this.propertyId = propertyId;
             this.type = type;
             this.city = city;
             this.gu = gu;
             this.name = name;
-            this.oneLine = oneLine;
+            this.oneline = oneline;
             this.fluctuationRate = fluctuationRate;
         }
     }

@@ -1,5 +1,6 @@
 package org.example.first.groundingappapis.service;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.example.first.groundingappapis.exception.*;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -78,8 +79,11 @@ public class PropertyServiceImpl implements PropertyService {
 
         Integer presentPrice = realTimeTransactionLog.isPresent() ? realTimeTransactionLog.get().getExecutedPrice() : property.getFundraise().getIssuePrice();
 
+        Boolean isFundraising = !fundraiseDto.getProgressRate().equals(100.0);
+
         PropertyDto.GetResponse response = PropertyDto.GetResponse.builder()
                 .presentPrice(presentPrice)
+                .isFundraising(isFundraising)
                 .propertyDto(propertyDto)
                 .fundraiseDto(fundraiseDto)
                 .propertyDetailDto(propertyDetailDto)
@@ -182,7 +186,7 @@ public class PropertyServiceImpl implements PropertyService {
                                 .city(city)
                                 .gu(gu)
                                 .name(name)
-                                .oneLine(oneline)
+                                .oneline(oneline)
                                 .fluctuationRate(fluctuationRate)
                                 .build();
                     });
@@ -205,7 +209,7 @@ public class PropertyServiceImpl implements PropertyService {
                                 .city(city)
                                 .gu(gu)
                                 .name(name)
-                                .oneLine(oneline)
+                                .oneline(oneline)
                                 .fluctuationRate(fluctuationRate)
                                 .build();
                     });
@@ -232,6 +236,14 @@ public class PropertyServiceImpl implements PropertyService {
                 .readRealTimeTransactionLogsByPropertyAndExecutedAtToday(property, startOfDay, endOfDay, pageable);
 
         return realTimeTransactionLogs;
+    }
+
+    @Override
+    public Page<PropertyDto.GetFundraisingResponse> getFundraisingProperties(Pageable pageable) {
+        
+        Page<PropertyDto.GetFundraisingResponse> response = propertyRepository.readBasicInfoOfFundraisingProperty(pageable);
+
+        return response;
     }
 
     private PropertyDetailDto buildLandInformation(Land land) {

@@ -76,4 +76,12 @@ search all property,
                     "LEFT JOIN locations l ON p.property_id = l.property_id",
             nativeQuery = true)
     Page<Object[]> searchProperties(Pageable pageable);
+
+    @Query("SELECT new org.example.first.groundingappapis.dto.PropertyDto$GetFundraisingResponse" +
+            "(p.createdAt, p.id, p.name, p.oneline, t.cloudfrontUrl) " +
+            "FROM Property p " +
+            "LEFT JOIN p.fundraise f " +
+            "LEFT JOIN p.thumbnailUrl t " +
+            "WHERE f.progressRate < 100.0")
+    Page<PropertyDto.GetFundraisingResponse> readBasicInfoOfFundraisingProperty(Pageable pageable);
 }

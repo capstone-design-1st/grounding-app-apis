@@ -40,6 +40,17 @@ public class PropertyController {
         return ResponseEntity.ok(propertyService.getProperty(propertyId));
     }
 
+    @Operation(summary = "모집 중인 매물 기초 정보 조회")
+    @GetMapping("/fundraising/basic-info")
+    public ResponseEntity<Page<PropertyDto.GetFundraisingResponse>> getFundraisingProperties(@RequestParam(defaultValue = "0") int page,
+                                                                                             @RequestParam(defaultValue = "10") int size) {
+        log.info("getFundraisingProperties called with page: {}, size: {}", page, size);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(propertyService.getFundraisingProperties(pageable));
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{propertyId}/users/like")
     public ResponseEntity<PropertyDto.GetLikesResponse> isUserlikeProperty(@AuthenticationPrincipal UserPrincipal userPrincipal,
