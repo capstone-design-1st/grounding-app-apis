@@ -30,25 +30,25 @@ public class TradingController {
     //Post, buying
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{propertyId}/buying")
-    public ResponseEntity<ResponseDto> buyOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseEntity<TradingDto.BuyResponse> buyOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                                 @PathVariable UUID propertyId,
                                                                 @RequestBody TradingDto.BuyRequest buyRequest) {
 
         User user = userPrincipal.getUser();
-        tradingService.uploadBuyingOrderOnQuote(user, propertyId, buyRequest);
+        TradingDto.BuyResponse response = tradingService.uploadBuyingOrderOnQuote(user, propertyId, buyRequest);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.ok(response);
     }
     //Post, Selling
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{propertyId}/selling")
-    public ResponseEntity<ResponseDto> sellOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseEntity<TradingDto.SellResponse> sellOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @PathVariable UUID propertyId,
                                                       @RequestBody TradingDto.SellRequest sellRequest) {
         User user = userPrincipal.getUser();
-        tradingService.uploadSellingOrderOnQuote(user, propertyId, sellRequest);
+        TradingDto.SellResponse response = tradingService.uploadSellingOrderOnQuote(user, propertyId, sellRequest);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.ok(response);
     }
 
     //get total price by quantity and propertyId response

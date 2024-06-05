@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -47,11 +47,16 @@ public class TradingServiceImpl implements TradingService {
             throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
         }
 
-        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property.getId()).orElseGet(() -> {
+        LocalDate today = LocalDate.now();
+
+        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property.getId(), today).orElseGet(() -> {
+            RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
+                    new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+
             DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
                     .date(LocalDate.now())
                     .openingPrice(buyRequest.getPrice())
-                    .closingPrice(null)
+                    .closingPrice(realTimeTransactionLog.getExecutedPrice()) //TODO
                     .maxPrice(buyRequest.getPrice())
                     .minPrice(buyRequest.getPrice())
                     .build();
@@ -61,9 +66,19 @@ public class TradingServiceImpl implements TradingService {
         });
 
         int executedQuantityOfOrder = 0;
+        List<TradingDto.PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoList = new ArrayList<>();
 
         if (quoteRepository.existsByPropertyAndPriceLessThanEqual(property, buyRequest.getPrice())) {
-            executedQuantityOfOrder = executeBuyTransaction(property, buyer, buyRequest, dayTransactionLog);
+             purchasedSellQuotesInfoList = executeBuyTransaction(property, buyer, buyRequest, dayTransactionLog);
+
+            int totalExecutedQuantity = purchasedSellQuotesInfoList.stream().mapToInt(TradingDto.PurchasedSellerQuoteInfoDto::getExecutedQuantity).sum();
+
+            //saveOrder(buyer, buyRequest.getPrice(), executedQuantityOfOrder, totalExecutedQuantity, "매수", property);
+
+            purchasedSellQuotesInfoList.stream().forEach(purchasedSellerQuoteInfoDto -> {
+                saveOrder(buyer, buyRequest.getPrice(), purchasedSellerQuoteInfoDto.getExecutedQuantity(), totalExecutedQuantity, "매수", property);
+            });
+
         } else {
             Quote quote = Quote.builder()
                     .price(buyRequest.getPrice())
@@ -73,6 +88,8 @@ public class TradingServiceImpl implements TradingService {
             quote.updateProperty(property);
             quote.updateAccount(buyerAccount);
             quoteRepository.save(quote);
+
+            saveOrder(buyer, buyRequest.getPrice(), 0, 0, "매수", property);
         }
 
         final int finalExecutedQuantityOfOrder = executedQuantityOfOrder;
@@ -101,8 +118,6 @@ public class TradingServiceImpl implements TradingService {
         }
         inventoryRepository.save(inventory);
 
-        saveBuyOrder(buyer, buyRequest, executedQuantityOfOrder, property);
-
         //buyerAccount.setAverageEarningRate();, 모든 inventory earningRate랑 quantity 조회해서 평균
         buyerAccount.setAverageEarningRate(inventoryRepository.getAverageEarningRateByAccount(buyerAccount.getId()));
         buyerAccount.minusDeposit(Long.valueOf(buyRequest.getPrice() * buyRequest.getQuantity()));
@@ -112,73 +127,73 @@ public class TradingServiceImpl implements TradingService {
         propertyRepository.save(property);
 
         TradingDto.BuyResponse response = TradingDto.BuyResponse.builder()
-                .userId(buyer.getId().toString())
+                .buyerId(buyer.getId().toString())
                 .walletAddress(buyer.getWalletAddress())
                 .propertyId(propertyId.toString())
                 .executedQuantity(executedQuantityOfOrder)
-                .executedPrice(buyRequest.getPrice())
+                .orderedPrice(buyRequest.getPrice())
+                .purchasedSellQuotesInfoList(purchasedSellQuotesInfoList)
                 .build();
 
         return response;
     }
 
     @Transactional
-    public void saveBuyOrder(User buyer, TradingDto.BuyRequest buyRequest, int executedQuantityOfOrder, Property property) {
-        saveOrder(buyer, buyRequest.getPrice(), executedQuantityOfOrder, buyRequest.getQuantity(), "매수", property);
-    }
-
-    @Transactional
     public void saveOrder(User user, int price, int executedQuantity, int totalQuantity, String type, Property property) {
-        if (executedQuantity > 0 && executedQuantity < totalQuantity) {
-            Order orderCompleted = Order.builder()
-                    .type(type)
-                    .price(price)
-                    .quantity(executedQuantity)
-                    .status("체결 완료")
-                    .build();
 
-            orderCompleted.updateProperty(property);
-            orderCompleted.updateUser(user);
-            orderRepository.save(orderCompleted);
-
-            Order orderPending = Order.builder()
-                    .type(type)
-                    .price(price)
-                    .quantity(totalQuantity - executedQuantity)
-                    .status("체결 대기중")
-                    .build();
-
-            orderPending.updateProperty(property);
-            orderPending.updateUser(user);
-            orderRepository.save(orderPending);
-        } else if (executedQuantity == 0) {
-            Order order = Order.builder()
+        //TODO : 로직 이상함, Order Get해와서 상태를 변경해줘야함. 새롭게 save하는 Order는 createdAt을 Get한 Order의 createdAt으로 해줘야함
+        Order order = orderRepository.findByUserAndPropertyAndPriceAndQuantityAndType(user, property, price, totalQuantity, type).orElseGet(() -> {
+            Order newOrder = Order.builder()
                     .type(type)
                     .price(price)
                     .quantity(totalQuantity)
                     .status("체결 대기중")
                     .build();
+            newOrder.updateProperty(property);
+            newOrder.updateUser(user);
+            return newOrder;
+        });
 
-            order.updateProperty(property);
-            order.updateUser(user);
-            orderRepository.save(order);
-        } else if (executedQuantity == totalQuantity){
-            Order order = Order.builder()
-                    .type(type)
-                    .price(price)
-                    .quantity(totalQuantity)
-                    .status("체결 완료")
-                    .build();
+        if (order.getStatus().equals("체결 대기중")) {
+            if (executedQuantity > 0 && executedQuantity < totalQuantity) {
+                Order orderCompleted = Order.builder()
+                        .type(type)
+                        .price(price)
+                        .quantity(executedQuantity)
+                        .status("체결 완료")
+                        .createdAt(order.getCreatedAt())
+                        .build();
 
-            order.updateProperty(property);
-            order.updateUser(user);
-            orderRepository.save(order);
+                orderCompleted.updateProperty(property);
+                orderCompleted.updateUser(user);
+                orderRepository.save(orderCompleted);
+
+                order.updateQuantity(totalQuantity - executedQuantity);
+                orderRepository.save(order);
+            }
+//            else if (executedQuantity == 0) {
+//                Order order = Order.builder()
+//                        .type(type)
+//                        .price(price)
+//                        .quantity(totalQuantity)
+//                        .status("체결 대기중")
+//                        .build();
+//
+//                order.updateProperty(property);
+//                order.updateUser(user);
+//                orderRepository.save(order);
+//            }
+            else if (executedQuantity == totalQuantity && executedQuantity > 0){
+                order.updateStatus("체결 완료");
+                orderRepository.save(order);
+
+            }
         }
     }
 
     @Transactional
     @Override
-    public void uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest) {
+    public TradingDto.SellResponse uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest) {
         final Account sellerAccount = accountRepository.findByUser(user).orElseThrow(() ->
                 new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
@@ -191,6 +206,7 @@ public class TradingServiceImpl implements TradingService {
 
         LocalDate date = LocalDate.now();
 
+        //오늘자 dayTransactionLog가 없으면 생성
         DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property.getId(), date).orElseGet(() -> {
             RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
                     new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
@@ -198,19 +214,31 @@ public class TradingServiceImpl implements TradingService {
             DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
                     .date(LocalDate.now())
                     .openingPrice(sellRequest.getPrice())
-                    .closingPrice(null) //TODO
+                    .closingPrice(realTimeTransactionLog.getExecutedPrice())
                     .maxPrice(sellRequest.getPrice())
                     .minPrice(sellRequest.getPrice())
                     .build();
+
             newDayTransactionLog.updateProperty(property);
             dayTransactionLogRepository.save(newDayTransactionLog);
             return newDayTransactionLog;
         });
 
-        int executedQuantityOfOrder = 0;
+        //매수 호가 정보 리스트
+        List<TradingDto.SoldBuyerQuoteInfoDto> soldBuyerQuotesInfoList = new ArrayList<>();
+
+        int totalExecutedQuantityOfOrder = 0;
 
         if (quoteRepository.existsByPropertyAndPriceGreaterThanEqual(property, sellRequest.getPrice())) {
-            executedQuantityOfOrder = executeSellTransaction(property, user, sellRequest, dayTransactionLog);
+            soldBuyerQuotesInfoList = executeSellTransaction(property, user, sellRequest, dayTransactionLog);
+
+            final int finalTotalExecutedQuantityOfOrder = soldBuyerQuotesInfoList.stream().mapToInt(TradingDto.SoldBuyerQuoteInfoDto::getExecutedQuantity).sum();
+            totalExecutedQuantityOfOrder = finalTotalExecutedQuantityOfOrder;
+            //매수 호가 관련 주문 내역 업데이트
+            soldBuyerQuotesInfoList.stream().forEach(soldBuyerQuoteInfoDto -> {
+                saveOrder(user, sellRequest.getPrice(), soldBuyerQuoteInfoDto.getExecutedQuantity(), finalTotalExecutedQuantityOfOrder, "매도", property);
+            });
+
         } else {
             Quote quote = Quote.builder()
                     .price(sellRequest.getPrice())
@@ -220,9 +248,9 @@ public class TradingServiceImpl implements TradingService {
             quote.updateProperty(property);
             quote.updateAccount(sellerAccount);
             quoteRepository.save(quote);
-        }
 
-        saveOrder(user, sellRequest.getPrice(), executedQuantityOfOrder, sellRequest.getQuantity(), "매도", property);
+            saveOrder(user, sellRequest.getPrice(), 0, 0, "매도", property);
+        }
 
         inventory.setSellableQuantity(inventory.getSellableQuantity() - sellRequest.getQuantity());
 
@@ -231,10 +259,24 @@ public class TradingServiceImpl implements TradingService {
         if (inventory.getQuantity() == 0) {
             inventoryRepository.delete(inventory);
         } else {
-            inventory.setQuantity(inventory.getQuantity() - executedQuantityOfOrder);
+            inventory.setQuantity(inventory.getQuantity() - totalExecutedQuantityOfOrder);
             inventoryRepository.save(inventory);
         }
         accountRepository.save(sellerAccount);
+
+        property.increaseTotalVolume(totalExecutedQuantityOfOrder);
+        propertyRepository.save(property);
+
+        TradingDto.SellResponse response = TradingDto.SellResponse.builder()
+                .sellerId(user.getId().toString())
+                .walletAddress(user.getWalletAddress())
+                .propertyId(propertyId.toString())
+                .executedQuantity(totalExecutedQuantityOfOrder)
+                .orderedPrice(sellRequest.getPrice())
+                .soldBuyerQuotesInfoList(soldBuyerQuotesInfoList)
+                .build();
+
+        return response;
     }
     @Override
     public Double getFluctuationRate(int openingPrice, int executedPrice) {
@@ -269,61 +311,13 @@ public class TradingServiceImpl implements TradingService {
         return response;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Page<QuoteDto.ReadResponse> readUpperQuotes(UUID propertyId, int basePrice, int page, int size) {
-        final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
-                new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
-
-        if(!isEnoughFundraise(property)){
-            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
-        }
-
-        if(basePrice == 0){
-            if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)){
-                RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
-                        new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
-                basePrice = realTimeTransactionLog.getExecutedPrice();
-            }else{
-                basePrice = property.getFundraise().getIssuePrice();
-            }
-        }
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        return quoteRepository.findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(propertyId, basePrice, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Page<QuoteDto.ReadResponse> readDownQuotes(UUID propertyId, int basePrice, int page, int size) {
-        final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
-                new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
-
-        if(!isEnoughFundraise(property)){
-            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
-        }
-
-        if(basePrice == 0){
-            if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)){
-                RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
-                        new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
-                basePrice = realTimeTransactionLog.getExecutedPrice();
-            }else{
-                basePrice = property.getFundraise().getIssuePrice();
-            }
-        }
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        return quoteRepository.findByPropertyIdAndPriceLessOrderByPriceAsc(propertyId, basePrice, pageable);
-    }
 
     @Transactional
-    public int executeBuyTransaction(Property property, User buyer, TradingDto.BuyRequest buyRequest, DayTransactionLog dayTransactionLog) {
-        int executedQuantityOfOrder = 0;
+    public List<TradingDto.PurchasedSellerQuoteInfoDto> executeBuyTransaction(Property property, User buyer, TradingDto.BuyRequest buyRequest, DayTransactionLog dayTransactionLog) {
+        List<TradingDto.PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoDto = null;
 
         while (buyRequest.getQuantity() > 0) {
+
             Optional<Quote> sellQuoteOptional = quoteRepository.findFirstByPropertyAndPriceLessThanEqualOrderByPriceAsc(property, buyRequest.getPrice());
 
             if (!sellQuoteOptional.isPresent()) {
@@ -338,8 +332,6 @@ public class TradingServiceImpl implements TradingService {
             int executedPrice = sellQuote.getPrice();
             buyRequest.setQuantity(buyRequest.getQuantity() - executedQuantity);
             sellQuote.setQuantity(sellQuote.getQuantity() - executedQuantity);
-            executedQuantityOfOrder += executedQuantity;
-
 
             if (sellQuote.getQuantity() == 0) {
                 quoteRepository.delete(sellQuote);
@@ -367,26 +359,31 @@ public class TradingServiceImpl implements TradingService {
 
             inventory.setQuantity(inventory.getQuantity() - executedQuantity);
 
-            RealTimeTransactionLog realTimeTransactionLog = RealTimeTransactionLog.builder()
-                    .quantity(executedQuantity)
-                    .executedPrice(executedPrice)
-                    .executedAt(LocalDateTime.now())
-                    .fluctuationRate(getFluctuationRate(dayTransactionLog.getOpeningPrice(), executedPrice))
+            TradingDto.PurchasedSellerQuoteInfoDto purchasedSellerQuoteInfoDto = TradingDto.PurchasedSellerQuoteInfoDto.builder()
+                    .sellerId(seller.getId().toString())
+                    .sellerWalletAddress(seller.getWalletAddress())
+                    .executedQuantity(executedQuantity)
                     .build();
 
-            realTimeTransactionLogRepository.save(realTimeTransactionLog);
+            purchasedSellQuotesInfoDto.add(purchasedSellerQuoteInfoDto);
+
+            //update min, max price of day transaction log
+            if(executedPrice > dayTransactionLog.getMaxPrice())
+                dayTransactionLog.updateMaxPrice(executedPrice);
+            else if(executedPrice < dayTransactionLog.getMinPrice())
+                dayTransactionLog.updateMinPrice(executedPrice);
         }
 
-        saveOrder(buyer, buyRequest.getPrice(), executedQuantityOfOrder, executedQuantityOfOrder, "매수", property);
-
-        return executedQuantityOfOrder;
+        dayTransactionLogRepository.save(dayTransactionLog);
+        return purchasedSellQuotesInfoDto;
     }
 
     @Transactional
-    public int executeSellTransaction(Property property, User seller, TradingDto.SellRequest sellRequest, DayTransactionLog dayTransactionLog) {
-        int executedQuantityOfOrder = 0;
+    public List<TradingDto.SoldBuyerQuoteInfoDto> executeSellTransaction(Property property, User seller, TradingDto.SellRequest sellRequest, DayTransactionLog dayTransactionLog) {
+        List<TradingDto.SoldBuyerQuoteInfoDto> soldBuyerQuotesInfoList = new ArrayList<>();
 
         while (sellRequest.getQuantity() > 0) {
+
             Optional<Quote> buyQuoteOptional = quoteRepository.findFirstByPropertyAndPriceGreaterThanEqualOrderByPriceDesc(property, sellRequest.getPrice());
 
             if (!buyQuoteOptional.isPresent()) {
@@ -401,7 +398,6 @@ public class TradingServiceImpl implements TradingService {
             int executedPrice = buyQuote.getPrice();
             sellRequest.setQuantity(sellRequest.getQuantity() - executedQuantity);
             buyQuote.setQuantity(buyQuote.getQuantity() - executedQuantity);
-            executedQuantityOfOrder += executedQuantity;
 
             if (buyQuote.getQuantity() == 0) {
                 quoteRepository.delete(buyQuote);
@@ -429,11 +425,22 @@ public class TradingServiceImpl implements TradingService {
 
             inventory.setQuantity(inventory.getQuantity() + executedQuantity);
             inventoryRepository.save(inventory);
+
+            TradingDto.SoldBuyerQuoteInfoDto soldBuyerQuoteInfoDto = TradingDto.SoldBuyerQuoteInfoDto.builder()
+                    .buyerId(buyer.getId().toString())
+                    .buyerWalletAddress(buyer.getWalletAddress())
+                    .executedQuantity(executedQuantity)
+                    .build();
+
+            soldBuyerQuotesInfoList.add(soldBuyerQuoteInfoDto);
+
+            //update min, max price of day transaction log
+            if(executedPrice > dayTransactionLog.getMaxPrice())
+                dayTransactionLog.updateMaxPrice(executedPrice);
+            else if(executedPrice < dayTransactionLog.getMinPrice())
+                dayTransactionLog.updateMinPrice(executedPrice);
         }
-
-        saveOrder(seller, sellRequest.getPrice(), executedQuantityOfOrder, executedQuantityOfOrder, "매도", property);
-
-        return executedQuantityOfOrder;
+        return soldBuyerQuotesInfoList;
     }
 
     @Transactional
@@ -559,6 +566,57 @@ public class TradingServiceImpl implements TradingService {
     @Transactional(readOnly = true)
     public boolean isEnoughFundraise(Property property){
         return property.getFundraise().getProgressRate() >= 100.0;
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<QuoteDto.ReadResponse> readUpperQuotes(UUID propertyId, int basePrice, int page, int size) {
+        final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
+                new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+
+        if(!isEnoughFundraise(property)){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
+
+        if(basePrice == 0){
+            if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)){
+                RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
+                        new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+                basePrice = realTimeTransactionLog.getExecutedPrice();
+            }else{
+                basePrice = property.getFundraise().getIssuePrice();
+            }
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return quoteRepository.findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(propertyId, basePrice, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<QuoteDto.ReadResponse> readDownQuotes(UUID propertyId, int basePrice, int page, int size) {
+        final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
+                new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+
+        if(!isEnoughFundraise(property)){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
+
+        if(basePrice == 0){
+            if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)){
+                RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
+                        new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+                basePrice = realTimeTransactionLog.getExecutedPrice();
+            }else{
+                basePrice = property.getFundraise().getIssuePrice();
+            }
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return quoteRepository.findByPropertyIdAndPriceLessOrderByPriceAsc(propertyId, basePrice, pageable);
     }
 
 }

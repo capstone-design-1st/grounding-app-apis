@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface TradingService {
 
-    void uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest);
+    TradingDto.SellResponse uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest);
 
     TradingDto.BuyResponse uploadBuyingOrderOnQuote(User user, UUID propertyId, TradingDto.BuyRequest buyRequest);
 

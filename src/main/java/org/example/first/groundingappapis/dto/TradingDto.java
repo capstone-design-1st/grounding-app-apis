@@ -41,21 +41,23 @@ public class TradingDto {
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class BuyResponse {
-        private String userId;
+        private String buyerId;
         private String walletAddress;
 
         private String propertyId;
         private Integer executedQuantity;
-        private Integer executedPrice;
+        private Integer orderedPrice;
 
-        private List<PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoDto;
+        private List<PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoList;
+
         @Builder
-        public BuyResponse(String userId, String walletAddress, String propertyId, Integer executedQuantity, Integer executedPrice) {
-            this.userId = userId;
+        public BuyResponse(String buyerId, String walletAddress, String propertyId, Integer executedQuantity, Integer orderedPrice, List<PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoList) {
+            this.buyerId = buyerId;
             this.walletAddress = walletAddress;
             this.propertyId = propertyId;
             this.executedQuantity = executedQuantity;
-            this.executedPrice = executedPrice;
+            this.orderedPrice = orderedPrice;
+            this.purchasedSellQuotesInfoList = purchasedSellQuotesInfoList;
         }
     }
 
@@ -66,15 +68,52 @@ public class TradingDto {
         private String sellerId;
         private String sellerWalletAddress;
         private Integer executedQuantity;
-        private Integer executedPrice;
-
         @Builder
-        public PurchasedSellerQuoteInfoDto(String sellerId, String sellerWalletAddress, Integer executedQuantity, Integer executedPrice) {
+        public PurchasedSellerQuoteInfoDto(String sellerId, String sellerWalletAddress, Integer executedQuantity) {
             this.sellerId = sellerId;
             this.sellerWalletAddress = sellerWalletAddress;
             this.executedQuantity = executedQuantity;
-            this.executedPrice = executedPrice;
         }
     }
 
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SellResponse {
+        private String SellerId;
+        private String walletAddress;
+
+        private String propertyId;
+        private Integer executedQuantity;
+        private Integer orderedPrice;
+
+        private List<SoldBuyerQuoteInfoDto> soldBuyerQuotesInfoList;
+
+
+        @Builder
+        public SellResponse(String sellerId, String walletAddress, String propertyId, Integer executedQuantity, Integer orderedPrice, List<SoldBuyerQuoteInfoDto> soldBuyerQuotesInfoList) {
+            SellerId = sellerId;
+            this.walletAddress = walletAddress;
+            this.propertyId = propertyId;
+            this.executedQuantity = executedQuantity;
+            this.orderedPrice = orderedPrice;
+            this.soldBuyerQuotesInfoList = soldBuyerQuotesInfoList;
+        }
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SoldBuyerQuoteInfoDto{
+        private String buyerId;
+        private String buyerWalletAddress;
+        private Integer executedQuantity;
+        @Builder
+        public SoldBuyerQuoteInfoDto(String buyerId, String buyerWalletAddress, Integer executedQuantity) {
+            this.buyerId = buyerId;
+            this.buyerWalletAddress = buyerWalletAddress;
+            this.executedQuantity = executedQuantity;
+        }
+    }
 }
