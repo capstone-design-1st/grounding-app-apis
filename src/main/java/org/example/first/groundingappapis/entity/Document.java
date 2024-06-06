@@ -10,7 +10,9 @@ import org.example.first.groundingappapis.dto.DocumentDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "documents")
+@Table(name = "documents", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"cloudfront_url", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +30,7 @@ public class Document {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "s3Url", length = 255)
+    @Column(name = "s3_url", length = 255)
     private String s3Url;
 
     @Column(name = "cloudfront_url", length = 255)

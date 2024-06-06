@@ -50,7 +50,7 @@ VALUES
 ON DUPLICATE KEY UPDATE location_id = location_id;
 
 -- documents 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
-INSERT INTO documents (document_id, property_id, cloudfront_url, s3url, title)
+INSERT INTO documents (document_id, property_id, cloudfront_url, s3_url, title)
 VALUES
     (UNHEX(REPLACE('5111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'url', 'url', 'test')
 ON DUPLICATE KEY UPDATE document_id = document_id;
@@ -59,9 +59,9 @@ ON DUPLICATE KEY UPDATE document_id = document_id;
 -- INSERT INTO investment_points (investment_point_id, property_id, point_name, point_description, point_image_url)
 INSERT INTO investment_points (property_id, title)
 VALUES
-    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '💰 연 6% 고정 배당금 지급'),
-    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '💰 시세 대비 낮은 공모가, 매각 차익 기대'),
-    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '💰 신도림역 더블 역세권, 오피스 최적 입지')
+    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '연 6% 고정 배당금 지급'),
+    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '시세 대비 낮은 공모가, 매각 차익 기대'),
+    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '신도림역 더블 역세권, 오피스 최적 입지')
 ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- news 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조

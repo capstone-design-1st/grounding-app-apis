@@ -11,7 +11,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "news")
+@Table(name = "news", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"title", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,7 +52,7 @@ public class News {
     private LocalDate reportedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", unique = true, nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_news_property"))
+    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_news_property"))
     private Property property;
 
     @Builder

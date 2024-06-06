@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "deposit_logs")
+@Table(name = "deposit_logs", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"account_id", "created_at"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

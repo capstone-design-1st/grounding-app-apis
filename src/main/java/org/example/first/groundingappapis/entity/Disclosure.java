@@ -11,7 +11,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "disclosures")
+@Table(name = "disclosures", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"title", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

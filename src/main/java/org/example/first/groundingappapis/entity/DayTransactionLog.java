@@ -11,7 +11,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "day_transaction_logs")
+@Table(name = "day_transaction_logs", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"date", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +34,7 @@ public class DayTransactionLog {
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_day_transaction_logs_property"))
     private Property property;
 
-    @Column(name = "date", unique = true, nullable = false)
+    @Column(name = "date", nullable = false)
     private LocalDate date;
 
     //변동률

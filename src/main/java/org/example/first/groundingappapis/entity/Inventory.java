@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inventorys")
+@Table(name = "inventorys", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"account_id", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

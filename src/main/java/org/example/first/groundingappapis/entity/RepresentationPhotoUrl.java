@@ -10,7 +10,9 @@ import org.example.first.groundingappapis.dto.RepresentationPhotoUrlDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "representation_photo_urls")
+@Table(name = "representation_photo_urls", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"cloudfront_url", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

@@ -9,7 +9,9 @@ import org.example.first.groundingappapis.dto.ThumbnailUrlDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "thumbnail_urls")
+@Table(name = "thumbnail_urls", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"property_id", "cloudfront_url"})
+})
 @Getter
 @NoArgsConstructor
 public class ThumbnailUrl {

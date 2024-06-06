@@ -13,7 +13,9 @@ import java.util.UUID;
 
 //호가
 @Entity
-@Table(name = "quotes")
+@Table(name = "quotes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"property_id", "account_id", "created_at"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

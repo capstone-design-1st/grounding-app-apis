@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "real_time_transaction_logs")
+@Table(name = "real_time_transaction_logs", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"executed_at", "property_id", "quantity"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
