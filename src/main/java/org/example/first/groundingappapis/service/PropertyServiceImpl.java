@@ -117,11 +117,11 @@ public class PropertyServiceImpl implements PropertyService {
 
         Page<Property> popularProperties = propertyRepository.findAll(pageable);
 
-        List<RealTimeTransactionLogDto> transactionLogs = realTimeTransactionLogRepository
+        List<RealTimeTransactionLog> transactionLogs = realTimeTransactionLogRepository
                 .findRecentTransactionLogsByProperties(popularProperties.getContent());
 
-        Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogs.stream()
-                .collect(Collectors.toMap(RealTimeTransactionLogDto::getPropertyId, log -> log));
+        Map<UUID, RealTimeTransactionLog> transactionLogMap = transactionLogs.stream()
+                .collect(Collectors.toMap(RealTimeTransactionLog::getPropertyId, log -> log));
 
         List<DayTransactionLog> dayTransactionLogs = dayTransactionLogRepository
                 .findRecentDayTransactionLogsByPropertyIds(popularProperties.getContent().stream().map(Property::getId).collect(Collectors.toList()));
@@ -131,7 +131,7 @@ public class PropertyServiceImpl implements PropertyService {
 
 
         return popularProperties.map(property -> {
-            RealTimeTransactionLogDto transactionLog = transactionLogMap.get(property.getId());
+            RealTimeTransactionLog transactionLog = transactionLogMap.get(property.getId());
             DayTransactionLogDto dayTransactionLog = dayTransactionLogMap.get(property.getId());
             Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : property.getFundraise() != null ? property.getFundraise().getIssuePrice() : 0;
             Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : property.getFundraise() != null ? property.getFundraise().getIssuePrice() : 0;

@@ -18,20 +18,11 @@ import java.util.UUID;
 
 @Repository
 public interface RealTimeTransactionLogRepository extends JpaRepository<RealTimeTransactionLog, UUID> {
-    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
-            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
-            "FROM RealTimeTransactionLog r " +
-            "WHERE r.property IN :properties " +
-            "ORDER BY r.executedAt DESC")
-    List<RealTimeTransactionLogDto> findRecentTransactionLogsByUserAndProperties(@Param("properties") List<Property> properties);
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
-            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
-            "FROM RealTimeTransactionLog r " +
-            "WHERE r.property IN :properties " +
-            "ORDER BY r.executedAt DESC")
-    List<RealTimeTransactionLogDto> findRecentTransactionLogsByProperties(List<Property> properties);
-
+    @Query("SELECT rtl FROM RealTimeTransactionLog rtl " +
+            "WHERE rtl.id IN (SELECT MAX(rtl2.id) FROM RealTimeTransactionLog rtl2 WHERE rtl2.property IN :properties GROUP BY rtl2.property) " +
+            "ORDER BY rtl.executedAt DESC")
+    List<RealTimeTransactionLog> findRecentTransactionLogsByProperties(@Param("properties") List<Property> properties);
 
 //    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
 //            "r.property.id, r.executedPrice) " +

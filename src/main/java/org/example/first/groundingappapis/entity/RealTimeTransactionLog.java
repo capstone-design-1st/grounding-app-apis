@@ -69,4 +69,8 @@ public class RealTimeTransactionLog {
         this.property = property;
         property.getRealTimeTransactionLogs().add(this);
     }
+
+    public UUID getPropertyId() {
+        return property.getId();
+    }
 }

@@ -98,12 +98,12 @@ public class LikeServiceImpl implements LikeService{
         Page<Property> userLikedProperties = likeRepository.findAllLikedPropertyByUser(user, pageable);
 
         // 매물에 대한 가장 최근 거래 로그 조회
-        List<RealTimeTransactionLogDto> transactionLogs = realTimeTransactionLogRepository
-                .findRecentTransactionLogsByUserAndProperties(userLikedProperties.getContent());
+        List<RealTimeTransactionLog> transactionLogs = realTimeTransactionLogRepository
+                .findRecentTransactionLogsByProperties(userLikedProperties.getContent());
 
         // 매물과 거래 로그를 매핑하여 DTO 생성
-        Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogs.stream()
-                .collect(Collectors.toMap(RealTimeTransactionLogDto::getPropertyId, log -> log));
+        Map<UUID, RealTimeTransactionLog> transactionLogMap = transactionLogs.stream()
+                .collect(Collectors.toMap(RealTimeTransactionLog::getPropertyId, log -> log));
 
         //매물에 대한 가장 최근 일일 거래 로그 조회
         List<DayTransactionLog> dayTransactionLogs = dayTransactionLogRepository
@@ -115,7 +115,7 @@ public class LikeServiceImpl implements LikeService{
 
         // DTO 매핑하여 반환
         return userLikedProperties.map(property -> {
-            RealTimeTransactionLogDto transactionLog = transactionLogMap.get(property.getId());
+            RealTimeTransactionLog transactionLog = transactionLogMap.get(property.getId());
             DayTransactionLogDto dayTransactionLog = dayTransactionLogMap.get(property.getId());
             Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : 0;
             Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : 0;
