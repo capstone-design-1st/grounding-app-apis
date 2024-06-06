@@ -46,6 +46,11 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = propertyRepository.getDetailPropertyById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
         PropertyDto propertyDto = property.toDto();
         FundraiseDto fundraiseDto = property.getFundraise().toDto();
+
+        SummaryDto summaryDto = SummaryDto.builder()
+                .content(property.getSummary() != null ? property.getSummary().getContent() : "")
+                .build();
+
         PropertyDetailDto propertyDetailDto = null;
 
         if(property.getType().equals("land")) {
@@ -84,6 +89,7 @@ public class PropertyServiceImpl implements PropertyService {
         PropertyDto.GetResponse response = PropertyDto.GetResponse.builder()
                 .presentPrice(presentPrice)
                 .isFundraising(isFundraising)
+                .summaryDto(summaryDto)
                 .propertyDto(propertyDto)
                 .fundraiseDto(fundraiseDto)
                 .propertyDetailDto(propertyDetailDto)

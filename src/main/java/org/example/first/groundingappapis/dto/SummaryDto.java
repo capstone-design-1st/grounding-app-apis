@@ -16,7 +16,6 @@ public class SummaryDto {
     @Builder
     public SummaryDto(String content) {
         this.content = content != null ? content : "";
-
     }
 
 }

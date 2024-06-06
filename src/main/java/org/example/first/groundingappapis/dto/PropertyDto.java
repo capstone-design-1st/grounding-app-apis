@@ -53,6 +53,7 @@ public class PropertyDto {
     public static class GetResponse {
         private Integer presentPrice;
         private Boolean isFundraising;
+        private SummaryDto summaryDto;
         private PropertyDto propertyDto;
         private FundraiseDto fundraiseDto;
         private PropertyDetailDto propertyDetailDto;
@@ -67,6 +68,7 @@ public class PropertyDto {
         public GetResponse(
                 Integer presentPrice,
                 Boolean isFundraising,
+                SummaryDto summaryDto,
                           PropertyDto propertyDto,
                           FundraiseDto fundraiseDto,
                           PropertyDetailDto propertyDetailDto,
@@ -78,6 +80,7 @@ public class PropertyDto {
                           List<DocumentDto> documentDto) {
             this.presentPrice = presentPrice;
             this.isFundraising = isFundraising;
+            this.summaryDto = summaryDto;
             this.propertyDto = propertyDto;
             this.fundraiseDto = fundraiseDto;
             this.propertyDetailDto = propertyDetailDto;
