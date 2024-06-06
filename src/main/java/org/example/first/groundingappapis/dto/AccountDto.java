@@ -40,7 +40,8 @@ public class AccountDto {
         private String type;
         private Integer quantity;
         private Integer averageBuyingPrice;
-        private Integer evaluationPrice; // 현재가
+        private Integer presentPrice;
+        private Integer evaluationPrice;
         private Integer differenceAmount;
         private Double fluctuationRate;
         private Integer totalBuyingPrice;
@@ -52,6 +53,7 @@ public class AccountDto {
                                         Integer quantity,
                                         Integer averageBuyingPrice,
                                         Integer evaluationPrice,
+                                        Integer presentPrice,
                                         Integer differenceAmount,
                                         Double fluctuationRate,
                                         Integer totalBuyingPrice) {
@@ -60,6 +62,7 @@ public class AccountDto {
             this.type = type != null ? type : "";
             this.quantity = quantity != null ? quantity : 0;
             this.averageBuyingPrice = averageBuyingPrice != null ? averageBuyingPrice : 0;
+            this.presentPrice = presentPrice != null ? presentPrice : 0;
             this.evaluationPrice = evaluationPrice != null ? evaluationPrice : 0;
             this.differenceAmount = differenceAmount != null ? differenceAmount : 0;
             this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
