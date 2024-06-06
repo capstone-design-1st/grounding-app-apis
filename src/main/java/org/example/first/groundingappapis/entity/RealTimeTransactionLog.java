@@ -26,7 +26,7 @@ public class RealTimeTransactionLog {
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_real_time_transaction_logs_property"))
     private Property property;
 
-    @Column(name = "executed_at", nullable = false)
+    @Column(name = "executed_at", nullable = false, unique = true)
     private LocalDateTime executedAt;
 
     @Column(name = "quantity")
@@ -37,10 +37,6 @@ public class RealTimeTransactionLog {
 
     @Column(name = "fluctuation_rate")
     private Double fluctuationRate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_real_time_transaction_logs_user"))
-    private User user;
 
     @PrePersist
     public void prePersist() {
@@ -58,7 +54,6 @@ public class RealTimeTransactionLog {
         this.quantity = quantity;
         this.executedPrice = executedPrice;
         this.fluctuationRate = fluctuationRate;
-        this.user = user;
     }
 
     public RealTimeTransactionLogDto toDto() {
@@ -73,10 +68,5 @@ public class RealTimeTransactionLog {
     public void updateProperty(Property property) {
         this.property = property;
         property.getRealTimeTransactionLogs().add(this);
-    }
-
-    public void updateUser(User user) {
-        this.user = user;
-        user.getRealTimeTransactionLogs().add(this);
     }
 }

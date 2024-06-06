@@ -27,7 +27,7 @@ public class RepresentationPhotoUrl {
     @Column(name = "s3Url", length = 255)
     private String s3Url;
 
-    @Column(name = "cloudfront_url", length = 255)
+    @Column(name = "cloudfront_url", length = 255, nullable = false, unique = true)
     private String cloudfrontUrl;
 
     @Builder

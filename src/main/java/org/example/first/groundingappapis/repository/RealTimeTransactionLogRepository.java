@@ -21,9 +21,9 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
     @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
             "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
             "FROM RealTimeTransactionLog r " +
-            "WHERE r.property IN :properties AND r.user = :user " +
+            "WHERE r.property IN :properties " +
             "ORDER BY r.executedAt DESC")
-    List<RealTimeTransactionLogDto> findRecentTransactionLogsByUserAndProperties(@Param("user") User user, @Param("properties") List<Property> properties);
+    List<RealTimeTransactionLogDto> findRecentTransactionLogsByUserAndProperties(@Param("properties") List<Property> properties);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
             "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
@@ -62,11 +62,6 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "ORDER BY r.executed_at DESC " +
             "LIMIT 1", nativeQuery = true)
     Optional<RealTimeTransactionLog> findFirstByPropertyIdOrderByExecutedAtDesc(UUID propertyId);
-
-    @Query("SELECT CASE COUNT(r) WHEN 0 THEN false ELSE true END " +
-            "FROM RealTimeTransactionLog r " +
-            "WHERE r.property = :property AND r.user = :user")
-    boolean existsByPropertyAndUser(Property property, User user);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto$ReadResponse" +
             "(r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +

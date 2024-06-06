@@ -29,7 +29,7 @@ public class FundraiseServiceImpl implements FundraiseService{
         if (fundraise == null) {
             throw new PropertyException(PropertyErrorResult.FUNDRAISE_NOT_FOUND);
         }
-        if(realTimeTransactionLogRepository.existsByPropertyAndUser(property, buyer)){
+        if(orderRepository.existsByUserAndPropertyAndType(buyer, property, "체결 완료")){
             throw new TradingException(TradingErrorResult.ALREADY_SUBSCRIBED);
         }
         if(buyerAccount.getDeposit() < totalSubscriptionPrice){
@@ -81,7 +81,6 @@ public class FundraiseServiceImpl implements FundraiseService{
                 .build();
 
         realTimeTransactionLog.updateProperty(property);
-        realTimeTransactionLog.updateUser(buyer);
 
         realTimeTransactionLogRepository.save(realTimeTransactionLog);
 

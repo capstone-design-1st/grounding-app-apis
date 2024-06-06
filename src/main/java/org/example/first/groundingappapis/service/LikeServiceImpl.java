@@ -99,7 +99,7 @@ public class LikeServiceImpl implements LikeService{
 
         // 매물에 대한 가장 최근 거래 로그 조회
         List<RealTimeTransactionLogDto> transactionLogs = realTimeTransactionLogRepository
-                .findRecentTransactionLogsByUserAndProperties(user, userLikedProperties.getContent());
+                .findRecentTransactionLogsByUserAndProperties(userLikedProperties.getContent());
 
         // 매물과 거래 로그를 매핑하여 DTO 생성
         Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogs.stream()

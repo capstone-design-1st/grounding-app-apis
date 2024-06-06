@@ -78,6 +78,7 @@ public class GptServiceImpl implements GptService{
                     Map<String, Object> message = (Map<String, Object>) firstChoice.get("message");
                     String content = (String) message.get("content");
 
+                    //TODO : property 넣어야함
                     Summary summary = Summary.builder().content(content).build();
                     summaryRepository.save(summary);
 

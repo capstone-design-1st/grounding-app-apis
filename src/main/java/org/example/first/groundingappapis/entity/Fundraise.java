@@ -27,7 +27,7 @@ public class Fundraise {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)",foreignKey = @ForeignKey(name = "fk_fundraise_property"))
+    @JoinColumn(name = "property_id", unique = true, nullable = false, columnDefinition = "BINARY(16)",foreignKey = @ForeignKey(name = "fk_fundraise_property"))
     private Property property;
 
     //진행률

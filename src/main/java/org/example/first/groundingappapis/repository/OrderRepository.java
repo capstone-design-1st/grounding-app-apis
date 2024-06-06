@@ -45,4 +45,12 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Query(value = "SELECT SUM(o.price) FROM `orders` o WHERE o.status = :status", nativeQuery = true)
     Integer sumPriceByStatus(@Param("status") String status);
 
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END " +
+            "FROM Order o " +
+            "WHERE o.user = :user " +
+            "AND o.property = :property " +
+            "AND o.type = :type")
+    Boolean existsByUserAndPropertyAndType(@Param("user") User user,
+                                           @Param("property") Property property,
+                                           @Param("type") String type);
 }

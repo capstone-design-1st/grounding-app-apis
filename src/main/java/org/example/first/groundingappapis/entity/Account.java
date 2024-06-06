@@ -30,7 +30,7 @@ public class Account {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_accounts_user"))
+    @JoinColumn(name = "user_id", unique = true, nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_accounts_user"))
     private User user;
 
     @Column(name = "deposit", columnDefinition = "BIGINT DEFAULT 0")

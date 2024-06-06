@@ -32,7 +32,7 @@ public class DayTransactionLog {
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_day_transaction_logs_property"))
     private Property property;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "date", unique = true, nullable = false)
     private LocalDate date;
 
     //변동률

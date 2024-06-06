@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Quote { //필요한가?
+public class Quote {
 
     @Id
     @Column(name = "quote_id", columnDefinition = "BINARY(16)", nullable = false)

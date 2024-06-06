@@ -467,10 +467,9 @@ public class TradingServiceImpl implements TradingService {
                 .executedAt(LocalDateTime.now())
                 .fluctuationRate(getFluctuationRate(dayTransactionLog.getOpeningPrice(), executedPrice))
                 .build();
-        realTimeTransactionLogRepository.save(realTimeTransactionLog);
 
         realTimeTransactionLog.updateProperty(property);
-        realTimeTransactionLog.updateUser(user);
+        realTimeTransactionLogRepository.save(realTimeTransactionLog);
 
         if(executedPrice > dayTransactionLog.getMaxPrice())
             dayTransactionLog.updateMaxPrice(executedPrice);
