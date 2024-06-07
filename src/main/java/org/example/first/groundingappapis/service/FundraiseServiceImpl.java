@@ -64,7 +64,7 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         Order newOrder = Order.builder()
                 .type("매수")
-                .quantity(fundraiseRequest.getQuantity())
+                .quantity(Long.valueOf(fundraiseRequest.getQuantity()))
                 .price(fundraise.getIssuePrice())
                 .status("청약중")
                 .build();
@@ -123,7 +123,7 @@ public class FundraiseServiceImpl implements FundraiseService{
 
             List<Order> orders = orderRepository.findByStatusAndProperty("청약중", property);
             for(Order order : orders){
-                order.setStatus("체결 완료");
+                order.updateStatus("체결 완료");
                 orderRepository.save(order);
             }
         }
