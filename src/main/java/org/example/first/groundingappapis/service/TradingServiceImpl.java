@@ -546,12 +546,16 @@ public class TradingServiceImpl implements TradingService {
         if(realTimeTransactionLogRepository.existsByPropertyId(propertyId)) {
             RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
                     new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+
             quantity = (int) (deposit / Long.valueOf(realTimeTransactionLog.getExecutedPrice()));
+
+            log.info("quantity : {}, deposit : {}, executedPrice : {} ", quantity, deposit, realTimeTransactionLog.getExecutedPrice());
         }else{
             Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                     new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
             quantity = (int) (deposit / Long.valueOf(property.getFundraise().getIssuePrice()));
         }
+
 
         OrderDto.GetQuantityResponse response = OrderDto.GetQuantityResponse.builder()
                 .propertyId(propertyId.toString())

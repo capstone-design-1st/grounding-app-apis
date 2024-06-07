@@ -87,7 +87,7 @@ ON DUPLICATE KEY UPDATE user_id = user_id;
 -- accounts 테이블에 샘플 데이터 삽입, user_id는 방금 삽입된 users 테이블 데이터 참조
 INSERT INTO accounts (account_id, user_id, deposit, average_earning_rate)
 VALUES
-    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 9999999999999999, 0.0)
+    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 999999999, 0.0)
 ON DUPLICATE KEY UPDATE account_id = account_id;
 
 
@@ -99,7 +99,7 @@ ON DUPLICATE KEY UPDATE user_id = user_id;
 
 INSERT INTO accounts (account_id, user_id, deposit, average_earning_rate)
 VALUES
-    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 9999999999999999, 0.0)
+    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 999999999, 0.0)
 ON DUPLICATE KEY UPDATE account_id = account_id;
 
 

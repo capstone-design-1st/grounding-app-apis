@@ -148,7 +148,7 @@ VALUES
 
 INSERT INTO accounts (account_id, user_id, deposit, average_earning_rate)
 VALUES
-    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), 9999999999999999, 0.0)
+    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')), 999999999, 0.0)
     ON DUPLICATE KEY UPDATE account_id = account_id;
 
     -- user3이 처음에 3000개의 예시 임야를 5000원에 구매
