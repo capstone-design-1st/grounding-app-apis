@@ -75,7 +75,7 @@ public class AccountDto {
     public static class ReadCompletedOrderResponse {
         private UUID propertyId;
         private String propertyName;
-        private Integer quantity;
+        private Long quantity;
         private LocalDate date;
         private String type; //매수, 매도
         private Integer price;
@@ -84,7 +84,7 @@ public class AccountDto {
         @Builder
         public ReadCompletedOrderResponse(UUID propertyId,
                                        String propertyName,
-                                       Integer quantity,
+                                       Long quantity,
                                        LocalDateTime dateTime,
                                        String type,
                                        Integer price,
@@ -131,6 +131,46 @@ public class AccountDto {
             this.averageEarningRate = averageEarningRate != null ? averageEarningRate : 0.0;
             this.evaluationPrice = evaluationPrice != null ? evaluationPrice : 0;
             this.evaluationEarning = evaluationEarning != null ? evaluationEarning : 0;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ReadDepositWithdrawalResponse {
+        private Long amount;
+        private String type;
+        private LocalDateTime createdAt;
+
+        @Builder
+        public ReadDepositWithdrawalResponse(Long amount, String type, LocalDateTime createdAt) {
+            this.amount = amount != null ? amount : 0L;
+            this.type = type != null ? type : "";
+            this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DepositRequest {
+        private Long depositAmount;
+
+        @Builder
+        public DepositRequest(Long depositAmount) {
+            this.depositAmount = depositAmount != null ? depositAmount : 0L;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class WithdrawalRequest {
+        private Long withdrawalAmount;
+
+        @Builder
+        public WithdrawalRequest(Long withdrawalAmount) {
+            this.withdrawalAmount = withdrawalAmount != null ? withdrawalAmount : 0L;
         }
     }
 }

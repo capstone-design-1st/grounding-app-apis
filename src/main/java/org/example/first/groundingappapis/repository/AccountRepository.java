@@ -1,6 +1,7 @@
 package org.example.first.groundingappapis.repository;
 
 import org.example.first.groundingappapis.dto.AccountDto;
+import org.example.first.groundingappapis.dto.OrderDto;
 import org.example.first.groundingappapis.entity.Account;
 import org.example.first.groundingappapis.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,7 @@
 package org.example.first.groundingappapis.repository;
 
 import org.example.first.groundingappapis.dto.AccountDto;
+import org.example.first.groundingappapis.dto.OrderDto;
 import org.example.first.groundingappapis.entity.Order;
 import org.example.first.groundingappapis.entity.Property;
 import org.example.first.groundingappapis.entity.User;
@@ -28,6 +29,25 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             "AND o.createdAt BETWEEN :parsedStartDate AND :parsedEndDate " +
             "AND o.status = '체결 완료'")
     Page<AccountDto.ReadCompletedOrderResponse> findByUserAndCreatedAtBetweenAndCompleted(User user, LocalDateTime parsedStartDate, LocalDateTime parsedEndDate, Pageable pageable);
+
+    /*
+            @Builder
+        public ReadCompletedOrderResponse(UUID propertyId,
+                                       String propertyName,
+                                       Integer quantity,
+                                       LocalDateTime dateTime,
+                                       String type,
+                                       Integer price,
+                                       String propertyType) {
+            this.propertyId = propertyId != null ? propertyId : UUID.randomUUID();
+            this.propertyName = propertyName != null ? propertyName : "";
+            this.quantity = quantity != null ? quantity : 0;
+            this.date = dateTime != null ? dateTime.toLocalDate() : LocalDate.now();
+            this.type = type != null ? type : "";
+            this.price = price != null ? price : 0;
+            this.propertyType = propertyType != null ? propertyType : "";
+        }
+     */
 
     @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadCompletedOrderResponse" +
             "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price, p.type) " +
