@@ -26,7 +26,7 @@ public class PropertyDto {
     //시가에서 몇 % 오르고 내렸는지
     private Double priceDifferenceRate;
 
-    @Builder
+    @Builder(toBuilder = true)
     public PropertyDto(UUID id,
                        String name,
                        String oneline,
@@ -45,6 +45,15 @@ public class PropertyDto {
         this.type = type != null ? type : "";
         this.priceDifference = priceDifference != null ? priceDifference : 0L;
         this.priceDifferenceRate = priceDifferenceRate != null ? priceDifferenceRate : 0.0;
+
+    }
+
+    public void putPriceDifference(Long priceDifference) {
+        this.priceDifference = priceDifference;
+    }
+
+    public void putPriceDifferenceRate(Double priceDifferenceRate) {
+        this.priceDifferenceRate = priceDifferenceRate;
     }
 
     @Data

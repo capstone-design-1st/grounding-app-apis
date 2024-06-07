@@ -45,6 +45,7 @@ public class PropertyServiceImpl implements PropertyService {
     public PropertyDto.GetResponse getProperty(String propertyId) {
         Property property = propertyRepository.getDetailPropertyById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
         PropertyDto propertyDto = property.toDto();
+
         FundraiseDto fundraiseDto = property.getFundraise().toDto();
 
         SummaryDto summaryDto = SummaryDto.builder()
@@ -86,10 +87,20 @@ public class PropertyServiceImpl implements PropertyService {
 
         Boolean isFundraising = !fundraiseDto.getProgressRate().equals(100.0);
 
+        //propertyDto.toBuilder().priceDifference(getPriceDifference)
+
+        Optional<DayTransactionLog> dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property.getId());
+        Integer openingPrice = dayTransactionLog.isPresent() ? dayTransactionLog.get().getOpeningPrice() : property.getFundraise().getIssuePrice();
+
+        //변동률
+        propertyDto.putPriceDifference(getPriceDifference(presentPrice, openingPrice));
+        propertyDto.putPriceDifferenceRate((double) (presentPrice - openingPrice) / openingPrice * 100);
+
         PropertyDto.GetResponse response = PropertyDto.GetResponse.builder()
                 .presentPrice(presentPrice)
                 .isFundraising(isFundraising)
                 .summaryDto(summaryDto)
+
                 .propertyDto(propertyDto)
                 .fundraiseDto(fundraiseDto)
                 .propertyDetailDto(propertyDetailDto)
