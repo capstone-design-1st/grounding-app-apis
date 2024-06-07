@@ -79,19 +79,6 @@ public class TradingServiceImpl implements TradingService {
                 saveOrder(buyer, buyRequest.getPrice(), purchasedSellerQuoteInfoDto.getExecutedQuantity(), totalExecutedQuantity, "매수", property);
             });
 
-        } else {
-            Quote quote = Quote.builder()
-                    .price(buyRequest.getPrice())
-                    .quantity(buyRequest.getQuantity())
-                    .createdAt(LocalDateTime.now())
-                    .build();
-            quote.updateProperty(property);
-            quote.updateAccount(buyerAccount);
-            quoteRepository.save(quote);
-
-            saveOrder(buyer, buyRequest.getPrice(), 0, 0, "매수", property);
-        }
-
         final int finalExecutedQuantityOfOrder = executedQuantityOfOrder;
 
         Inventory inventory = inventoryRepository.findByAccountAndProperty(buyerAccount, property).orElseGet(() -> {
@@ -104,6 +91,7 @@ public class TradingServiceImpl implements TradingService {
             newInventory.updateProperty(property);
             return newInventory;
         });
+
         //매수자쪽 inventory 업데이트는 한번에
         inventory.setSellableQuantity(inventory.getSellableQuantity() + finalExecutedQuantityOfOrder);
         inventory.setQuantity(inventory.getQuantity() + finalExecutedQuantityOfOrder);
@@ -136,6 +124,29 @@ public class TradingServiceImpl implements TradingService {
                 .build();
 
         return response;
+        } else {
+            Quote quote = Quote.builder()
+                    .price(buyRequest.getPrice())
+                    .quantity(buyRequest.getQuantity())
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            quote.updateProperty(property);
+            quote.updateAccount(buyerAccount);
+            quoteRepository.save(quote);
+
+            saveOrder(buyer, buyRequest.getPrice(), 0, 0, "매수", property);
+
+            TradingDto.BuyResponse response = TradingDto.BuyResponse.builder()
+                    .buyerId(buyer.getId().toString())
+                    .walletAddress(buyer.getWalletAddress())
+                    .propertyId(propertyId.toString())
+                    .executedQuantity(0)
+                    .orderedPrice(buyRequest.getPrice())
+                    .purchasedSellQuotesInfoList(new ArrayList<>())
+                    .build();
+
+            return response;
+        }
     }
 
     @Transactional
@@ -238,20 +249,6 @@ public class TradingServiceImpl implements TradingService {
             soldBuyerQuotesInfoList.stream().forEach(soldBuyerQuoteInfoDto -> {
                 saveOrder(user, sellRequest.getPrice(), soldBuyerQuoteInfoDto.getExecutedQuantity(), finalTotalExecutedQuantityOfOrder, "매도", property);
             });
-
-        } else {
-            Quote quote = Quote.builder()
-                    .price(sellRequest.getPrice())
-                    .quantity(sellRequest.getQuantity())
-                    .createdAt(LocalDateTime.now())
-                    .build();
-            quote.updateProperty(property);
-            quote.updateAccount(sellerAccount);
-            quoteRepository.save(quote);
-
-            saveOrder(user, sellRequest.getPrice(), 0, 0, "매도", property);
-        }
-
         inventory.setSellableQuantity(inventory.getSellableQuantity() - sellRequest.getQuantity());
 
         sellerAccount.setAverageEarningRate(inventoryRepository.getAverageEarningRateByAccount(sellerAccount.getId()));
@@ -277,6 +274,30 @@ public class TradingServiceImpl implements TradingService {
                 .build();
 
         return response;
+        } else {
+            Quote quote = Quote.builder()
+                    .price(sellRequest.getPrice())
+                    .quantity(sellRequest.getQuantity())
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            quote.updateProperty(property);
+            quote.updateAccount(sellerAccount);
+            quoteRepository.save(quote);
+
+            saveOrder(user, sellRequest.getPrice(), 0, 0, "매도", property);
+
+            TradingDto.SellResponse response = TradingDto.SellResponse.builder()
+                    .sellerId(user.getId().toString())
+                    .walletAddress(user.getWalletAddress())
+                    .propertyId(propertyId.toString())
+                    .executedQuantity(0)
+                    .orderedPrice(sellRequest.getPrice())
+                    .soldBuyerQuotesInfoList(new ArrayList<>())
+                    .build();
+
+            return response;
+        }
+
     }
     @Override
     public Double getFluctuationRate(int openingPrice, int executedPrice) {
