@@ -149,8 +149,7 @@ public class AccountServiceImpl implements AccountService {
             }).sum();
         }
 
-
-        Long fundrasingPrice = orderRepository.sumPriceByStatus("청약중") != null ? orderRepository.sumPriceByStatus("청약중") : 0L;
+        Long fundrasingPrice = orderRepository.sumPriceByStatusAndUserId("청약중", user.getId()) != null ? orderRepository.sumPriceByStatusAndUserId("청약중", user.getId()) : 0L;
 
         Long deposit = account.getDeposit() != null ? account.getDeposit() : 0L;
 

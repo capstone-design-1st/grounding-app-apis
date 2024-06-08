@@ -62,8 +62,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Query("SELECT o FROM Order o WHERE o.status = :status AND o.property = :property")
     List<Order> findByStatusAndProperty(String status, Property property);
 
-    @Query(value = "SELECT SUM(o.price) FROM `orders` o WHERE o.status = :status", nativeQuery = true)
-    Integer sumPriceByStatus(@Param("status") String status);
+    @Query(value = "SELECT SUM(o.price * o.quantity) FROM `orders` o WHERE o.status = :status AND o.user_id = :userId", nativeQuery = true)
+    Long sumPriceByStatusAndUserId(@Param("status") String status, UUID userId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END " +
             "FROM Order o " +
