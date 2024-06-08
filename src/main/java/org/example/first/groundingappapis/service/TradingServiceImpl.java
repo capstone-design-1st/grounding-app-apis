@@ -505,24 +505,12 @@ public class TradingServiceImpl implements TradingService {
 
     @Transactional
     public void sellerDeposit(Account sellerAccount, int executedQuantity, int executedPrice) {
-        DepositLog sellerDepositLog = DepositLog.builder()
-                .createdAt(LocalDateTime.now())
-                .build();
-        sellerDepositLog.setLogOfDeposit(executedQuantity * executedPrice);
-        depositLogRepository.save(sellerDepositLog);
         sellerAccount.plusDeposit(Long.valueOf(executedQuantity * executedPrice));
-        sellerDepositLog.updateAccount(sellerAccount);
     }
 
     @Transactional
     public void buyerWithdraw(Account buyerAccount, int executedQuantity, int executedPrice) {
-        DepositLog buyerDepositLog = DepositLog.builder()
-                .createdAt(LocalDateTime.now())
-                .build();
-        buyerDepositLog.setLogOfWithdraw(executedQuantity * executedPrice);
-        depositLogRepository.save(buyerDepositLog);
         buyerAccount.minusDeposit(Long.valueOf(executedQuantity * executedPrice));
-        buyerDepositLog.updateAccount(buyerAccount);
     }
 
     @Transactional(readOnly = true)

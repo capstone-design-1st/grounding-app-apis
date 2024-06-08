@@ -137,22 +137,6 @@ public class AccountDto {
     @Data
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class ReadDepositWithdrawalResponse {
-        private Long amount;
-        private String type;
-        private LocalDateTime createdAt;
-
-        @Builder
-        public ReadDepositWithdrawalResponse(Long amount, String type, LocalDateTime createdAt) {
-            this.amount = amount != null ? amount : 0L;
-            this.type = type != null ? type : "";
-            this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-        }
-    }
-
-    @Data
-    @NoArgsConstructor
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class DepositRequest {
         private Long depositAmount;
 
@@ -171,6 +155,34 @@ public class AccountDto {
         @Builder
         public WithdrawalRequest(Long withdrawalAmount) {
             this.withdrawalAmount = withdrawalAmount != null ? withdrawalAmount : 0L;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DepositWithdrawalResponse {
+        private String userId;
+        private Long presentDeposit;
+
+        @Builder
+        public DepositWithdrawalResponse(String userId, Long presentDeposit) {
+            this.userId = userId != null ? userId : "";
+            this.presentDeposit = presentDeposit != null ? presentDeposit : 0L;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class WithdrawalResponse {
+        private String userId;
+        private Long presentDeposit;
+
+        @Builder
+        public WithdrawalResponse(String userId, Long presentDeposit) {
+            this.userId = userId != null ? userId : "";
+            this.presentDeposit = presentDeposit != null ? presentDeposit : 0L;
         }
     }
 }

@@ -8,17 +8,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class DepositLogDto {
 
     private String type;
-    private Integer amount;
+    private Long amount;
 
     @Builder
     public DepositLogDto(String type,
-                         Integer amount) {
+                         Long amount) {
         this.type = type != null ? type : "";
         this.amount = amount != null ? amount : 0;
     }
@@ -27,5 +29,16 @@ public class DepositLogDto {
     @Builder
     @NoArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class ReadResponse{}
+    public static class ReadResponse{
+        private Long amount;
+        private String type;
+        private LocalDateTime createdAt;
+
+        @Builder
+        public ReadResponse(Long amount, String type, LocalDateTime createdAt) {
+            this.amount = amount != null ? amount : 0L;
+            this.type = type != null ? type : "";
+            this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+        }
+    }
 }

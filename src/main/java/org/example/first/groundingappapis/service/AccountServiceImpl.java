@@ -3,6 +3,7 @@ package org.example.first.groundingappapis.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.AccountDto;
+import org.example.first.groundingappapis.dto.DepositLogDto;
 import org.example.first.groundingappapis.entity.*;
 import org.example.first.groundingappapis.exception.TradingErrorResult;
 import org.example.first.groundingappapis.exception.TradingException;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,7 @@ public class AccountServiceImpl implements AccountService {
     private final UserRepository userRepository;
     private final InventoryRepository inventoryRepository;
     private final OrderRepository orderRepository;
+    private final DepositLogRepository depositLogRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -93,7 +94,7 @@ public class AccountServiceImpl implements AccountService {
         LocalDateTime parsedStartDate = LocalDateTime.parse(startDate + "T00:00:00");
         LocalDateTime parsedEndDate = LocalDateTime.parse(endDate + "T23:59:59");
 
-        if (type.equals(""))
+        if (type.equals("") || type.equals(null))
             return orderRepository.findByUserAndCreatedAtBetweenAndCompleted(user, parsedStartDate, parsedEndDate, pageable);
         else
             return orderRepository.findByUserAndCreatedAtBetweenAndTypeAndCompleted(user, parsedStartDate, parsedEndDate, pageable, type);
@@ -166,5 +167,80 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         return readPresentStatusResponse;
+    }
+
+
+    @Override
+    public Page<DepositLogDto.ReadResponse> readDepositsWithdrawals(UUID userId, Pageable pageable, String startDate, String endDate, String type) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        final Account account = accountRepository.findByUser(user)
+                .orElseThrow(() -> new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
+
+        LocalDateTime parsedStartDate = LocalDateTime.parse(startDate + "T00:00:00");
+        LocalDateTime parsedEndDate = LocalDateTime.parse(endDate + "T23:59:59");
+
+        if(type.isEmpty())
+            return depositLogRepository.findByAccountAndCreatedAtBetween(account, parsedStartDate, parsedEndDate, pageable);
+        else
+            return depositLogRepository.findByAccountAndCreatedAtBetweenAndType(account, parsedStartDate, parsedEndDate, type, pageable);
+    }
+
+    @Transactional
+    @Override
+    public AccountDto.DepositWithdrawalResponse deposit(UUID userId, AccountDto.DepositRequest request) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+
+        final Account account = accountRepository.findByUser(user)
+                .orElseThrow(() -> new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
+
+        account.plusDeposit(request.getDepositAmount());
+        accountRepository.save(account);
+
+        DepositLog depositLog = DepositLog.builder()
+                .amount(request.getDepositAmount())
+                .type("입금")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        depositLog.updateAccount(account);
+
+        depositLogRepository.save(depositLog);
+
+        return AccountDto.DepositWithdrawalResponse.builder()
+                .userId(String.valueOf(userId))
+                .presentDeposit(account.getDeposit())
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public AccountDto.DepositWithdrawalResponse withdrawal(UUID userId, AccountDto.WithdrawalRequest request) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+
+        final Account account = accountRepository.findByUser(user)
+                .orElseThrow(() -> new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
+
+        if(account.getDeposit() < request.getWithdrawalAmount())
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_DEPOSIT);
+
+        account.minusDeposit(request.getWithdrawalAmount());
+        accountRepository.save(account);
+
+        DepositLog depositLog = DepositLog.builder()
+                .amount(request.getWithdrawalAmount())
+                .type("출금")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        depositLog.updateAccount(account);
+        depositLogRepository.save(depositLog);
+
+        return AccountDto.DepositWithdrawalResponse.builder()
+                .userId(String.valueOf(userId))
+                .presentDeposit(account.getDeposit())
+                .build();
     }
 }
