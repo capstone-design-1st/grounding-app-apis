@@ -35,7 +35,7 @@ public class TradingServiceImpl implements TradingService {
 
     @Transactional
     @Override
-    public TradingDto.BuyResponse uploadBuyingOrderOnQuote(User buyer, UUID propertyId, TradingDto.BuyRequest buyRequest) {
+        public TradingDto.BuyResponse uploadBuyingOrderOnQuote(User buyer, UUID propertyId, TradingDto.BuyRequest buyRequest) {
         final Account buyerAccount = accountRepository.findByUser(buyer).orElseThrow(() ->
                 new TradingException(TradingErrorResult.ACCOUNT_NOT_FOUND));
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
@@ -46,28 +46,27 @@ public class TradingServiceImpl implements TradingService {
         if(!isEnoughFundraise(property)){
             throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
         }
-
-        LocalDate today = LocalDate.now();
-
-        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property.getId(), today).orElseGet(() -> {
-            RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
-                    new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
-
-            DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
-                    .date(LocalDate.now())
-                    .openingPrice(buyRequest.getPrice())
-                    .closingPrice(realTimeTransactionLog.getExecutedPrice()) //TODO
-                    .maxPrice(buyRequest.getPrice())
-                    .minPrice(buyRequest.getPrice())
-                    .build();
-            newDayTransactionLog.updateProperty(property);
-            dayTransactionLogRepository.save(newDayTransactionLog);
-            return newDayTransactionLog;
-        });
-
-        List<TradingDto.PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoList = new ArrayList<>();
+        List<TradingDto.PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoList;
 
         if (quoteRepository.existsByPropertyAndPriceLessThanEqual(property, buyRequest.getPrice())) {
+            LocalDate today = LocalDate.now();
+
+            DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property.getId(), today).orElseGet(() -> {
+                RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
+                        new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+
+                DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
+                        .date(LocalDate.now())
+                        .openingPrice(buyRequest.getPrice())
+                        .closingPrice(realTimeTransactionLog.getExecutedPrice()) //TODO
+                        .maxPrice(buyRequest.getPrice())
+                        .minPrice(buyRequest.getPrice())
+                        .build();
+                newDayTransactionLog.updateProperty(property);
+                dayTransactionLogRepository.save(newDayTransactionLog);
+                return newDayTransactionLog;
+            });
+
             //체결 진행
              purchasedSellQuotesInfoList = executeBuyTransaction(property, buyer, buyRequest, dayTransactionLog);
 
@@ -217,30 +216,31 @@ public class TradingServiceImpl implements TradingService {
         final Inventory inventory = inventoryRepository.findByAccountAndProperty(sellerAccount, property).orElseThrow(() ->
                 new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
 
-        LocalDate date = LocalDate.now();
-
-        //오늘자 dayTransactionLog가 없으면 생성
-        DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property.getId(), date).orElseGet(() -> {
-            RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
-                    new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
-
-            DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
-                    .date(LocalDate.now())
-                    .openingPrice(sellRequest.getPrice())
-                    .closingPrice(realTimeTransactionLog.getExecutedPrice())
-                    .maxPrice(sellRequest.getPrice())
-                    .minPrice(sellRequest.getPrice())
-                    .build();
-
-            newDayTransactionLog.updateProperty(property);
-            dayTransactionLogRepository.save(newDayTransactionLog);
-            return newDayTransactionLog;
-        });
-
         //매수 호가 정보 리스트
         List<TradingDto.SoldBuyerQuoteInfoDto> soldBuyerQuotesInfoList = new ArrayList<>();
 
         if (quoteRepository.existsByPropertyAndPriceGreaterThanEqual(property, sellRequest.getPrice())) {
+
+            LocalDate date = LocalDate.now();
+
+            //오늘자 dayTransactionLog가 없으면 생성
+            DayTransactionLog dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByPropertyAndToday(property.getId(), date).orElseGet(() -> {
+                RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).orElseThrow(() ->
+                        new TradingException(TradingErrorResult.TRADING_NOT_FOUND));
+
+                DayTransactionLog newDayTransactionLog = DayTransactionLog.builder()
+                        .date(LocalDate.now())
+                        .openingPrice(sellRequest.getPrice())
+                        .closingPrice(realTimeTransactionLog.getExecutedPrice())
+                        .maxPrice(sellRequest.getPrice())
+                        .minPrice(sellRequest.getPrice())
+                        .build();
+
+                newDayTransactionLog.updateProperty(property);
+                dayTransactionLogRepository.save(newDayTransactionLog);
+                return newDayTransactionLog;
+            });
+
             soldBuyerQuotesInfoList = executeSellTransaction(property, user, sellRequest, dayTransactionLog);
 
             final int finalTotalExecutedQuantityOfOrder = soldBuyerQuotesInfoList.stream().mapToInt(TradingDto.SoldBuyerQuoteInfoDto::getExecutedQuantity).sum();
