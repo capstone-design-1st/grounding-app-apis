@@ -91,6 +91,18 @@ public class PropertyController {
 
         return ResponseEntity.ok(propertyService.getDayTransactionLog(propertyId, pageable));
     }
+    @Operation(summary = "일별 가격 정보 조회, 시세 & 차트 for web")
+    @GetMapping("/web/{propertyName}/price-info")
+    public ResponseEntity<Page<DayTransactionLogDto.ReadResponse>> getPropertyDayTransactionLogByPropertyName(
+            @PathVariable String propertyName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size) {
+        log.info("getDayTransactionLog called with page: {}, size: {}", page, size);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(propertyService.getDayTransactionLogByPropertyName(propertyName, pageable));
+    }
 
     //거래 중인 건물 및 토지 검색 페이지
     @GetMapping("/searching")

@@ -19,6 +19,7 @@ public interface PropertyService {
     Page<PropertyDto.ReadBasicInfoResponse> getPopularProperties(Pageable pageable);
 
     Page<DayTransactionLogDto.ReadResponse> getDayTransactionLog(String propertyId, Pageable pageable);
+    Page<DayTransactionLogDto.ReadResponse> getDayTransactionLogByPropertyName(String propertyName, Pageable pageable);
 
     Page<PropertyDto.SearchResultResponse> searchProperties(String keyword, Pageable pageable);
 

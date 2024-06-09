@@ -182,6 +182,21 @@ public class PropertyServiceImpl implements PropertyService {
 
         return dayTransactionLogs;
     }
+
+    @Override
+    public Page<DayTransactionLogDto.ReadResponse> getDayTransactionLogByPropertyName(String propertyName, Pageable pageable) {
+        final Property property = propertyRepository.findByName(propertyName).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+        final Fundraise fundraise = property.getFundraise();
+        if(fundraise.getProgressRate() < 100) {
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
+
+        Page<DayTransactionLogDto.ReadResponse> dayTransactionLogs = dayTransactionLogRepository
+                .readDayTransactionLogsByPropertyId(property.getId(), pageable);
+
+        return dayTransactionLogs;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Page<PropertyDto.SearchResultResponse> searchProperties(String keyword, Pageable pageable) {
