@@ -39,6 +39,9 @@ public class Quote {
     @Column(name = "price")
     private Integer price;
 
+    @Column(name = "type", nullable = false)
+    private String type;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_quotes_account"))
     private Account account;
@@ -51,19 +54,20 @@ public class Quote {
     }
 
     @Builder
-    public Quote(Property property, LocalDateTime createdAt, Integer quantity, Integer price, Account account) {
+    public Quote(Property property, LocalDateTime createdAt, Integer quantity, String type, Integer price, Account account) {
         this.property = property;
         this.createdAt = createdAt;
         this.quantity = quantity;
         this.price = price;
         this.account = account;
+        this.type = type;
     }
 
     public QuoteDto toDto() {
         return QuoteDto.builder()
-                .createdAt(createdAt)
                 .quantity(quantity)
                 .price(price)
+                .type(type)
                 .build();
     }
 
@@ -79,5 +83,13 @@ public class Quote {
     public void updateAccount(Account account) {
         this.account = account;
         account.getQuotes().add(this);
+    }
+
+    public void updateQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public void updateType(String type) {
+        this.type = type;
     }
 }

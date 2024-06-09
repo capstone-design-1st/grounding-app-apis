@@ -30,4 +30,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID>{
             "WHERE i.account_id = :accountId", nativeQuery = true)
     Double getAverageEarningRateByAccount(UUID accountId);
 
+    @Query("SELECT i FROM Inventory i WHERE i.property = :property")
+    List<Inventory> findAllByProperty(Property property);
 }

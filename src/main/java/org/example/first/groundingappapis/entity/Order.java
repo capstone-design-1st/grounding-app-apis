@@ -55,7 +55,7 @@ public class Order {
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_orders_property"))
     private Property property;
 
-    @Builder
+    @Builder(toBuilder = true)
     public Order(String type, Integer price, Long quantity, User user, Property property, String status, LocalDateTime createdAt) {
         this.type = type;
         this.price = price;

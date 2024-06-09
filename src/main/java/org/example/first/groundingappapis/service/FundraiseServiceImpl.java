@@ -98,8 +98,8 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         inventoryRepository.save(inventory);
 
-        int currentProgressAmount = fundraise.getProgressAmount();
-        fundraise.setProgress(currentProgressAmount + totalSubscriptionPrice);
+        Long currentProgressAmount = fundraise.getProgressAmount();
+        fundraise.setProgress(Long.valueOf(currentProgressAmount + totalSubscriptionPrice));
         fundraise.increaseInvestorCount();
         fundraiseRepository.save(fundraise);
 

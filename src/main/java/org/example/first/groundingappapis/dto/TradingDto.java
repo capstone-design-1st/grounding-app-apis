@@ -116,4 +116,33 @@ public class TradingDto {
             this.executedQuantity = executedQuantity;
         }
     }
+
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ExecuteBuyTransactionResponse {
+        private List<PurchasedSellerQuoteInfoDto> purchasedSellerQuoteInfoList;
+        private Integer totalExecutedQuantity;
+
+        @Builder
+        public ExecuteBuyTransactionResponse(List<PurchasedSellerQuoteInfoDto> purchasedSellerQuoteInfoList, Integer totalExecutedQuantity) {
+            this.purchasedSellerQuoteInfoList = purchasedSellerQuoteInfoList;
+            this.totalExecutedQuantity = totalExecutedQuantity;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ExecuteSellTransactionResponse {
+        private List<SoldBuyerQuoteInfoDto> soldBuyerQuoteInfoList;
+        private Integer totalExecutedQuantity;
+
+        @Builder
+        public ExecuteSellTransactionResponse(List<SoldBuyerQuoteInfoDto> soldBuyerQuoteInfoList, Integer totalExecutedQuantity) {
+            this.soldBuyerQuoteInfoList = soldBuyerQuoteInfoList;
+            this.totalExecutedQuantity = totalExecutedQuantity;
+        }
+    }
 }

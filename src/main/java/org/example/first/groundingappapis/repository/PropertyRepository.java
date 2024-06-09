@@ -84,4 +84,7 @@ search all property,
             "LEFT JOIN p.thumbnailUrl t " +
             "WHERE f.progressRate < 100.0")
     Page<PropertyDto.GetFundraisingResponse> readBasicInfoOfFundraisingProperty(Pageable pageable);
+
+    @Query("SELECT p FROM Property p WHERE p.name = :name")
+    Optional<Property> findByName(String name);
 }

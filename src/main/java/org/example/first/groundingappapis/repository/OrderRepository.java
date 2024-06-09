@@ -1,7 +1,6 @@
 package org.example.first.groundingappapis.repository;
 
 import org.example.first.groundingappapis.dto.AccountDto;
-import org.example.first.groundingappapis.dto.OrderDto;
 import org.example.first.groundingappapis.entity.Order;
 import org.example.first.groundingappapis.entity.Property;
 import org.example.first.groundingappapis.entity.User;
@@ -13,13 +12,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
-    Optional<Order> findByUserAndPropertyAndPriceAndQuantityAndType(User seller, Property property, int executedPrice, int executedQuantity, String status);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadCompletedOrderResponse" +
             "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price, p.type) " +
@@ -30,24 +29,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             "AND o.status = '체결 완료'")
     Page<AccountDto.ReadCompletedOrderResponse> findByUserAndCreatedAtBetweenAndCompleted(User user, LocalDateTime parsedStartDate, LocalDateTime parsedEndDate, Pageable pageable);
 
-    /*
-            @Builder
-        public ReadCompletedOrderResponse(UUID propertyId,
-                                       String propertyName,
-                                       Integer quantity,
-                                       LocalDateTime dateTime,
-                                       String type,
-                                       Integer price,
-                                       String propertyType) {
-            this.propertyId = propertyId != null ? propertyId : UUID.randomUUID();
-            this.propertyName = propertyName != null ? propertyName : "";
-            this.quantity = quantity != null ? quantity : 0;
-            this.date = dateTime != null ? dateTime.toLocalDate() : LocalDate.now();
-            this.type = type != null ? type : "";
-            this.price = price != null ? price : 0;
-            this.propertyType = propertyType != null ? propertyType : "";
-        }
-     */
 
     @Query("SELECT new org.example.first.groundingappapis.dto.AccountDto$ReadCompletedOrderResponse" +
             "(o.property.id, o.property.name, o.quantity, o.createdAt, o.type, o.price, p.type) " +
@@ -73,4 +54,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Boolean existsByUserAndPropertyAndType(@Param("user") User user,
                                            @Param("property") Property property,
                                            @Param("type") String type);
+
+    @Query("SELECT o FROM Order o WHERE o.user = :user AND o.property = :property AND o.price = :price AND o.type = :type AND o.status = :status")
+    List<Optional<Order>> findByUserAndPropertyAndPriceAndTypeAndStatus(User user, Property property, int price, String type, String status);
 }

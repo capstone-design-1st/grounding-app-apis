@@ -37,12 +37,14 @@ public interface DepositLogRepository extends JpaRepository<DepositLog, UUID> {
     @Query("SELECT new org.example.first.groundingappapis.dto.DepositLogDto$ReadResponse(d.amount, d.type, d.createdAt) " +
             "FROM DepositLog d " +
             "WHERE d.account = :account " +
-            "AND d.createdAt BETWEEN :startDate AND :endDate")
+            "AND d.createdAt BETWEEN :startDate AND :endDate " +
+            "ORDER BY d.createdAt DESC")
     Page<DepositLogDto.ReadResponse> findByAccountAndCreatedAtBetween(Account account, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.DepositLogDto$ReadResponse(d.amount, d.type, d.createdAt) " +
             "FROM DepositLog d " +
             "WHERE d.account = :account AND d.type = :type " +
-            "AND d.createdAt BETWEEN :startDate AND :endDate")
+            "AND d.createdAt BETWEEN :startDate AND :endDate " +
+            "ORDER BY d.createdAt DESC")
     Page<DepositLogDto.ReadResponse> findByAccountAndCreatedAtBetweenAndType(Account account, LocalDateTime startDate, LocalDateTime endDate, String type, Pageable pageable);
 }
