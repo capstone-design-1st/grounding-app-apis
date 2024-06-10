@@ -185,7 +185,7 @@ public class UserDto {
     @Getter
     @Builder @NoArgsConstructor @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public class GetNameResponseDto {
+    public static class GetNameResponseDto {
         private UUID userId;
         private String name;
     }
