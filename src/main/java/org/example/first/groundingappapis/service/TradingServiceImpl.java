@@ -186,16 +186,6 @@ public class TradingServiceImpl implements TradingService {
 
             sellerInventory.setQuantity(sellerInventory.getQuantity() - executedQuantity);
 
-            //매도자측 평균 수익률,
-            /*
-            if(inventory.getQuantity() == 0) {
-            inventory.setAverageBuyingPrice(0);
-            inventory.setEarningsRate(0.0);
-        }else{
-            inventory.setAverageBuyingPrice((inventory.getAverageBuyingPrice() * inventory.getQuantity() + buyRequest.getPrice() * totalExecutedQuantity) / (inventory.getQuantity() + totalExecutedQuantity));
-            inventory.setEarningsRate(Double.valueOf((inventory.getAverageBuyingPrice() - buyRequest.getPrice()) / buyRequest.getPrice() * 100));
-        }
-             */
             if(sellerInventory.getQuantity() == 0) {
                 sellerInventory.setAverageBuyingPrice(0);
             } else {
@@ -438,10 +428,10 @@ public class TradingServiceImpl implements TradingService {
             newOrder.updateUser(user);
             orderRepository.save(newOrder);
         } else {
-            int idx = 0;
-            while (executedQuantity > 0) {
+            Deque<Optional<Order>> orderDeque = new ArrayDeque<>(orders);
+            while (!orderDeque.isEmpty()){
                 //체결 대기중인 주문들
-                Order order = orders.get(idx).orElseThrow(() -> new TradingException(TradingErrorResult.ORDER_NOT_FOUND));
+                Order order = orderDeque.poll().orElseThrow(() -> new TradingException(TradingErrorResult.ORDER_NOT_FOUND));
                 long remainingQuantity = order.getQuantity() - executedQuantity;
 
                 if (remainingQuantity <= 0) {
@@ -474,32 +464,8 @@ public class TradingServiceImpl implements TradingService {
 
                     executedQuantity = 0;
                 }
-                idx++;
             }
         }
-
-        // 체결된 수량 업데이트
-//        if (executedQuantity > 0) {
-//            long remainingQuantity = order.getQuantity() - executedQuantity;
-//
-//            if (remainingQuantity <= 0) {
-//                Order completedOrder = Order.builder()
-//                        .type(type)
-//                        .price(price)
-//                        .quantity(Long.valueOf(executedQuantity))
-//                        .status("체결 완료")
-//                        .createdAt(order.getCreatedAt())
-//                        .build();
-//                completedOrder.updateProperty(property);
-//                completedOrder.updateUser(user);
-//                orderRepository.save(completedOrder);
-//
-//                orderRepository.delete(order);
-//            }else{
-//                order.updateQuantity(remainingQuantity);
-//                orderRepository.save(order);
-//            }
-//        }
     }
 
     @Transactional
