@@ -294,6 +294,18 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto); //200
     }
+
+    @GetMapping("/name")
+    public ResponseEntity<ResponseDto> getName(@AuthenticationPrincipal UserPrincipal user) {
+        UUID userId = user.getUser().getId();
+        UserDto.GetNameResponseDto getNameResponseDto = userService.getName(userId);
+
+        ResponseDto responseDto = ResponseDto.builder()
+                .payload(objectMapper.convertValue(getNameResponseDto, Map.class))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto); //200
+    }
 //
 //    //현재 투자금액
 //    @GetMapping("/investment")
