@@ -14,7 +14,7 @@ import java.util.UUID;
 //호가
 @Entity
 @Table(name = "quotes", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"property_id", "account_id", "created_at"})
+        @UniqueConstraint(columnNames = {"property_id", "order_id", "created_at"})
 })
 @Getter
 @NoArgsConstructor
@@ -26,7 +26,7 @@ public class Quote {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_quotes_property"))
+    @JoinColumn(name = "property_id", columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_quotes_property"))
     private Property property;
 
     @CreatedDate
@@ -42,9 +42,9 @@ public class Quote {
     @Column(name = "type", nullable = false)
     private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_quotes_account"))
-    private Account account;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_quotes_order"))
+    private Order order;
 
     @PrePersist
     public void prePersist() {
@@ -54,12 +54,11 @@ public class Quote {
     }
 
     @Builder
-    public Quote(Property property, LocalDateTime createdAt, Integer quantity, String type, Integer price, Account account) {
+    public Quote(Property property, LocalDateTime createdAt, Integer quantity, String type, Integer price) {
         this.property = property;
         this.createdAt = createdAt;
         this.quantity = quantity;
         this.price = price;
-        this.account = account;
         this.type = type;
     }
 
@@ -80,9 +79,10 @@ public class Quote {
         property.getQuotes().add(this);
     }
 
-    public void updateAccount(Account account) {
-        this.account = account;
-        account.getQuotes().add(this);
+    public void updateOrder(Order order) {
+        this.order = order;
+        if (order != null)
+            order.setQuote(this);
     }
 
     public void updateQuantity(Integer quantity) {
@@ -91,5 +91,17 @@ public class Quote {
 
     public void updateType(String type) {
         this.type = type;
+    }
+
+    public void increaseQuantity(int executedQuantity) {
+        this.quantity += executedQuantity;
+    }
+    public void decreaseQuantity(int executedQuantity) {
+        this.quantity -= executedQuantity;
+    }
+
+    public void freeQuote() {
+        this.order = null;
+        this.property = null;
     }
 }

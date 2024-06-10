@@ -12,6 +12,7 @@ public enum TradingErrorResult {
     ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 계정입니다."), //404
     NOT_ENOUGH_DEPOSIT(HttpStatus.FORBIDDEN, "예수금이 충분하지 않습니다."),
     INVENTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 종목을 보유하지 않았습니다." ),
+    NOT_ENOUGH_INVENTORY(HttpStatus.FORBIDDEN, "보유한 수량이 부족합니다." ),
     FUNDRAISE_ENDED(HttpStatus.FORBIDDEN, "모집 마감된 매물입니다. 거래를 이용해주세요."),
     EXCEED_FUNDRAISE_TOTAL_AMOUNT(HttpStatus.FORBIDDEN, "총 모집 금액을 초과한 주문입니다."),
     ALREADY_SUBSCRIBED(HttpStatus.FORBIDDEN, "이미 모집한 매물입니다." ),

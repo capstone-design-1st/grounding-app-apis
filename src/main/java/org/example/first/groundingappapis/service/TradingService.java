@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public interface TradingService {
 
-    TradingDto.SellResponse uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest);
+    //TradingDto.SellResponse uploadSellingOrderOnQuote(User user, UUID propertyId, TradingDto.SellRequest sellRequest);
 
-    TradingDto.BuyResponse uploadBuyingOrderOnQuote(User user, UUID propertyId, TradingDto.BuyRequest buyRequest);
+    //TradingDto.BuyResponse uploadBuyingOrderOnQuote(User user, UUID propertyId, TradingDto.BuyRequest buyRequest);
 
-    OrderDto.GetTotalPriceResponse getTotalPrice(UUID propertyId, int quantity);
+    //OrderDto.GetTotalPriceResponse getTotalPrice(UUID propertyId, int quantity);
 
     OrderDto.GetQuantityResponse getQuantity(UUID userId, UUID propertyId);
 

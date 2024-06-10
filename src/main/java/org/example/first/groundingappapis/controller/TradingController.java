@@ -9,6 +9,7 @@ import org.example.first.groundingappapis.dto.ResponseDto;
 import org.example.first.groundingappapis.dto.TradingDto;
 import org.example.first.groundingappapis.entity.User;
 import org.example.first.groundingappapis.security.UserPrincipal;
+import org.example.first.groundingappapis.service.RefactorTradingService;
 import org.example.first.groundingappapis.service.TradingService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -26,16 +27,17 @@ import java.util.UUID;
 public class TradingController {
 
     private final TradingService tradingService;
-
+    private final RefactorTradingService refactorTradingService;
     //Post, buying
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{propertyId}/buying")
     public ResponseEntity<TradingDto.BuyResponse> buyOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                                 @PathVariable UUID propertyId,
                                                                 @RequestBody TradingDto.BuyRequest buyRequest) {
+        UUID userId = userPrincipal.getUser().getId();
+        //TradingDto.BuyResponse response = tradingService.uploadBuyingOrderOnQuote(user, propertyId, buyRequest);
 
-        User user = userPrincipal.getUser();
-        TradingDto.BuyResponse response = tradingService.uploadBuyingOrderOnQuote(user, propertyId, buyRequest);
+        TradingDto.BuyResponse response = refactorTradingService.executeBuyTransaction(userId, propertyId, buyRequest);
 
         return ResponseEntity.ok(response);
     }
@@ -45,8 +47,8 @@ public class TradingController {
     public ResponseEntity<TradingDto.SellResponse> sellOrder(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @PathVariable UUID propertyId,
                                                       @RequestBody TradingDto.SellRequest sellRequest) {
-        User user = userPrincipal.getUser();
-        TradingDto.SellResponse response = tradingService.uploadSellingOrderOnQuote(user, propertyId, sellRequest);
+        UUID userId = userPrincipal.getUser().getId();
+        TradingDto.SellResponse response = refactorTradingService.executeSellTransaction(userId, propertyId, sellRequest);
 
         return ResponseEntity.ok(response);
     }

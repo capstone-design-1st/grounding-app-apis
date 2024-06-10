@@ -57,4 +57,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     @Query("SELECT o FROM Order o WHERE o.user = :user AND o.property = :property AND o.price = :price AND o.type = :type AND o.status = :status")
     List<Optional<Order>> findByUserAndPropertyAndPriceAndTypeAndStatus(User user, Property property, int price, String type, String status);
+
+    @Query("SELECT o FROM Order o WHERE o.user = :buyer AND o.property = :property AND o.type = :type AND o.price = :price AND o.status = :status")
+    Order findByUserAndPropertyAndTypeAndPriceAndStatus(User buyer, Property property, String type, int price, String status);
 }

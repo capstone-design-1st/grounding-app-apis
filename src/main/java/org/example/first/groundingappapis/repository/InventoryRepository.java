@@ -32,4 +32,5 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID>{
 
     @Query("SELECT i FROM Inventory i WHERE i.property = :property")
     List<Inventory> findAllByProperty(Property property);
+
 }

@@ -55,6 +55,9 @@ public class Order {
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_orders_property"))
     private Property property;
 
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
+    private Quote quote;
+
     @Builder(toBuilder = true)
     public Order(String type, Integer price, Long quantity, User user, Property property, String status, LocalDateTime createdAt) {
         this.type = type;
@@ -91,6 +94,10 @@ public class Order {
 
     public void updateQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public void setQuote(Quote quote) {
+        this.quote = quote;
     }
 }
 

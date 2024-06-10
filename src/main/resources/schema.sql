@@ -89,14 +89,14 @@ CREATE TABLE IF NOT EXISTS fundraises (
                                           UNIQUE (property_id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS inventorys (
+CREATE TABLE IF NOT EXISTS inventories (
                                           inventory_id BINARY(16) NOT NULL,
                                           average_buying_price INTEGER,
                                           earnings_rate FLOAT(53),
                                           quantity INTEGER,
                                           sellable_quantity INTEGER,
-                                          account_id BINARY(16) NOT NULL,
-                                          property_id BINARY(16) NOT NULL,
+                                          account_id BINARY(16),
+                                          property_id BINARY(16),
                                           PRIMARY KEY (inventory_id),
                                           UNIQUE (account_id, property_id)
 ) ENGINE=InnoDB;
@@ -187,10 +187,10 @@ CREATE TABLE IF NOT EXISTS quotes (
                                       price INTEGER,
                                       quantity INTEGER,
                                       type VARCHAR(255) NOT NULL,
-                                      account_id BINARY(16) NOT NULL,
-                                      property_id BINARY(16) NOT NULL,
+                                      order_id BINARY(16),
+                                      property_id BINARY(16),
                                       PRIMARY KEY (quote_id),
-                                      UNIQUE (property_id, account_id, created_at)
+                                      UNIQUE (property_id, order_id, created_at)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS real_time_transaction_logs (

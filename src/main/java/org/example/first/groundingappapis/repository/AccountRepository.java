@@ -36,4 +36,9 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
 
 
     AccountDto.ReadPresentStatusResponse readPresentationStatusByUserId(UUID userId);
+
+    @Query(value = "SELECT CASE WHEN SUM(i.quantity) = 0 THEN 0 ELSE SUM(i.quantity * i.average_buying_price) / SUM(i.quantity) END AS average_earning_rate " +
+            "FROM inventories i " +
+            "WHERE i.account_id = :id", nativeQuery = true)
+    Double getAverageEarningRateByAccount(UUID id);
 }

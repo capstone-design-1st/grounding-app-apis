@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,4 +65,10 @@ public interface QuoteRepository extends JpaRepository<Quote, UUID> {
             "ORDER BY q.price ASC")
     Page<QuoteDto.ReadResponse> findByPropertyIdAndPriceLessOrderByPriceAsc(@Param("propertyId") UUID propertyId, int basePrice, Pageable pageable);
 
+
+    @Query("SELECT q FROM Quote q WHERE q.property = :property AND q.type = :type AND q.price <= :price ORDER BY q.price ASC")
+    List<Quote> findByPropertyAndTypeAndPriceLessThanEqualOrderByPriceAsc(Property property, String type, int price);
+
+    @Query("SELECT q FROM Quote q WHERE q.property = :property AND q.type = :type AND q.price >= :price ORDER BY q.price DESC")
+    List<Quote> findByPropertyAndTypeAndPriceGreaterThanEqualOrderByPriceDesc(Property property, String type, int price);
 }
