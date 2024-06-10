@@ -1,7 +1,7 @@
 -- properties 테이블에 샘플 데이터 삽입
 INSERT INTO properties (property_id, property_name, oneline, view_count, like_count, total_volume, created_at, updated_at, type, uploader_wallet_address)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '예시 임야', '이 건물은 예시 임야입니다.', 0, 0, 20000000, '2023-01-01 00:00:00', NOW(), 'land', 'rgYAYxsrXonwYs52dDZVBmZCqutPCFu79')
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '예시 임야', '이 건물은 예시 임야입니다.', 0, 0, 20000000, '2023-01-01 00:00:00', NOW(), 'land', 'sEdTbTjySW4QE9eaEnULQdd5mxr7KhT')
     ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
@@ -143,7 +143,7 @@ VALUES
 -- user3
 INSERT INTO users (user_id, email, password, phone_number, name, role, created_at, updated_at, wallet_address)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')),'test3@user.com' , '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user3', 'USER', NOW(), NOW(), 'r3roFB8dSpw6wPr4QH9JUKnXTaD628Zx9L')
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df2', '-', '')),'test3@user.com' , '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user3', 'USER', NOW(), NOW(), 'sEdTT3DNvFfAqzL9eYaHaomTLGPLWbo')
     ON DUPLICATE KEY UPDATE user_id = user_id;
 
 INSERT INTO accounts (account_id, user_id, deposit, average_earning_rate)

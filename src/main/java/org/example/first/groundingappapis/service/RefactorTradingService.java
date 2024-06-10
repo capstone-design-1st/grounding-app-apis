@@ -260,6 +260,7 @@ public class RefactorTradingService {
                     .orElseThrow(() -> new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
             sellerInventory.decreaseQuantity(executedQuantity);
             if(sellerInventory.getQuantity() <= 0){
+                sellerInventory.freeInventory();
                 inventoryRepository.delete(sellerInventory);
             }else {
                 inventoryRepository.save(sellerInventory);
@@ -425,6 +426,7 @@ public class RefactorTradingService {
             buyerInventory.decreaseQuantity(executedQuantity);
 
             if (sellerInventory.getQuantity() <= 0) {
+                sellerInventory.freeInventory();
                 inventoryRepository.delete(sellerInventory);
             } else {
                 inventoryRepository.save(sellerInventory);
