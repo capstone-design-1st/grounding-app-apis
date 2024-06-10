@@ -100,7 +100,7 @@ public class PropertyServiceImpl implements PropertyService {
                 .presentPrice(presentPrice)
                 .isFundraising(isFundraising)
                 .summaryDto(summaryDto)
-
+                .uploaderWalletAddress(property.getUploaderWalletAddress())
                 .propertyDto(propertyDto)
                 .fundraiseDto(fundraiseDto)
                 .propertyDetailDto(propertyDetailDto)

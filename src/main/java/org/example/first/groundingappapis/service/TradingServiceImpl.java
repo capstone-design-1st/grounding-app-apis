@@ -339,77 +339,7 @@ public class TradingServiceImpl implements TradingService {
                 }
                 idx++;
             }
-
-//            int T = totalExecutedQuantity;
-//            while (T > 0) {
-//                //체결 대기중인 주문들
-//                Order order = orders.poll().orElseThrow(() -> new TradingException(TradingErrorResult.ORDER_NOT_FOUND));
-//                long remainingQuantity = order.getQuantity() - T;
-//
-//                if (remainingQuantity <= 0) {
-//                    Order completedOrder = Order.builder()
-//                            .type(type)
-//                            .price(price)
-//                            .quantity(Long.valueOf(totalExecutedQuantity))
-//                            .status("체결 완료")
-//                            .createdAt(LocalDateTime.now())
-//                            .build();
-//                    completedOrder.updateProperty(property);
-//                    completedOrder.updateUser(user);
-//                    orderRepository.save(completedOrder);
-//
-//                    orderRepository.delete(order);
-//
-//                    T -= order.getQuantity();
-//                } else {
-//                    Order completedOrder = Order.builder()
-//                            .type(type)
-//                            .price(price)
-//                            .quantity(Long.valueOf(totalExecutedQuantity))
-//                            .status("체결 완료")
-//                            .createdAt(LocalDateTime.now())
-//                            .build();
-//                    orderRepository.save(completedOrder);
-//
-//                    order.updateQuantity(remainingQuantity);
-//                    orderRepository.save(order);
-//
-//                    T -=
-//                }
-//            }
         }
-
-//        if (totalExecutedQuantity > 0) {
-//            long remainingQuantity = order.getQuantity() - totalExecutedQuantity;
-//
-//            if (remainingQuantity <= 0) {
-//                Order completedOrder = Order.builder()
-//                        .type(type)
-//                        .price(price)
-//                        .quantity(Long.valueOf(totalExecutedQuantity))
-//                        .status("체결 완료")
-//                        .createdAt(LocalDateTime.now())
-//                        .build();
-//                completedOrder.updateProperty(property);
-//                completedOrder.updateUser(user);
-//                orderRepository.save(completedOrder);
-//
-//                orderRepository.delete(order);
-//            } else {
-//                Order completedOrder = Order.builder()
-//                        .type(type)
-//                        .price(price)
-//                        .quantity(Long.valueOf(totalExecutedQuantity))
-//                        .status("체결 완료")
-//                        .createdAt(LocalDateTime.now())
-//                        .build();
-//                orderRepository.save(completedOrder);
-//
-//                order.updateQuantity(remainingQuantity);
-//                orderRepository.save(order);
-//            }
-//        }
-
     }
     @Transactional
     public void saveOrder(User user, Property property, int price, int executedQuantity, String type) {

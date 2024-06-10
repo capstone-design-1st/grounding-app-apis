@@ -63,6 +63,7 @@ public class PropertyDto {
         private Integer presentPrice;
         private Boolean isFundraising;
         private SummaryDto summaryDto;
+        private String uploaderWalletAddress;
         private PropertyDto propertyDto;
         private FundraiseDto fundraiseDto;
         private PropertyDetailDto propertyDetailDto;
@@ -78,6 +79,7 @@ public class PropertyDto {
                 Integer presentPrice,
                 Boolean isFundraising,
                 SummaryDto summaryDto,
+                String uploaderWalletAddress,
                           PropertyDto propertyDto,
                           FundraiseDto fundraiseDto,
                           PropertyDetailDto propertyDetailDto,
@@ -90,6 +92,7 @@ public class PropertyDto {
             this.presentPrice = presentPrice;
             this.isFundraising = isFundraising;
             this.summaryDto = summaryDto;
+            this.uploaderWalletAddress = uploaderWalletAddress;
             this.propertyDto = propertyDto;
             this.fundraiseDto = fundraiseDto;
             this.propertyDetailDto = propertyDetailDto;

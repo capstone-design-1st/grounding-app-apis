@@ -1,7 +1,7 @@
 -- properties 테이블에 샘플 데이터 삽입
 INSERT INTO properties (property_id, property_name, oneline, view_count, like_count, total_volume, created_at, updated_at, type, uploader_wallet_address)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '예시 임야', '이 건물은 예시 임야입니다.', 0, 0, 20000000, '2023-01-01 00:00:00', NOW(), 'land', 'sAbZwFgkJCaDS2k5EjsowLcxaF6vdsozDa')
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '예시 임야', '이 건물은 예시 임야입니다.', 0, 0, 20000000, '2023-01-01 00:00:00', NOW(), 'land', 'rgYAYxsrXonwYs52dDZVBmZCqutPCFu79')
     ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
