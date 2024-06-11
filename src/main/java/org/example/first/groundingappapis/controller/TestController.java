@@ -22,7 +22,7 @@ public class TestController {
     //test gpt
     private final GptService gptService;
 
-//    @GetMapping("/gpt")
+//    @GetMapping("/gpt") 
 //    public SummaryDto testGpt() {
 //        log.info("testGpt called");
 //
