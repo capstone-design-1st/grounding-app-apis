@@ -23,7 +23,7 @@ public class TestController {
     private final GptService gptService;
 
 //    @GetMapping("/gpt")
-//    public SummaryDto testGpt() { 
+//    public SummaryDto testGpt() {
 //        log.info("testGpt called");
 //
 //        NewsDto newsDto1 = NewsDto.builder().title("조각투자사 소유, 8호 부동산 \'신도림 핀포인트타워 2호\' 완판").content("content1").build();

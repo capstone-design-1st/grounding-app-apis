@@ -393,17 +393,15 @@ public class RefactorTradingService {
         }
         List<RealTimeTransactionLog> realTimeTransactionLogs = new ArrayList<>();
         List<TradingDto.SoldBuyerQuoteInfoDto> soldBuyerQuoteInfoDtos = new ArrayList<>();
-        Inventory sellerInventory = inventoryRepository.findByAccountAndProperty(seller.getAccount(), property).orElse(null);
-        if (sellerInventory == null) {
-            sellerInventory = Inventory.builder()
-                    .quantity(0)
-                    .averageBuyingPrice(0)
-                    .sellableQuantity(0)
-                    .earningsRate(0.0)
-                    .build();
-            sellerInventory.updateAccount(seller.getAccount());
-            sellerInventory.updateProperty(property);
+        Inventory sellerInventory = inventoryRepository.findByAccountAndProperty(seller.getAccount(), property)
+                .orElseThrow(() -> new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
+
+        sellerInventory.decreaseSellableQuantity(quantity);
+        if(sellerInventory.getSellableQuantity() <= 0){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_INVENTORY);
         }
+        inventoryRepository.save(sellerInventory);
+
         for(Quote buyQuote : buyQuotes) {
             if (remainingQuantity == 0)
                 break;

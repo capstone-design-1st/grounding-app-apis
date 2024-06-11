@@ -25,7 +25,7 @@ public class FundraiseServiceImpl implements FundraiseService{
     private final UserRepository userRepository;
     private final FundraiseRepository fundraiseRepository;
     private final DayTransactionLogRepository dayTransactionLogRepository;
-    private void validateFundraiseOrder(Fundraise fundraise, Account buyerAccount, User buyer, Property property, int totalSubscriptionPrice) {
+    private void validateFundraiseOrder(Fundraise fundraise, Account buyerAccount, User buyer, Property property, Long totalSubscriptionPrice) {
         if (fundraise == null) {
             throw new PropertyException(PropertyErrorResult.FUNDRAISE_NOT_FOUND);
         }
@@ -58,7 +58,7 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         final Fundraise fundraise = property.getFundraise();
 
-        int totalSubscriptionPrice = fundraise.getIssuePrice() * fundraiseRequest.getQuantity();
+        Long totalSubscriptionPrice = Long.valueOf(fundraise.getIssuePrice() * fundraiseRequest.getQuantity());
 
         validateFundraiseOrder(fundraise, buyerAccount, buyer, property, totalSubscriptionPrice);
 
@@ -84,7 +84,7 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         realTimeTransactionLogRepository.save(realTimeTransactionLog);
 
-        buyerAccount.minusDeposit(Long.valueOf(totalSubscriptionPrice));
+        buyerAccount.minusDeposit(totalSubscriptionPrice);
 
         Inventory inventory = Inventory.builder()
                 .quantity(fundraiseRequest.getQuantity())
