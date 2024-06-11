@@ -395,9 +395,9 @@ public class RefactorTradingService {
         List<TradingDto.SoldBuyerQuoteInfoDto> soldBuyerQuoteInfoDtos = new ArrayList<>();
         Inventory sellerInventory = inventoryRepository.findByAccountAndProperty(seller.getAccount(), property)
                 .orElseThrow(() -> new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
-
+        //판매자의 매물
         sellerInventory.decreaseSellableQuantity(quantity);
-        if(sellerInventory.getSellableQuantity() <= 0){
+        if(sellerInventory.getSellableQuantity() < 0){
             throw new TradingException(TradingErrorResult.NOT_ENOUGH_INVENTORY);
         }
         inventoryRepository.save(sellerInventory);
