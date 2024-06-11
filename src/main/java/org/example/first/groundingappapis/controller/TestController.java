@@ -25,7 +25,7 @@ public class TestController {
 //    @GetMapping("/gpt")
 //    public SummaryDto testGpt() {
 //        log.info("testGpt called");
-// 
+//
 //        NewsDto newsDto1 = NewsDto.builder().title("조각투자사 소유, 8호 부동산 \'신도림 핀포인트타워 2호\' 완판").content("content1").build();
 //        NewsDto newsDto2 = NewsDto.builder().title("루센트블록 소유, 부동산 상품 \'신도림 핀포인트타워 2호\' 공모 시작").content("content2").build();
 //        NewsDto newsDto3 = NewsDto.builder().title("삼성이 노린다?, 부동산 상품 \'신도림 핀포인트타워 2호\' 공모 시작").content("content3").build();

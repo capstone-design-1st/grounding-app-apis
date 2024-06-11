@@ -210,7 +210,11 @@ public class PropertyServiceImpl implements PropertyService {
                         String gu = (String) result[3];
                         String name = (String) result[4];
                         String oneline = (String) result[5];
-                        Double fluctuationRate = (Double) result[6];
+                        Double fluctuationRate;
+                        if(result[6] == null)
+                            fluctuationRate = 0.0;
+                        else
+                            fluctuationRate = (Double) result[6];
 
                         return PropertyDto.SearchResultResponse.builder()
                                 .propertyId(propertyId)

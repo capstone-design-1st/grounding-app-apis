@@ -60,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
                     recentExecutedPrice = property.getFundraise().getIssuePrice();
             }
 
+            Double fluctuationRate = inventory.getAverageBuyingPrice() != 0 ? (double) (recentExecutedPrice - inventory.getAverageBuyingPrice()) / inventory.getAverageBuyingPrice() : 0.0;
 
             final AccountDto.ReadUserPropertyResponse readUserPropertyResponse = AccountDto.ReadUserPropertyResponse.builder()
                     .propertyId(property.getId().toString())
@@ -71,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
                     .evaluationPrice(recentExecutedPrice * inventory.getQuantity())
                     //.evaluationPrice(recentExecutedPrice)
                     .differenceAmount(recentExecutedPrice - inventory.getAverageBuyingPrice())
-                    .fluctuationRate((double) (recentExecutedPrice - inventory.getAverageBuyingPrice()) / inventory.getAverageBuyingPrice())
+                    .fluctuationRate(fluctuationRate)
                     .totalBuyingPrice(inventory.getQuantity() * inventory.getAverageBuyingPrice())
                     .build();
 
