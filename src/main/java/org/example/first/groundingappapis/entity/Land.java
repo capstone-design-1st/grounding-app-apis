@@ -27,7 +27,7 @@ public class Land {
             this.id = UUID.randomUUID();
     }
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false,columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_lands_property"))
+    @JoinColumn(name = "property_id", unique = true, nullable = false,columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_lands_property"))
     private Property property;
     //면적
     @Column(name = "area", length = 20)

@@ -10,7 +10,9 @@ import org.example.first.groundingappapis.dto.RepresentationPhotoUrlDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "representation_photo_urls")
+@Table(name = "representation_photo_urls", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"cloudfront_url", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class RepresentationPhotoUrl {
     @Column(name = "s3Url", length = 255)
     private String s3Url;
 
-    @Column(name = "cloudfront_url", length = 255)
+    @Column(name = "cloudfront_url", length = 255, nullable = false, unique = true)
     private String cloudfrontUrl;
 
     @Builder

@@ -10,7 +10,9 @@ import org.example.first.groundingappapis.dto.InvestmentPointDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "investment_points")
+@Table(name = "investment_points", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"investment_point_id", "title", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

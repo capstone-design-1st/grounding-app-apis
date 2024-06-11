@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.first.groundingappapis.dto.AccountDto;
+import org.example.first.groundingappapis.dto.OrderDto;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -30,7 +31,7 @@ public class Account {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_accounts_user"))
+    @JoinColumn(name = "user_id", unique = true, nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_accounts_user"))
     private User user;
 
     @Column(name = "deposit", columnDefinition = "BIGINT DEFAULT 0")
@@ -38,9 +39,6 @@ public class Account {
 
     @Column(name = "average_earning_rate", columnDefinition = "DOUBLE DEFAULT 0.0")
     private Double averageEarningRate;
-
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Quote> quotes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DepositLog> depositLogs = new LinkedHashSet<>();

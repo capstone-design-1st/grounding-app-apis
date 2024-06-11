@@ -30,7 +30,7 @@ public class Building {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_buildings_property"))
+    @JoinColumn(name = "property_id", unique = true, nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_buildings_property"))
     private Property property;
 
     //사용면적

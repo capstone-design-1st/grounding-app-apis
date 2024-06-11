@@ -158,4 +158,17 @@ public class UserServiceImpl implements UserService {
         return getWalletAddressResponseDto;
 
     }
+
+    @Override
+    public UserDto.GetNameResponseDto getName(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        UserDto.GetNameResponseDto getNameResponseDto = UserDto.GetNameResponseDto
+                .builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .build();
+
+        return getNameResponseDto;
+    }
 }

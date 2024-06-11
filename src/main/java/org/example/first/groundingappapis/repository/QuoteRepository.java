@@ -7,37 +7,68 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface QuoteRepository extends JpaRepository<Quote, UUID> {
 
-    @Query("SELECT CASE WHEN COUNT(q) > 0 THEN TRUE ELSE FALSE END FROM Quote q WHERE q.property = :property AND q.price <= :price")
-    boolean existsByPropertyAndPriceLessThanEqual(Property property, int price);
+    @Query("SELECT CASE WHEN COUNT(q) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Quote q " +
+            "JOIN Order o ON q.property = o.property " +
+            "WHERE q.property = :property AND q.price <= :price " +
+            "AND o.type = '매도' AND o.status = '체결대기중'")
+    boolean existsByPropertyAndPriceLessThanEqualWithOrderStatus(
+            @Param("property") Property property,
+            @Param("price") int price
+    );
 
-    @Query("SELECT q FROM Quote q WHERE q.property = :property AND q.price <= :price ORDER BY q.price ASC, q.createdAt ASC")
-    Optional<Quote> findFirstByPropertyAndPriceLessThanEqualOrderByPriceAsc(Property property, int price);
+    //@Query("SELECT q FROM Quote q WHERE q.property = :property AND q.price <= :price AND q.type = : type ORDER BY q.price ASC, q.createdAt ASC") native query, limit 1
+//
+//    @Query(value = "SELECT * FROM quotes q WHERE q.property_id = :propertyId " +
+//            "AND q.price <= :price " +
+//            "AND q.type = :type " +
+//            "ORDER BY q.price ASC, q.created_at ASC LIMIT 1", nativeQuery = true)
 
-    @Query("SELECT q FROM Quote q WHERE q.property = :property AND q.price >= :price ORDER BY q.price DESC, q.createdAt ASC")
-    Optional<Quote> findFirstByPropertyAndPriceGreaterThanEqualOrderByPriceDesc(Property property, int price);
+    @Query(value = "SELECT * FROM quotes q WHERE q.property_id = :propertyId " +
+            "AND q.price <= :price " +
+            "AND q.type = :type " +
+            "ORDER BY q.price ASC, q.created_at ASC LIMIT 1", nativeQuery = true)
+    Quote findFirstByPropertyAndPriceLessThanEqualAndTypeOrderByPriceAsc(@Param("propertyId") UUID propertyId, int price, String type);
+
+    @Query(value = "SELECT * FROM quotes q WHERE q.property_id = :propertyId " +
+            "AND q.price >= :price " +
+            "AND q.type = :type " +
+            "ORDER BY q.price DESC, q.created_at ASC LIMIT 1", nativeQuery = true)
+    Quote findFirstByPropertyAndPriceGreaterThanEqualOrderByPriceDesc(@Param("propertyId") UUID propertyId, int price, String type);
 
     @Query("SELECT CASE WHEN COUNT(q) > 0 THEN TRUE ELSE FALSE END FROM Quote q WHERE q.property = :property AND q.price >= :price")
     boolean existsByPropertyAndPriceGreaterThanEqual(Property property, int price);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.QuoteDto$ReadResponse" +
-            "(q.price, q.quantity, q.createdAt)" +
+            "(q.price, SUM(q.quantity), q.type)" +
             " FROM Quote q " +
             "WHERE q.property.id = :propertyId AND q.price >= :basePrice " +
-            "ORDER BY q.price DESC, q.createdAt ASC")
-    Page<QuoteDto.ReadResponse> findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(UUID propertyId, int basePrice, Pageable pageable);
+            "GROUP BY q.price, q.type " +
+            "ORDER BY q.price DESC")
+    Page<QuoteDto.ReadResponse> findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(@Param("propertyId") UUID propertyId, int basePrice, Pageable pageable);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.QuoteDto$ReadResponse" +
-            "(q.price, q.quantity, q.createdAt)" +
+            "(q.price, SUM(q.quantity), q.type)" +
             " FROM Quote q " +
             "WHERE q.property.id = :propertyId AND q.price < :basePrice " +
-            "ORDER BY q.price ASC, q.createdAt ASC")
-    Page<QuoteDto.ReadResponse> findByPropertyIdAndPriceLessOrderByPriceAsc(UUID propertyId, int basePrice, Pageable pageable);
+            "GROUP BY q.price, q.type " +
+            "ORDER BY q.price ASC")
+    Page<QuoteDto.ReadResponse> findByPropertyIdAndPriceLessOrderByPriceAsc(@Param("propertyId") UUID propertyId, int basePrice, Pageable pageable);
+
+
+    @Query("SELECT q FROM Quote q WHERE q.property = :property AND q.type = :type AND q.price <= :price ORDER BY q.price ASC")
+    List<Quote> findByPropertyAndTypeAndPriceLessThanEqualOrderByPriceAsc(Property property, String type, int price);
+
+    @Query("SELECT q FROM Quote q WHERE q.property = :property AND q.type = :type AND q.price >= :price ORDER BY q.price DESC")
+    List<Quote> findByPropertyAndTypeAndPriceGreaterThanEqualOrderByPriceDesc(Property property, String type, int price);
 }

@@ -9,7 +9,9 @@ import org.example.first.groundingappapis.dto.ThumbnailUrlDto;
 import java.util.UUID;
 
 @Entity
-@Table(name = "thumbnail_urls")
+@Table(name = "thumbnail_urls", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"property_id", "cloudfront_url"})
+})
 @Getter
 @NoArgsConstructor
 public class ThumbnailUrl {
@@ -20,7 +22,7 @@ public class ThumbnailUrl {
 
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_thumbnail_urls_property"))
+    @JoinColumn(name = "property_id", unique = true, nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_thumbnail_urls_property"))
     private Property property;
 
     @Column(name = "s3_url", length = 100)

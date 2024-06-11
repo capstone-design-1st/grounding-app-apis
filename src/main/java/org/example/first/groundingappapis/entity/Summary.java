@@ -31,7 +31,7 @@ public class Summary {
     private LocalDateTime createdAt;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_summaries_property"))
+    @JoinColumn(name = "property_id", unique = true, nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_summaries_property"))
     private Property property;
 
     @PrePersist

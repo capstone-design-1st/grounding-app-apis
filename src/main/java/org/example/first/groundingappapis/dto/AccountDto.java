@@ -40,7 +40,8 @@ public class AccountDto {
         private String type;
         private Integer quantity;
         private Integer averageBuyingPrice;
-        private Integer evaluationPrice; // 현재가
+        private Integer presentPrice;
+        private Integer evaluationPrice;
         private Integer differenceAmount;
         private Double fluctuationRate;
         private Integer totalBuyingPrice;
@@ -52,6 +53,7 @@ public class AccountDto {
                                         Integer quantity,
                                         Integer averageBuyingPrice,
                                         Integer evaluationPrice,
+                                        Integer presentPrice,
                                         Integer differenceAmount,
                                         Double fluctuationRate,
                                         Integer totalBuyingPrice) {
@@ -60,6 +62,7 @@ public class AccountDto {
             this.type = type != null ? type : "";
             this.quantity = quantity != null ? quantity : 0;
             this.averageBuyingPrice = averageBuyingPrice != null ? averageBuyingPrice : 0;
+            this.presentPrice = presentPrice != null ? presentPrice : 0;
             this.evaluationPrice = evaluationPrice != null ? evaluationPrice : 0;
             this.differenceAmount = differenceAmount != null ? differenceAmount : 0;
             this.fluctuationRate = fluctuationRate != null ? fluctuationRate : 0.0;
@@ -72,7 +75,7 @@ public class AccountDto {
     public static class ReadCompletedOrderResponse {
         private UUID propertyId;
         private String propertyName;
-        private Integer quantity;
+        private Long quantity;
         private LocalDate date;
         private String type; //매수, 매도
         private Integer price;
@@ -81,7 +84,7 @@ public class AccountDto {
         @Builder
         public ReadCompletedOrderResponse(UUID propertyId,
                                        String propertyName,
-                                       Integer quantity,
+                                       Long quantity,
                                        LocalDateTime dateTime,
                                        String type,
                                        Integer price,
@@ -128,6 +131,58 @@ public class AccountDto {
             this.averageEarningRate = averageEarningRate != null ? averageEarningRate : 0.0;
             this.evaluationPrice = evaluationPrice != null ? evaluationPrice : 0;
             this.evaluationEarning = evaluationEarning != null ? evaluationEarning : 0;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DepositRequest {
+        private Long depositAmount;
+
+        @Builder
+        public DepositRequest(Long depositAmount) {
+            this.depositAmount = depositAmount != null ? depositAmount : 0L;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class WithdrawalRequest {
+        private Long withdrawalAmount;
+
+        @Builder
+        public WithdrawalRequest(Long withdrawalAmount) {
+            this.withdrawalAmount = withdrawalAmount != null ? withdrawalAmount : 0L;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DepositWithdrawalResponse {
+        private String userId;
+        private Long presentDeposit;
+
+        @Builder
+        public DepositWithdrawalResponse(String userId, Long presentDeposit) {
+            this.userId = userId != null ? userId : "";
+            this.presentDeposit = presentDeposit != null ? presentDeposit : 0L;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class WithdrawalResponse {
+        private String userId;
+        private Long presentDeposit;
+
+        @Builder
+        public WithdrawalResponse(String userId, Long presentDeposit) {
+            this.userId = userId != null ? userId : "";
+            this.presentDeposit = presentDeposit != null ? presentDeposit : 0L;
         }
     }
 }

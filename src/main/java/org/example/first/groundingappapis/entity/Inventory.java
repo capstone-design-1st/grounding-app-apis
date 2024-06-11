@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inventorys")
+@Table(name = "inventories", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"account_id", "property_id"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,11 +35,11 @@ public class Inventory {
     private Double earningsRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_inventorys_account"))
+    @JoinColumn(name = "account_id", columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_inventorys_account"))
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_inventorys_property"))
+    @JoinColumn(name = "property_id", columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_inventorys_property"))
     private Property property;
 
     @Builder
@@ -79,6 +81,26 @@ public class Inventory {
         this.earningsRate = earningsRate;
     }
 
+    public void increaseQuantity(int executedQuantity) {
+        this.quantity += executedQuantity;
+    }
+
+    public void decreaseQuantity(int executedQuantity) {
+        this.quantity -= executedQuantity;
+    }
+
+    public void increaseSellableQuantity(int executedQuantity) {
+        this.sellableQuantity += executedQuantity;
+    }
+
+    public void decreaseSellableQuantity(int executedQuantity) {
+        this.sellableQuantity -= executedQuantity;
+    }
+
+    public void freeInventory(){
+        this.property = null;
+        this.account = null;
+    }
 //    public InventoryDto toDto() {
 //        return InventoryDto.builder()
 //                .build();

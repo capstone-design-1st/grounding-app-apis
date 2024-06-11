@@ -29,7 +29,7 @@ public class FundraiseServiceImpl implements FundraiseService{
         if (fundraise == null) {
             throw new PropertyException(PropertyErrorResult.FUNDRAISE_NOT_FOUND);
         }
-        if(realTimeTransactionLogRepository.existsByPropertyAndUser(property, buyer)){
+        if(orderRepository.existsByUserAndPropertyAndType(buyer, property, "체결 완료")){
             throw new TradingException(TradingErrorResult.ALREADY_SUBSCRIBED);
         }
         if(buyerAccount.getDeposit() < totalSubscriptionPrice){
@@ -64,7 +64,7 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         Order newOrder = Order.builder()
                 .type("매수")
-                .quantity(fundraiseRequest.getQuantity())
+                .quantity(Long.valueOf(fundraiseRequest.getQuantity()))
                 .price(fundraise.getIssuePrice())
                 .status("청약중")
                 .build();
@@ -81,7 +81,6 @@ public class FundraiseServiceImpl implements FundraiseService{
                 .build();
 
         realTimeTransactionLog.updateProperty(property);
-        realTimeTransactionLog.updateUser(buyer);
 
         realTimeTransactionLogRepository.save(realTimeTransactionLog);
 
@@ -99,8 +98,8 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         inventoryRepository.save(inventory);
 
-        int currentProgressAmount = fundraise.getProgressAmount();
-        fundraise.setProgress(currentProgressAmount + totalSubscriptionPrice);
+        Long currentProgressAmount = fundraise.getProgressAmount();
+        fundraise.setProgress(Long.valueOf(currentProgressAmount + totalSubscriptionPrice));
         fundraise.increaseInvestorCount();
         fundraiseRepository.save(fundraise);
 
@@ -124,7 +123,7 @@ public class FundraiseServiceImpl implements FundraiseService{
 
             List<Order> orders = orderRepository.findByStatusAndProperty("청약중", property);
             for(Order order : orders){
-                order.setStatus("체결 완료");
+                order.updateStatus("체결 완료");
                 orderRepository.save(order);
             }
         }

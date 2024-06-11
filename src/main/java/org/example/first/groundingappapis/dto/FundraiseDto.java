@@ -17,13 +17,13 @@ import java.util.UUID;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FundraiseDto {
     private Double progressRate;
-    private Integer progressAmount;
+    private Long progressAmount;
     private Integer investorCount;
     private String securityType;
     private String issuer;
     private Integer securityCount;
     private Integer issuePrice;
-    private Integer totalFund;
+    private Long totalFund;
     private LocalDate subscriptionStartDate;
     private LocalDate subscriptionEndDate;
     private String operatorName;
@@ -31,13 +31,13 @@ public class FundraiseDto {
 
     @Builder
     public FundraiseDto(Double progressRate,
-                        Integer progressAmount,
+                        Long progressAmount,
                         Integer investorCount,
                         String securityType,
                         String issuer,
                         Integer securityCount,
                         Integer issuePrice,
-                        Integer totalFund,
+                        Long totalFund,
                         LocalDate subscriptionStartDate,
                         LocalDate subscriptionEndDate,
                         String operatorName,

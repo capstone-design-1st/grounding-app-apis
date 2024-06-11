@@ -1,5 +1,6 @@
 package org.example.first.groundingappapis.service;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.example.first.groundingappapis.exception.*;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,13 @@ public class PropertyServiceImpl implements PropertyService {
     public PropertyDto.GetResponse getProperty(String propertyId) {
         Property property = propertyRepository.getDetailPropertyById(UUID.fromString(propertyId)).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
         PropertyDto propertyDto = property.toDto();
+
         FundraiseDto fundraiseDto = property.getFundraise().toDto();
+
+        SummaryDto summaryDto = SummaryDto.builder()
+                .content(property.getSummary() != null ? property.getSummary().getContent() : "")
+                .build();
+
         PropertyDetailDto propertyDetailDto = null;
 
         if(property.getType().equals("land")) {
@@ -78,8 +85,22 @@ public class PropertyServiceImpl implements PropertyService {
 
         Integer presentPrice = realTimeTransactionLog.isPresent() ? realTimeTransactionLog.get().getExecutedPrice() : property.getFundraise().getIssuePrice();
 
+        Boolean isFundraising = !fundraiseDto.getProgressRate().equals(100.0);
+
+        //propertyDto.toBuilder().priceDifference(getPriceDifference)
+
+        Optional<DayTransactionLog> dayTransactionLog = dayTransactionLogRepository.findRecentDayTransactionLogByProperty(property.getId());
+        Integer openingPrice = dayTransactionLog.isPresent() ? dayTransactionLog.get().getOpeningPrice() : property.getFundraise().getIssuePrice();
+
+        //변동률
+        propertyDto.putPriceDifference(getPriceDifference(presentPrice, openingPrice));
+        propertyDto.putPriceDifferenceRate((double) (presentPrice - openingPrice) / openingPrice * 100);
+
         PropertyDto.GetResponse response = PropertyDto.GetResponse.builder()
                 .presentPrice(presentPrice)
+                .isFundraising(isFundraising)
+                .summaryDto(summaryDto)
+                .uploaderWalletAddress(property.getUploaderWalletAddress())
                 .propertyDto(propertyDto)
                 .fundraiseDto(fundraiseDto)
                 .propertyDetailDto(propertyDetailDto)
@@ -113,11 +134,11 @@ public class PropertyServiceImpl implements PropertyService {
 
         Page<Property> popularProperties = propertyRepository.findAll(pageable);
 
-        List<RealTimeTransactionLogDto> transactionLogs = realTimeTransactionLogRepository
+        List<RealTimeTransactionLog> transactionLogs = realTimeTransactionLogRepository
                 .findRecentTransactionLogsByProperties(popularProperties.getContent());
 
-        Map<UUID, RealTimeTransactionLogDto> transactionLogMap = transactionLogs.stream()
-                .collect(Collectors.toMap(RealTimeTransactionLogDto::getPropertyId, log -> log));
+        Map<UUID, RealTimeTransactionLog> transactionLogMap = transactionLogs.stream()
+                .collect(Collectors.toMap(RealTimeTransactionLog::getPropertyId, log -> log));
 
         List<DayTransactionLog> dayTransactionLogs = dayTransactionLogRepository
                 .findRecentDayTransactionLogsByPropertyIds(popularProperties.getContent().stream().map(Property::getId).collect(Collectors.toList()));
@@ -127,7 +148,7 @@ public class PropertyServiceImpl implements PropertyService {
 
 
         return popularProperties.map(property -> {
-            RealTimeTransactionLogDto transactionLog = transactionLogMap.get(property.getId());
+            RealTimeTransactionLog transactionLog = transactionLogMap.get(property.getId());
             DayTransactionLogDto dayTransactionLog = dayTransactionLogMap.get(property.getId());
             Integer executedPrice = transactionLog != null ? transactionLog.getExecutedPrice() : property.getFundraise() != null ? property.getFundraise().getIssuePrice() : 0;
             Integer openingPrice = dayTransactionLog != null ? dayTransactionLog.getOpeningPrice() : property.getFundraise() != null ? property.getFundraise().getIssuePrice() : 0;
@@ -161,6 +182,21 @@ public class PropertyServiceImpl implements PropertyService {
 
         return dayTransactionLogs;
     }
+
+    @Override
+    public Page<DayTransactionLogDto.ReadResponse> getDayTransactionLogByPropertyName(String propertyName, Pageable pageable) {
+        final Property property = propertyRepository.findByName(propertyName).orElseThrow(() -> new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
+        final Fundraise fundraise = property.getFundraise();
+        if(fundraise.getProgressRate() < 100) {
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_FUNDRAISE);
+        }
+
+        Page<DayTransactionLogDto.ReadResponse> dayTransactionLogs = dayTransactionLogRepository
+                .readDayTransactionLogsByPropertyId(property.getId(), pageable);
+
+        return dayTransactionLogs;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Page<PropertyDto.SearchResultResponse> searchProperties(String keyword, Pageable pageable) {
@@ -174,7 +210,11 @@ public class PropertyServiceImpl implements PropertyService {
                         String gu = (String) result[3];
                         String name = (String) result[4];
                         String oneline = (String) result[5];
-                        Double fluctuationRate = (Double) result[6];
+                        Double fluctuationRate;
+                        if(result[6] == null)
+                            fluctuationRate = 0.0;
+                        else
+                            fluctuationRate = (Double) result[6];
 
                         return PropertyDto.SearchResultResponse.builder()
                                 .propertyId(propertyId)
@@ -182,7 +222,7 @@ public class PropertyServiceImpl implements PropertyService {
                                 .city(city)
                                 .gu(gu)
                                 .name(name)
-                                .oneLine(oneline)
+                                .oneline(oneline)
                                 .fluctuationRate(fluctuationRate)
                                 .build();
                     });
@@ -197,7 +237,11 @@ public class PropertyServiceImpl implements PropertyService {
                         String gu = (String) result[3];
                         String name = (String) result[4];
                         String oneline = (String) result[5];
-                        Double fluctuationRate = (Double) result[6];
+                        Double fluctuationRate;
+                        if(result[6] == null)
+                            fluctuationRate = 0.0;
+                        else
+                            fluctuationRate = (Double) result[6];
 
                         return PropertyDto.SearchResultResponse.builder()
                                 .propertyId(propertyId)
@@ -205,7 +249,7 @@ public class PropertyServiceImpl implements PropertyService {
                                 .city(city)
                                 .gu(gu)
                                 .name(name)
-                                .oneLine(oneline)
+                                .oneline(oneline)
                                 .fluctuationRate(fluctuationRate)
                                 .build();
                     });
@@ -232,6 +276,14 @@ public class PropertyServiceImpl implements PropertyService {
                 .readRealTimeTransactionLogsByPropertyAndExecutedAtToday(property, startOfDay, endOfDay, pageable);
 
         return realTimeTransactionLogs;
+    }
+
+    @Override
+    public Page<PropertyDto.GetFundraisingResponse> getFundraisingProperties(Pageable pageable) {
+        
+        Page<PropertyDto.GetFundraisingResponse> response = propertyRepository.readBasicInfoOfFundraisingProperty(pageable);
+
+        return response;
     }
 
     private PropertyDetailDto buildLandInformation(Land land) {

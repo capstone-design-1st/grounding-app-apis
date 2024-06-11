@@ -182,4 +182,11 @@ public class UserDto {
         private UUID userId;
         private String walletAddress;
     }
+    @Getter
+    @Builder @NoArgsConstructor @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class GetNameResponseDto {
+        private UUID userId;
+        private String name;
+    }
 }

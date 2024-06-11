@@ -18,20 +18,11 @@ import java.util.UUID;
 
 @Repository
 public interface RealTimeTransactionLogRepository extends JpaRepository<RealTimeTransactionLog, UUID> {
-    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
-            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
-            "FROM RealTimeTransactionLog r " +
-            "WHERE r.property IN :properties AND r.user = :user " +
-            "ORDER BY r.executedAt DESC")
-    List<RealTimeTransactionLogDto> findRecentTransactionLogsByUserAndProperties(@Param("user") User user, @Param("properties") List<Property> properties);
 
-    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
-            "r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +
-            "FROM RealTimeTransactionLog r " +
-            "WHERE r.property IN :properties " +
-            "ORDER BY r.executedAt DESC")
-    List<RealTimeTransactionLogDto> findRecentTransactionLogsByProperties(List<Property> properties);
-
+    @Query("SELECT rtl FROM RealTimeTransactionLog rtl " +
+            "WHERE rtl.id IN (SELECT MAX(rtl2.id) FROM RealTimeTransactionLog rtl2 WHERE rtl2.property IN :properties GROUP BY rtl2.property) " +
+            "ORDER BY rtl.executedAt DESC")
+    List<RealTimeTransactionLog> findRecentTransactionLogsByProperties(@Param("properties") List<Property> properties);
 
 //    @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
 //            "r.property.id, r.executedPrice) " +
@@ -62,11 +53,6 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "ORDER BY r.executed_at DESC " +
             "LIMIT 1", nativeQuery = true)
     Optional<RealTimeTransactionLog> findFirstByPropertyIdOrderByExecutedAtDesc(UUID propertyId);
-
-    @Query("SELECT CASE COUNT(r) WHEN 0 THEN false ELSE true END " +
-            "FROM RealTimeTransactionLog r " +
-            "WHERE r.property = :property AND r.user = :user")
-    boolean existsByPropertyAndUser(Property property, User user);
 
     @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto$ReadResponse" +
             "(r.property.id, r.executedAt, r.quantity, r.executedPrice, r.fluctuationRate) " +

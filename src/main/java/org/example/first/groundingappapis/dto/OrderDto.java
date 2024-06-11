@@ -18,12 +18,12 @@ public class OrderDto {
     private UUID id;
     private String type;
     private Integer price;
-    private Integer quantity;
+    private Long quantity;
     private String status;
     private LocalDateTime createdAt;
 
     @Builder
-    public OrderDto(UUID id, String type, Integer price, Integer quantity, String status, LocalDateTime createdAt) {
+    public OrderDto(UUID id, String type, Integer price, Long quantity, String status, LocalDateTime createdAt) {
         this.id = id;
         this.type = type;
         this.price = price;
@@ -64,11 +64,11 @@ public class OrderDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class GetQuantityResponse {
         private String propertyId;
-        private Integer quantity;
+        private Long quantity;
         private LocalDateTime createdAt;
 
         @Builder
-        public GetQuantityResponse(String propertyId, Integer quantity, LocalDateTime createdAt) {
+        public GetQuantityResponse(String propertyId, Long quantity, LocalDateTime createdAt) {
             this.propertyId = propertyId;
             this.quantity = quantity;
             this.createdAt = createdAt;

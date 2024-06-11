@@ -38,7 +38,7 @@ public class Order {
 
     //수량
     @Column(name = "quantity")
-    private Integer quantity;
+    private Long quantity;
 
     //청약중, 체결 대기중, 체결 완료, 취소
     @Column(name = "status", length = 10)
@@ -55,8 +55,11 @@ public class Order {
     @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_orders_property"))
     private Property property;
 
-    @Builder
-    public Order(String type, Integer price, Integer quantity, User user, Property property, String status, LocalDateTime createdAt) {
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
+    private Quote quote;
+
+    @Builder(toBuilder = true)
+    public Order(String type, Integer price, Long quantity, User user, Property property, String status, LocalDateTime createdAt) {
         this.type = type;
         this.price = price;
         this.quantity = quantity;
@@ -85,12 +88,16 @@ public class Order {
         this.property = property;
     }
 
-    public void setStatus(String status) {
+    public void updateStatus(String status) {
         this.status = status;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void updateQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public void setQuote(Quote quote) {
+        this.quote = quote;
     }
 }
 

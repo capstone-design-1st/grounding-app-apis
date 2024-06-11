@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.UUID;
 
 @Repository
@@ -66,4 +67,10 @@ public interface DayTransactionLogRepository extends JpaRepository<DayTransactio
             "WHERE d.property.id = :propertyId " +
             "ORDER BY d.date DESC")
     Page<DayTransactionLogDto.ReadResponse> readDayTransactionLogsByPropertyId(UUID propertyId, Pageable pageable);
+
+    @Query(value = "SELECT * FROM day_transaction_logs d " +
+            "WHERE d.property_id = :propertyId " +
+            "AND d.date = :localDate " +
+            "ORDER BY d.date DESC", nativeQuery = true)
+    Optional<DayTransactionLog> findByPropertyIdAndDate(UUID propertyId, LocalDate localDate);
 }

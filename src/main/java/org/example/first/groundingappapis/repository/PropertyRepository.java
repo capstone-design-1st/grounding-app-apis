@@ -70,10 +70,24 @@ search all property,
             "FROM properties p " +
             "LEFT JOIN locations l ON p.property_id = l.property_id " +
             "LEFT JOIN (SELECT property_id, fluctuation_rate FROM real_time_transaction_logs ORDER BY executed_at DESC LIMIT 1) rt ON p.property_id = rt.property_id " +
-            "LEFT JOIN (SELECT property_id, fluctuation_rate FROM day_transaction_logs ORDER BY date DESC LIMIT 1) dt ON p.property_id = dt.property_id",
+            "LEFT JOIN (SELECT property_id, fluctuation_rate FROM day_transaction_logs ORDER BY date DESC LIMIT 1) dt ON p.property_id = dt.property_id " +
+            "JOIN fundraises f ON p.property_id = f.property_id " +
+            "WHERE f.progress_rate = 100",
+            // fundraise의 progress_rate가 100인 경우만 조회
             countQuery = "SELECT COUNT(*) " +
                     "FROM properties p " +
                     "LEFT JOIN locations l ON p.property_id = l.property_id",
             nativeQuery = true)
     Page<Object[]> searchProperties(Pageable pageable);
+
+    @Query("SELECT new org.example.first.groundingappapis.dto.PropertyDto$GetFundraisingResponse" +
+            "(p.createdAt, p.id, p.name, p.oneline, t.cloudfrontUrl) " +
+            "FROM Property p " +
+            "LEFT JOIN p.fundraise f " +
+            "LEFT JOIN p.thumbnailUrl t " +
+            "WHERE f.progressRate < 100.0")
+    Page<PropertyDto.GetFundraisingResponse> readBasicInfoOfFundraisingProperty(Pageable pageable);
+
+    @Query("SELECT p FROM Property p WHERE p.name = :name")
+    Optional<Property> findByName(String name);
 }

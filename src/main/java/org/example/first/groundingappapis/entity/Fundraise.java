@@ -27,7 +27,7 @@ public class Fundraise {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id", nullable = false, columnDefinition = "BINARY(16)",foreignKey = @ForeignKey(name = "fk_fundraise_property"))
+    @JoinColumn(name = "property_id", unique = true, nullable = false, columnDefinition = "BINARY(16)",foreignKey = @ForeignKey(name = "fk_fundraise_property"))
     private Property property;
 
     //진행률
@@ -35,7 +35,7 @@ public class Fundraise {
     private Double progressRate;
 
     @Column(name = "progress_amount", columnDefinition = "BIGINT DEFAULT 0")
-    private Integer progressAmount;
+    private Long progressAmount;
 
     //투자 참여 인원
     @Column(name = "investor_count", columnDefinition = "INT DEFAULT 0")
@@ -59,7 +59,7 @@ public class Fundraise {
 
     //총 모집액
     @Column(name = "total_fund", columnDefinition = "BIGINT DEFAULT 0")
-    private Integer totalFund;
+    private Long totalFund;
 
     //청약 시작일
     @Column(name = "subscription_start_date", columnDefinition = "DATE")
@@ -86,7 +86,7 @@ public class Fundraise {
                      String issuer,
                      Integer securityCount,
                      Integer issuePrice,
-                     Integer totalFund,
+                     Long totalFund,
                      LocalDate subscriptionStartDate,
                      LocalDate subscriptionEndDate,
                      String operatorName,
@@ -129,7 +129,7 @@ public class Fundraise {
         property.setFundraise(this);
     }
 
-    public void setProgress(int progressAmount) {
+    public void setProgress(Long progressAmount) {
         this.progressAmount = progressAmount;
         this.progressRate = (double) progressAmount / totalFund * 100;
     }

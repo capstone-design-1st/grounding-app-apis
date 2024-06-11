@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "deposit_logs")
+@Table(name = "deposit_logs", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"account_id", "created_at"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +40,7 @@ public class DepositLog {
     private String type;
 
     @Column(name = "amount")
-    private Integer amount;
+    private Long amount;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -50,13 +52,13 @@ public class DepositLog {
     }
 
     //입금
-    public void setLogOfDeposit(Integer amount) {
+    public void setLogOfDeposit(Long amount) {
         this.type = "입금";
         this.amount = amount;
     }
 
     //출금
-    public void setLogOfWithdraw(Integer amount) {
+    public void setLogOfWithdraw(Long amount) {
         this.type = "출금";
         this.amount = amount;
     }
@@ -69,7 +71,7 @@ public class DepositLog {
     }
 
     @Builder
-    public DepositLog(Account account, String type, Integer amount, LocalDateTime createdAt) {
+    public DepositLog(Account account, String type, Long amount, LocalDateTime createdAt) {
         this.account = account;
         this.type = type;
         this.amount = amount;
