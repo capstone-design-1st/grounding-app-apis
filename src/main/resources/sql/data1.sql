@@ -25,6 +25,9 @@ ALTER TABLE thumbnail_urls
 ALTER TABLE summaries
     MODIFY created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
+ALTER TABLE documents
+    MODIFY COLUMN document_id BINARY(16) NOT NULL DEFAULT (UNHEX(REPLACE(UUID(), '-', '')));
+
 -- users 테이블에 샘플 데이터 삽입
 INSERT INTO users (user_id, email, password, phone_number, name, role, created_at, updated_at, wallet_address)
 VALUES
