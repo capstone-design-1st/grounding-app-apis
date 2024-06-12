@@ -126,7 +126,7 @@ public class RefactorTradingService {
             Map<Account, List<Inventory>> accountInventoryMap = new HashMap<>();
 
             for (Inventory inventory : inventories) {
-                inventory.setEarningsRate(Double.valueOf((inventory.getAverageBuyingPrice() - realTimeTransactionLog.getExecutedPrice()) / realTimeTransactionLog.getExecutedPrice() * 100));
+                inventory.setEarningsRate(Double.valueOf((realTimeTransactionLog.getExecutedPrice() - inventory.getAverageBuyingPrice()) / realTimeTransactionLog.getExecutedPrice()) *100);
                 inventoryRepository.save(inventory);
 
                 Account account = inventory.getAccount();
