@@ -7,7 +7,7 @@ VALUES
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
 INSERT INTO fundraises (fundraise_id, property_id, progress_rate, progress_amount, investor_count, security_type, issuer, security_count, issue_price, total_fund, subscription_start_date, subscription_end_date, operator_name, operator_introduction)
 VALUES
-    (UNHEX(REPLACE('3222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 0.0, 0, 0, '사이버증권', 'DEF 회사', 100000, 5000, 500000000, '2024-06-01', '2024-12-01', 'LMN 운영사', '이 운영사는 LMN입니다.')
+    (UNHEX(REPLACE('3222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 0.0, 0, 0, '사이버증권', 'DEF 회사', 10000, 5000, 50000000, '2024-06-01', '2024-12-01', 'LMN 운영사', '이 운영사는 LMN입니다.')
     ON DUPLICATE KEY UPDATE fundraise_id = fundraise_id;
 
 -- buildings 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
