@@ -851,16 +851,23 @@ public class TradingServiceImpl implements TradingService {
         Page<QuoteDto.ReadResponse> quotes = quoteRepository.findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(propertyId, basePrice, pageable);
 
         Integer presentPrice;
+        Double fluctuationRate;
         RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).get();
 
-        if(realTimeTransactionLog == null)
+        if(realTimeTransactionLog == null) {
             presentPrice = property.getFundraise().getIssuePrice();
-        else
+            fluctuationRate = 0.0;
+        }
+        else{
             presentPrice = realTimeTransactionLog.getExecutedPrice();
+            fluctuationRate = realTimeTransactionLog.getFluctuationRate();
+        }
+
 
         QuoteDto.ReadResponseWithPresentPrice readResponseWithPresentPrice = QuoteDto.ReadResponseWithPresentPrice.builder()
                 .presentPrice(presentPrice)
                 .quotes(quotes)
+                .fluctuationRate(fluctuationRate)
                 .build();
         return readResponseWithPresentPrice;
     }
@@ -890,15 +897,21 @@ public class TradingServiceImpl implements TradingService {
         Page<QuoteDto.ReadResponse> quotes =  quoteRepository.findByPropertyIdAndPriceLessOrderByPriceAsc(propertyId, basePrice, pageable);
 
         Integer presentPrice;
+        Double fluctuationRate;
         RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).get();
 
-        if(realTimeTransactionLog == null)
+        if(realTimeTransactionLog == null) {
             presentPrice = property.getFundraise().getIssuePrice();
-        else
+            fluctuationRate = 0.0;
+        }
+        else {
             presentPrice = realTimeTransactionLog.getExecutedPrice();
+            fluctuationRate = realTimeTransactionLog.getFluctuationRate();
+        }
         QuoteDto.ReadResponseWithPresentPrice readResponseWithPresentPrice = QuoteDto.ReadResponseWithPresentPrice.builder()
                 .presentPrice(presentPrice)
                 .quotes(quotes)
+                .fluctuationRate(fluctuationRate)
                 .build();
         return readResponseWithPresentPrice;
     }

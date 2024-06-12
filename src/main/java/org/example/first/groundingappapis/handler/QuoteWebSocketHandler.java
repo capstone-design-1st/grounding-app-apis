@@ -89,6 +89,7 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
                     QuoteDto.ReadResponseWithPresentPrice quotes = QuoteDto.ReadResponseWithPresentPrice.builder()
                             .quotes(allQuotePage)
                             .presentPrice(upperQuotes.getPresentPrice())
+                            .fluctuationRate(upperQuotes.getFluctuationRate())
                             .build();
 
                     sendQuotesToAllSessions(quotes);

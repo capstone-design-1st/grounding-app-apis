@@ -75,11 +75,14 @@ public class QuoteDto {
     public static class ReadResponseWithPresentPrice{
         Page<ReadResponse> quotes;
         Integer presentPrice;
+        Double fluctuationRate;
         @Builder
         public ReadResponseWithPresentPrice(Page<ReadResponse> quotes,
-                                            Integer presentPrice) {
+                                            Integer presentPrice,
+                                            Double fluctuationRate) {
             this.quotes = quotes;
             this.presentPrice = presentPrice;
+            this.fluctuationRate = fluctuationRate;
         }
     }
 
