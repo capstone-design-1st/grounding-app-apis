@@ -1,3 +1,16 @@
+
+-- user2
+INSERT INTO users (user_id, email, password, phone_number, name, role, created_at, updated_at, wallet_address)
+VALUES
+    (UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 'test2@user.com', '$2a$04$PqAI9RkcXM3QK6A/GkpbCetMX5Bh7Mt9eV5vO/3ULVPPJwG7Vishi', '01012341234', 'test_user2', 'USER', NOW(), NOW(), 'sEdVWVdgWwF7zM7mSRhbMQC1xMsgXeZ')
+    ON DUPLICATE KEY UPDATE user_id = user_id;
+
+INSERT INTO accounts (account_id, user_id, deposit, average_earning_rate)
+VALUES
+    (UNHEX(REPLACE('6111c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), 9999999999999, 0.0)
+    ON DUPLICATE KEY UPDATE account_id = account_id;
+
+
 -- properties 테이블에 샘플 데이터 삽입
 INSERT INTO properties (property_id, property_name, oneline, view_count, like_count, total_volume, created_at, updated_at, type, uploader_wallet_address)
 VALUES
@@ -161,3 +174,28 @@ INSERT INTO summaries (property_id, content, created_at)
 VALUES
     (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '예시 임야에 대한 세 가지 주요 뉴스는 다음과 같습니다. 첫째, 조각투자사가 소유한 이 부동산은 완판되었습니다. 둘째, 루센트블록이 소유한 이 상품의 공모가 시작되었습니다. 셋째, 삼성도 이 부동산 상품의 공모에 관심을 가지고 있습니다. 투자 정보로는 연 7% 고정 배당금이 지급되고, 시세 대비 저렴한 공모가로 높은 매각 차익이 기대되며, 역세권 상업용 최적 입지를 가지고 있다는 점이 강조됩니다.', NOW())
     ON DUPLICATE KEY UPDATE property_id = property_id;
+
+INSERT INTO investment_points (property_id, title)
+VALUES
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '연 6% 고정 배당금 지급'),
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '시세 대비 낮은 공모가, 매각 차익 기대'),
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '신도림역 더블 역세권, 오피스 최적 입지')
+    ON DUPLICATE KEY UPDATE property_id = property_id;
+
+INSERT INTO news (property_id, title, reported_at, publisher) VALUES
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '조각투자사 소유, 부동산 완판', '2024-04-04', '뉴스투데이'),
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '조각투자사2 소유, 공모 시작', '2024-04-05', '뉴스투데이'),
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '조각투자사3 소유, 공모 시작 및 부동산 완판', '2024-04-06', '매일경제')
+    ON DUPLICATE KEY UPDATE property_id = property_id;
+
+INSERT INTO documents (property_id, cloudfront_url, title) VALUES
+                                                               (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '공모 청약 안내문'),
+                                                               (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '증권신고서'),
+                                                               (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '투자설명서'),
+                                                               (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '부동산관리처분신탁계약서'),
+                                                               (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '감정평가보고서(대한)'),
+                                                               (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '감정평가보고서(태평양)')
+    ON DUPLICATE KEY UPDATE property_id = property_id;
+
+
+
