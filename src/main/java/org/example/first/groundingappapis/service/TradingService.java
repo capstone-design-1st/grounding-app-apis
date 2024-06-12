@@ -2,10 +2,10 @@ package org.example.first.groundingappapis.service;
 
 import org.example.first.groundingappapis.dto.OrderDto;
 import org.example.first.groundingappapis.dto.QuoteDto;
-import org.example.first.groundingappapis.dto.TradingDto;
 import org.example.first.groundingappapis.entity.User;
 import org.springframework.data.domain.Page;
 
+import java.util.Map;
 import java.util.UUID;
 
 public interface TradingService {
@@ -22,7 +22,7 @@ public interface TradingService {
 
     OrderDto.GetQuantityOfInventoryResponse getQuantityOfInventory(User user, UUID propertyId);
 
-    Page<QuoteDto.ReadResponse> readUpperQuotes(UUID propertyId, int basePrice, int page, int size);
+    QuoteDto.ReadResponseWithPresentPrice readUpperQuotes(UUID propertyId, int basePrice, int page, int size);
 
-    Page<QuoteDto.ReadResponse> readDownQuotes(UUID propertyId, int basePrice, int page, int size);
+    QuoteDto.ReadResponseWithPresentPrice readDownQuotes(UUID propertyId, int basePrice, int page, int size);
 }

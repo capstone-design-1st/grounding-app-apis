@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 
@@ -65,6 +66,20 @@ public class QuoteDto {
             this.price = price != null ? price : 0;
             this.quantity = quantity != null ? quantity : 0L;
             this.type = type != null ? type : "";
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ReadResponseWithPresentPrice{
+        Page<ReadResponse> quotes;
+        Integer presentPrice;
+        @Builder
+        public ReadResponseWithPresentPrice(Page<ReadResponse> quotes,
+                                            Integer presentPrice) {
+            this.quotes = quotes;
+            this.presentPrice = presentPrice;
         }
     }
 

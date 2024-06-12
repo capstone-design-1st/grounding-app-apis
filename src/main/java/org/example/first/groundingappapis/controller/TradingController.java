@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -87,7 +88,7 @@ public class TradingController {
 
 
     @GetMapping("/{propertyId}/quotes/upper")
-    public ResponseEntity<Page<QuoteDto.ReadResponse>> getUpperQuotes(
+    public ResponseEntity<QuoteDto.ReadResponseWithPresentPrice> getUpperQuotes(
             @PathVariable UUID propertyId,
             //기준가
             @RequestParam(defaultValue="0") int basePrice,
@@ -98,7 +99,7 @@ public class TradingController {
     }
 
     @GetMapping("/{propertyId}/quotes/down")
-    public ResponseEntity<Page<QuoteDto.ReadResponse>> getDownQuotes(
+    public ResponseEntity<QuoteDto.ReadResponseWithPresentPrice> getDownQuotes(
             @PathVariable UUID propertyId,
             //기준가
             @RequestParam(defaultValue="0") int basePrice,

@@ -66,9 +66,8 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
     public void sendUpdate() {
         try {
             if (propertyId != null) {
-                Page<QuoteDto.ReadResponse> quotes;
-
                 if (direction != null) {
+                    QuoteDto.ReadResponseWithPresentPrice quotes;
                     if ("upper".equalsIgnoreCase(direction)) {
                         quotes = tradingService.readUpperQuotes(propertyId, basePrice, page, size);
                     } else {
@@ -76,12 +75,21 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
                     }
                     sendQuotesToAllSessions(quotes);
                 } else {
-                    Page<QuoteDto.ReadResponse> upperQuotes = tradingService.readUpperQuotes(propertyId, basePrice, page, size);
-                    Page<QuoteDto.ReadResponse> downQuotes = tradingService.readDownQuotes(propertyId, basePrice, page, size);
 
-                    List<QuoteDto.ReadResponse> combinedQuotes = Stream.concat(upperQuotes.getContent().stream(), downQuotes.getContent().stream())
+                    QuoteDto.ReadResponseWithPresentPrice upperQuotes = tradingService.readUpperQuotes(propertyId, basePrice, page, size);
+                    Page<QuoteDto.ReadResponse> upperQuotePage = upperQuotes.getQuotes();
+
+                    QuoteDto.ReadResponseWithPresentPrice downQuotes = tradingService.readDownQuotes(propertyId, basePrice, page, size);
+                    Page<QuoteDto.ReadResponse> downQuotePage = downQuotes.getQuotes();
+
+                    List<QuoteDto.ReadResponse> combinedQuotes = Stream.concat(upperQuotePage.getContent().stream(), downQuotePage.getContent().stream())
                             .collect(Collectors.toList());
-                    quotes = new PageImpl<>(combinedQuotes, Pageable.unpaged(), combinedQuotes.size());
+                    Page<QuoteDto.ReadResponse> allQuotePage = new PageImpl<>(combinedQuotes, Pageable.unpaged(), combinedQuotes.size());
+
+                    QuoteDto.ReadResponseWithPresentPrice quotes = QuoteDto.ReadResponseWithPresentPrice.builder()
+                            .quotes(allQuotePage)
+                            .presentPrice(upperQuotes.getPresentPrice())
+                            .build();
 
                     sendQuotesToAllSessions(quotes);
                 }
@@ -92,7 +100,7 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private void sendQuotesToAllSessions(Page<QuoteDto.ReadResponse> quotes) throws Exception {
+    private void sendQuotesToAllSessions(QuoteDto.ReadResponseWithPresentPrice quotes) throws Exception {
         String response = objectMapper.writeValueAsString(quotes);
         for (WebSocketSession session : sessions) {
             if (session.isOpen()) {

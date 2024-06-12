@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.OrderDto;
 import org.example.first.groundingappapis.dto.QuoteDto;
-import org.example.first.groundingappapis.dto.TradingDto;
 import org.example.first.groundingappapis.entity.*;
 import org.example.first.groundingappapis.exception.*;
 import org.example.first.groundingappapis.repository.*;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -830,7 +828,7 @@ public class TradingServiceImpl implements TradingService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<QuoteDto.ReadResponse> readUpperQuotes(UUID propertyId, int basePrice, int page, int size) {
+    public QuoteDto.ReadResponseWithPresentPrice readUpperQuotes(UUID propertyId, int basePrice, int page, int size) {
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                 new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
 
@@ -850,12 +848,26 @@ public class TradingServiceImpl implements TradingService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return quoteRepository.findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(propertyId, basePrice, pageable);
+        Page<QuoteDto.ReadResponse> quotes = quoteRepository.findByPropertyIdAndPriceGreaterThanEqualOrderByPriceDesc(propertyId, basePrice, pageable);
+
+        Integer presentPrice;
+        RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).get();
+
+        if(realTimeTransactionLog == null)
+            presentPrice = property.getFundraise().getIssuePrice();
+        else
+            presentPrice = realTimeTransactionLog.getExecutedPrice();
+
+        QuoteDto.ReadResponseWithPresentPrice readResponseWithPresentPrice = QuoteDto.ReadResponseWithPresentPrice.builder()
+                .presentPrice(presentPrice)
+                .quotes(quotes)
+                .build();
+        return readResponseWithPresentPrice;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Page<QuoteDto.ReadResponse> readDownQuotes(UUID propertyId, int basePrice, int page, int size) {
+    public QuoteDto.ReadResponseWithPresentPrice readDownQuotes(UUID propertyId, int basePrice, int page, int size) {
         final Property property = propertyRepository.findById(propertyId).orElseThrow(() ->
                 new PropertyException(PropertyErrorResult.PROPERTY_NOT_FOUND));
 
@@ -875,7 +887,20 @@ public class TradingServiceImpl implements TradingService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return quoteRepository.findByPropertyIdAndPriceLessOrderByPriceAsc(propertyId, basePrice, pageable);
+        Page<QuoteDto.ReadResponse> quotes =  quoteRepository.findByPropertyIdAndPriceLessOrderByPriceAsc(propertyId, basePrice, pageable);
+
+        Integer presentPrice;
+        RealTimeTransactionLog realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(propertyId).get();
+
+        if(realTimeTransactionLog == null)
+            presentPrice = property.getFundraise().getIssuePrice();
+        else
+            presentPrice = realTimeTransactionLog.getExecutedPrice();
+        QuoteDto.ReadResponseWithPresentPrice readResponseWithPresentPrice = QuoteDto.ReadResponseWithPresentPrice.builder()
+                .presentPrice(presentPrice)
+                .quotes(quotes)
+                .build();
+        return readResponseWithPresentPrice;
     }
 
 }
