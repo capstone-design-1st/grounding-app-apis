@@ -7,7 +7,7 @@ VALUES
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
 INSERT INTO fundraises (fundraise_id, property_id, progress_rate, progress_amount, investor_count, security_type, issuer, security_count, issue_price, total_fund, subscription_start_date, subscription_end_date, operator_name, operator_introduction)
 VALUES
-    (UNHEX(REPLACE('3222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 0.0, 0, 0, '사이버증권', 'DEF 회사', 2000, 2000000, 4000000000, '2024-06-01', '2024-12-01', 'LMN 운영사', '이 운영사는 LMN입니다.')
+    (UNHEX(REPLACE('3222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 0.0, 0, 0, '사이버증권', 'DEF 회사', 10000, 5000, 50000000, '2024-06-01', '2024-12-01', 'LMN 운영사', '이 운영사는 LMN입니다.')
     ON DUPLICATE KEY UPDATE fundraise_id = fundraise_id;
 
 -- buildings 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
@@ -48,4 +48,13 @@ VALUES
 INSERT INTO summaries (property_id, content, created_at)
 VALUES
     (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), '서초 핀포인트타워 1호에 대한 세 가지 주요 뉴스는 다음과 같습니다. 첫째, 조각투자사가 소유한 이 부동산은 완판되었습니다. 둘째, 루센트블록이 소유한 이 상품의 공모가 시작되었습니다. 셋째, 삼성도 이 부동산 상품의 공모에 관심을 가지고 있습니다. 투자 정보로는 연 7% 고정 배당금이 지급되고, 시세 대비 저렴한 공모가로 높은 매각 차익이 기대되며, 역세권 상업용 최적 입지를 가지고 있다는 점이 강조됩니다.', NOW())
+    ON DUPLICATE KEY UPDATE property_id = property_id;
+
+INSERT INTO documents (property_id, cloudfront_url, title) VALUES
+                                                               (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '공모 청약 안내문'),
+                                                               (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '증권신고서'),
+                                                               (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '투자설명서'),
+                                                               (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '부동산관리처분신탁계약서'),
+                                                               (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '감정평가보고서(대한)'),
+                                                               (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/59d455cf-3b20-45ff-9434-e1e03204dd36_UI.pdf', '감정평가보고서(태평양)')
     ON DUPLICATE KEY UPDATE property_id = property_id;

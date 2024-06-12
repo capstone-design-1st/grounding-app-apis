@@ -126,7 +126,7 @@ public class RefactorTradingService {
             Map<Account, List<Inventory>> accountInventoryMap = new HashMap<>();
 
             for (Inventory inventory : inventories) {
-                inventory.setEarningsRate(Double.valueOf((inventory.getAverageBuyingPrice() - realTimeTransactionLog.getExecutedPrice()) / realTimeTransactionLog.getExecutedPrice() * 100));
+                inventory.setEarningsRate(Double.valueOf((realTimeTransactionLog.getExecutedPrice() - inventory.getAverageBuyingPrice()) / realTimeTransactionLog.getExecutedPrice()) *100);
                 inventoryRepository.save(inventory);
 
                 Account account = inventory.getAccount();
@@ -228,17 +228,8 @@ public class RefactorTradingService {
         }
         List<RealTimeTransactionLog> realTimeTransactionLogs = new ArrayList<>();
         List<TradingDto.PurchasedSellerQuoteInfoDto> purchasedSellQuotesInfoList = new ArrayList<>();
-        Inventory buyerInventory = inventoryRepository.findByAccountAndProperty(buyer.getAccount(), property).orElse(null);
-        if (buyerInventory == null) {
-            buyerInventory = Inventory.builder()
-                    .quantity(0)
-                    .averageBuyingPrice(0)
-                    .sellableQuantity(0)
-                    .earningsRate(0.0)
-                    .build();
-            buyerInventory.updateAccount(buyer.getAccount());
-            buyerInventory.updateProperty(property);
-        }
+
+        Inventory buyerInventory = null;
         for(Quote sellQuote : sellQuotes) {
             if (remainingQuantity == 0)
                 break;
@@ -252,6 +243,14 @@ public class RefactorTradingService {
             updateMinMaxForDayAndCreateRealTimeTransactionLog(property, executedQuantity, sellPrice, dayTransactionLog, realTimeTransactionLogs);
 
             //4. 체결이 이루어질 때마다 매수자/매도자 각각 보유 중인 매물의 수량을 업데이트한다.
+            buyerInventory = inventoryRepository.findByAccountAndProperty(buyer.getAccount(), property).orElseGet(
+                    () -> Inventory.builder()
+                            .quantity(0)
+                            .averageBuyingPrice(0)
+                            .sellableQuantity(0)
+                            .earningsRate(0.0)
+                            .build()
+            );
             buyerInventory.increaseQuantity(executedQuantity);
             buyerInventory.increaseSellableQuantity(executedQuantity);
             buyerInventory.setEarningsRate(getFluctuationRate(buyerInventory.getAverageBuyingPrice(), sellPrice));
@@ -325,7 +324,8 @@ public class RefactorTradingService {
         if(!realTimeTransactionLogs.isEmpty()){
             dayTransactionLogRepository.save(dayTransactionLog);
             realTimeTransactionLogRepository.saveAll(realTimeTransactionLogs);
-            inventoryRepository.save(buyerInventory);
+            if (buyerInventory != null)
+                inventoryRepository.save(buyerInventory);
         }
 
         TradingDto.BuyResponse buyResponse = TradingDto.BuyResponse.builder()
@@ -393,17 +393,15 @@ public class RefactorTradingService {
         }
         List<RealTimeTransactionLog> realTimeTransactionLogs = new ArrayList<>();
         List<TradingDto.SoldBuyerQuoteInfoDto> soldBuyerQuoteInfoDtos = new ArrayList<>();
-        Inventory sellerInventory = inventoryRepository.findByAccountAndProperty(seller.getAccount(), property).orElse(null);
-        if (sellerInventory == null) {
-            sellerInventory = Inventory.builder()
-                    .quantity(0)
-                    .averageBuyingPrice(0)
-                    .sellableQuantity(0)
-                    .earningsRate(0.0)
-                    .build();
-            sellerInventory.updateAccount(seller.getAccount());
-            sellerInventory.updateProperty(property);
+        Inventory sellerInventory = inventoryRepository.findByAccountAndProperty(seller.getAccount(), property)
+                .orElseThrow(() -> new TradingException(TradingErrorResult.INVENTORY_NOT_FOUND));
+        //판매자의 매물
+        sellerInventory.decreaseSellableQuantity(quantity);
+        if(sellerInventory.getSellableQuantity() < 0){
+            throw new TradingException(TradingErrorResult.NOT_ENOUGH_INVENTORY);
         }
+        inventoryRepository.save(sellerInventory);
+
         for(Quote buyQuote : buyQuotes) {
             if (remainingQuantity == 0)
                 break;

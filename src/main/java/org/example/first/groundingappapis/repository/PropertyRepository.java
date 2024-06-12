@@ -51,7 +51,8 @@ public interface PropertyRepository extends JpaRepository<Property, UUID>{
         "LEFT JOIN locations l ON p.property_id = l.property_id " +
         "LEFT JOIN (SELECT property_id, fluctuation_rate FROM real_time_transaction_logs ORDER BY executed_at DESC LIMIT 1) rt ON p.property_id = rt.property_id " +
         "LEFT JOIN (SELECT property_id, fluctuation_rate FROM day_transaction_logs ORDER BY date DESC LIMIT 1) dt ON p.property_id = dt.property_id " +
-        "WHERE p.property_name LIKE %:keyword% OR l.city LIKE %:keyword% OR l.gu LIKE %:keyword%",
+        "JOIN fundraises f ON p.property_id = f.property_id " +
+        "WHERE f.progress_rate = 100 AND (p.property_name LIKE %:keyword% OR l.city LIKE %:keyword% OR l.gu LIKE %:keyword%)",
         countQuery = "SELECT COUNT(*) " +
                 "FROM properties p " +
                 "LEFT JOIN locations l ON p.property_id = l.property_id " +
