@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS disclosures (
 
 CREATE TABLE IF NOT EXISTS documents (
                                          document_id BINARY(16) NOT NULL,
-                                         cloudfront_url VARCHAR(255),
+                                         cloudfront_url VARCHAR(500),
                                          s3_url VARCHAR(255),
                                          title VARCHAR(255),
                                          property_id BINARY(16) NOT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS locations (
 
 CREATE TABLE IF NOT EXISTS news (
                                     news_id BINARY(16) NOT NULL,
-                                    cloudfront_url VARCHAR(200),
+                                    cloudfront_url VARCHAR(500),
                                     content TEXT,
                                     publisher VARCHAR(255),
                                     reported_at DATE,
@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS real_time_transaction_logs (
 
 CREATE TABLE IF NOT EXISTS representation_photo_urls (
                                                          representation_photo_url_id BINARY(16) NOT NULL,
-                                                         cloudfront_url VARCHAR(255) NOT NULL,
+                                                         cloudfront_url VARCHAR(500) NOT NULL,
                                                          s3url VARCHAR(255),
                                                          property_id BINARY(16) NOT NULL,
                                                          PRIMARY KEY (representation_photo_url_id),
@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS summaries (
 
 CREATE TABLE IF NOT EXISTS thumbnail_urls (
                                               thumbnail_url_id BINARY(16) NOT NULL,
-                                              cloudfront_url VARCHAR(100),
+                                              cloudfront_url VARCHAR(500),
                                               s3_url VARCHAR(100),
                                               property_id BINARY(16) NOT NULL,
                                               PRIMARY KEY (thumbnail_url_id),
