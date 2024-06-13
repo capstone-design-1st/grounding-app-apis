@@ -1,7 +1,7 @@
 # 베이스 이미지 설정
 FROM openjdk:17
 
-# 환경 변수 설정
+#환경 변수 설정
 ENV APP_HOME /grounding-app
 
 # 작업 디렉토리 설정
