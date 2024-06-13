@@ -60,7 +60,7 @@ ON DUPLICATE KEY UPDATE building_id = building_id;
 
 -- d168mchs3bjm5x.cloudfront.net/9cf8bee3-f293-45ba-b865-050b8bcd247c_image-png-Feb-16-2023-11-44-53-1339-PM.png.webp
 INSERT INTO thumbnail_urls (property_id, cloudfront_url) VALUES
-    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/dfe63894-4881-410a-bd59-2056fe58cdd2_KakaoTalk_Photo_2024-06-13-13-17-54 002.jpeg')
+    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/228ed1b8-05e8-4e3b-95ae-d084941be679_KakaoTalk_Photo_2024-06-13-13-17-53 001.jpeg')
 ON DUPLICATE KEY UPDATE property_id = property_id;
 -- locations 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
 INSERT INTO locations (location_id, property_id, city, gu, dong, detail)

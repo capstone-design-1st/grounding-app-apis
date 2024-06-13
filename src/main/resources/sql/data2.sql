@@ -37,7 +37,7 @@ VALUES
 
 -- d168mchs3bjm5x.cloudfront.net/39f4bd39-7693-4d0f-8971-2f5bdaedb202_9e7dd875-5cd0-4776-9ca8-264c6fdb440a.jpg
 INSERT INTO thumbnail_urls (property_id, cloudfront_url) VALUES
-    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/b2830634-4aba-4e17-803d-a6343530a7c4_KakaoTalk_Photo_2024-06-13-13-17-53 001.jpeg')
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/eba49041-0a16-43cd-8a7a-ce9251f3a77e_KakaoTalk_Photo_2024-06-13-13-17-54 002.jpeg')
     ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- DayTransactionLog 테이블에 2024년 3월 1일부터 2024년 4월 30일까지의 데이터를 추가

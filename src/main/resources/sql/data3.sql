@@ -30,7 +30,7 @@ VALUES
 
 -- d168mchs3bjm5x.cloudfront.net/e1ef3af8-c013-427c-9c47-d04bd7fea0d1_만해관옥상에서바라본명진관야경5.jpg
 INSERT INTO thumbnail_urls (property_id, cloudfront_url) VALUES
-    (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/e1ef3af8-c013-427c-9c47-d04bd7fea0d1_만해관옥상에서바라본명진관야경5.jpg')
+    (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/35b02e05-f0f4-49f7-a339-c3d2b9559db7_만해관옥상에서바라본명진관야경5.jpg')
     ON DUPLICATE KEY UPDATE cloudfront_url = VALUES(cloudfront_url);
 
 
