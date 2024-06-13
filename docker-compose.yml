@@ -37,7 +37,7 @@ services:
   kafdrop:
     hostname: kafdrop
     container_name: kafdrop
-    image: obsidiandynamics/kafdrop
+    image: dmytronasyrov/kafdrop
     restart: always
     ports:
       - "9000:9000"

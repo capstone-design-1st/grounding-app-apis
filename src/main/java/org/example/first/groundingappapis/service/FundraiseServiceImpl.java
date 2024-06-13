@@ -3,12 +3,14 @@ package org.example.first.groundingappapis.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.first.groundingappapis.dto.FundraiseDto;
+import org.example.first.groundingappapis.dto.KafkaDto;
 import org.example.first.groundingappapis.entity.*;
 import org.example.first.groundingappapis.exception.*;
 import org.example.first.groundingappapis.repository.*;
+import org.example.first.groundingappapis.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +27,8 @@ public class FundraiseServiceImpl implements FundraiseService{
     private final UserRepository userRepository;
     private final FundraiseRepository fundraiseRepository;
     private final DayTransactionLogRepository dayTransactionLogRepository;
+    private final KafkaNotificationProducer kafkaNotificationProducer;
+
     private void validateFundraiseOrder(Fundraise fundraise, Account buyerAccount, User buyer, Property property, Long totalSubscriptionPrice) {
         if (fundraise == null) {
             throw new PropertyException(PropertyErrorResult.FUNDRAISE_NOT_FOUND);
@@ -130,6 +134,18 @@ public class FundraiseServiceImpl implements FundraiseService{
 
         property.increaseTotalVolume(fundraiseRequest.getQuantity());
         propertyRepository.save(property);
+
+        KafkaDto.NotificationProducingDto notificationProducingDto = KafkaDto.NotificationProducingDto.builder()
+                .pieceInvestmentName(property.getName())
+                .userName(buyer.getName())
+                .quantity(fundraiseRequest.getQuantity())
+                .progressRate(fundraise.getProgressRate())
+                .executedTime(LocalDateTime.now())
+                .build();
+
+        log.info("notificationProducingDto: {}", notificationProducingDto);
+
+        kafkaNotificationProducer.sendNotification("create-notification", notificationProducingDto);
 
         return FundraiseDto.FundraiseResponse.builder()
                 .userId(buyer.getId().toString())

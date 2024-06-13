@@ -81,6 +81,7 @@ public class Fundraise {
     @Builder
     public Fundraise(Property property,
                      Double progressRate,
+                     Long progressAmount,
                      Integer investorCount,
                      String securityType,
                      String issuer,
