@@ -14,7 +14,7 @@ VALUES
 -- properties 테이블에 샘플 데이터 삽입
 INSERT INTO properties (property_id, property_name, oneline, view_count, like_count, total_volume, created_at, updated_at, type, uploader_wallet_address)
 VALUES
-    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '예시 임야', '이 건물은 예시 임야입니다.', 0, 0, 20000000, '2023-01-01 00:00:00', NOW(), 'land', 'sEdTbTjySW4QE9eaEnULQdd5mxr7KhT')
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '예시 임야', '이 매물은 예시 임야입니다.', 0, 0, 20000000, '2023-01-01 00:00:00', NOW(), 'land', 'sEdTbTjySW4QE9eaEnULQdd5mxr7KhT')
     ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- fundraises 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
@@ -34,6 +34,11 @@ INSERT INTO locations (location_id, property_id, city, gu, dong, detail)
 VALUES
     (UNHEX(REPLACE('5222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), '경상북도', '김천시', '부항면', '안간리')
     ON DUPLICATE KEY UPDATE location_id = location_id;
+
+-- d168mchs3bjm5x.cloudfront.net/39f4bd39-7693-4d0f-8971-2f5bdaedb202_9e7dd875-5cd0-4776-9ca8-264c6fdb440a.jpg
+INSERT INTO thumbnail_urls (property_id, cloudfront_url) VALUES
+    (UNHEX(REPLACE('2222c0f7-2c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/39f4bd39-7693-4d0f-8971-2f5bdaedb202_9e7dd875-5cd0-4776-9ca8-264c6fdb440a.jpg')
+    ON DUPLICATE KEY UPDATE property_id = property_id;
 
 -- DayTransactionLog 테이블에 2024년 3월 1일부터 2024년 4월 30일까지의 데이터를 추가
 INSERT INTO day_transaction_logs (property_id, date, fluctuation_rate, opening_price, closing_price, max_price, min_price, volume_count)

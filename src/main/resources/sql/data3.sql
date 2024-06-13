@@ -28,6 +28,12 @@ VALUES
     (UNHEX(REPLACE('6222c0f7-0c97-4bd7-a200-0de1392f1df1', '-', '')), UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'cloudfront_url', 's3_url', '샘플 문서')
     ON DUPLICATE KEY UPDATE document_id = document_id;
 
+-- d168mchs3bjm5x.cloudfront.net/e1ef3af8-c013-427c-9c47-d04bd7fea0d1_만해관옥상에서바라본명진관야경5.jpg
+INSERT INTO thumbnail_urls (property_id, cloudfront_url) VALUES
+    (UNHEX(REPLACE('2222c0f7-0c97-4da7-a200-0de1392f1df1', '-', '')), 'd168mchs3bjm5x.cloudfront.net/e1ef3af8-c013-427c-9c47-d04bd7fea0d1_만해관옥상에서바라본명진관야경5.jpg')
+    ON DUPLICATE KEY UPDATE cloudfront_url = VALUES(cloudfront_url);
+
+
 -- investment_points 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
 INSERT INTO investment_points (investment_point_id, property_id, title)
 VALUES

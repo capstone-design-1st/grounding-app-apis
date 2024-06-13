@@ -58,6 +58,10 @@ VALUES
     (UNHEX(REPLACE('3111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), '1000m²', '사무실', 1000.0, 1000.0, '대형', '2024-01-01', '1000000000', 'ABC 임차인', '2022-01-01', '2025-12-31', '지상20층 / 지하3층')
 ON DUPLICATE KEY UPDATE building_id = building_id;
 
+-- d168mchs3bjm5x.cloudfront.net/9cf8bee3-f293-45ba-b865-050b8bcd247c_image-png-Feb-16-2023-11-44-53-1339-PM.png.webp
+INSERT INTO thumbnail_urls (property_id, cloudfront_url) VALUES
+    (UNHEX(REPLACE('1111c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'd168mchs3bjm5x.cloudfront.net/9cf8bee3-f293-45ba-b865-050b8bcd247c_image-png-Feb-16-2023-11-44-53-1339-PM.png.webp')
+ON DUPLICATE KEY UPDATE property_id = property_id;
 -- locations 테이블에 샘플 데이터 삽입, property_id는 방금 삽입된 properties 테이블 데이터 참조
 INSERT INTO locations (location_id, property_id, city, gu, dong, detail)
 VALUES

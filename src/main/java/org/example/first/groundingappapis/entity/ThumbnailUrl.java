@@ -25,10 +25,10 @@ public class ThumbnailUrl {
     @JoinColumn(name = "property_id", unique = true, nullable = false, columnDefinition = "BINARY(16)", foreignKey = @ForeignKey(name = "fk_thumbnail_urls_property"))
     private Property property;
 
-    @Column(name = "s3_url", length = 100)
+    @Column(name = "s3_url", length = 300)
     private String s3Url;
 
-    @Column(name = "cloudfront_url", length = 100)
+    @Column(name = "cloudfront_url", length = 300)
     private String cloudfrontUrl;
 
     @Builder

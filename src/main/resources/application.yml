@@ -77,6 +77,8 @@ app:
 
   client:
     url: ${CLIENT_URL}
+    url2: ${CLIENT_URL2}
+    url3: ${CLIENT_URL3}
   host:
     url: ${HOST_URL}
   aligo:

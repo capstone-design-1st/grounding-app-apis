@@ -36,6 +36,11 @@ public class SecurityConfig{
     @Value("${app.client.url}")
     private String clientUrl;
 
+    @Value("${app.client.url}")
+    private String clientUrl2;
+    @Value("${app.client.url}")
+    private String clientUrl3;
+
     @Value("${app.host.url}")
     private String hostUrl;
 
@@ -75,7 +80,7 @@ public class SecurityConfig{
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", clientUrl, hostUrl));
+            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", clientUrl, clientUrl2, clientUrl3, hostUrl));
             config.setAllowCredentials(true);
             return config;
         };
