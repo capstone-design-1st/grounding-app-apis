@@ -42,7 +42,7 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
             "FROM RealTimeTransactionLog r " +
             "WHERE r.property.id = :propertyId")
     boolean existsByPropertyId(UUID propertyId);
-
+//d 
 //    @Query("SELECT r " +
 //            "FROM RealTimeTransactionLog r " +
 //            "WHERE r.property.id = :propertyId " +
