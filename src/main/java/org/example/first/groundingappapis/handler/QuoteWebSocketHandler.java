@@ -62,7 +62,7 @@ public class QuoteWebSocketHandler extends TextWebSocketHandler {
 
         sendUpdate();
     }
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 500)
     public void sendUpdate() {
         try {
             if (propertyId != null) {

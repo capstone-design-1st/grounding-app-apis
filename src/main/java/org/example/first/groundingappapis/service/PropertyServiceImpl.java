@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -134,9 +131,16 @@ public class PropertyServiceImpl implements PropertyService {
 
         Page<Property> popularProperties = propertyRepository.findAll(pageable);
 
-        List<RealTimeTransactionLog> transactionLogs = realTimeTransactionLogRepository
-                .findRecentTransactionLogsByProperties(popularProperties.getContent());
+        List<Property> popularPropertiesList = popularProperties.getContent();
 
+        List<RealTimeTransactionLog> transactionLogs = new ArrayList<>();
+
+        for(Property property : popularPropertiesList) {
+            Optional<RealTimeTransactionLog> realTimeTransactionLog = realTimeTransactionLogRepository.findFirstByPropertyIdOrderByExecutedAtDesc(property.getId());
+            if(realTimeTransactionLog.isPresent()) {
+                transactionLogs.add(realTimeTransactionLog.get());
+            }
+        }
         Map<UUID, RealTimeTransactionLog> transactionLogMap = transactionLogs.stream()
                 .collect(Collectors.toMap(RealTimeTransactionLog::getPropertyId, log -> log));
 

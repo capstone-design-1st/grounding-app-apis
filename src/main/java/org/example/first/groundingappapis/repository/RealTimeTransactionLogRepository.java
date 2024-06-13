@@ -28,7 +28,7 @@ public interface RealTimeTransactionLogRepository extends JpaRepository<RealTime
 //            "r.property.id, r.executedPrice) " +
 //            "FROM RealTimeTransactionLog r " +
 //            "WHERE r.property = :property " +
-//            "ORDER BY r.executedAt DESC") 
+//            "ORDER BY r.executedAt DESC")
 
 //UUID propertyId, LocalDateTime executedAt, Integer quantity, Integer executedPrice, Double fluctuationRate) {
     @Query("SELECT new org.example.first.groundingappapis.dto.RealTimeTransactionLogDto(" +
