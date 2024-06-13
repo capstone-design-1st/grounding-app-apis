@@ -20,7 +20,7 @@ import java.util.UUID;
 public interface RealTimeTransactionLogRepository extends JpaRepository<RealTimeTransactionLog, UUID> {
 
     @Query("SELECT rtl FROM RealTimeTransactionLog rtl " +
-            "WHERE rtl.id IN (SELECT MAX(rtl2.id) FROM RealTimeTransactionLog rtl2 WHERE rtl2.property IN :properties GROUP BY rtl2.property) " +
+            "WHERE rtl.id IN (SELECT MAX(rtl2.executedAt) FROM RealTimeTransactionLog rtl2 WHERE rtl2.property IN :properties GROUP BY rtl2.property) " +
             "ORDER BY rtl.executedAt DESC")
     List<RealTimeTransactionLog> findRecentTransactionLogsByProperties(@Param("properties") List<Property> properties);
 
