@@ -142,7 +142,7 @@ public class FundraiseServiceImpl implements FundraiseService{
                 .progressRate(fundraise.getProgressRate())
                 .executedTime(LocalDateTime.now())
                 .build();
-
+// 
         log.info("notificationProducingDto: {}", notificationProducingDto);
 
         kafkaNotificationProducer.sendNotification("create-notification", notificationProducingDto);
